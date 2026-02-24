@@ -1,0 +1,602 @@
+[
+  {
+    "no": 1,
+    "facet": "Oaesa1*",
+    "key": "R",
+    "text_id": "Saya akan cukup bosan ketika mengunjungi sebuah pameran seni."
+  },
+  {
+    "no": 2,
+    "facet": "Corga2",
+    "key": "",
+    "text_id": "Saya cukup sering membersihkan kantor atau rumah saya."
+  },
+  {
+    "no": 3,
+    "facet": "Aforg1",
+    "key": "",
+    "text_id": "Saya jarang menyimpan dendam, bahkan terhadap mereka yang telah menyakitiku."
+  },
+  {
+    "no": 4,
+    "facet": "Xsses1",
+    "key": "",
+    "text_id": "Saya merasa cukup puas dengan keadaan diri saya secara keseluruhan."
+  },
+  {
+    "no": 5,
+    "facet": "Efear1",
+    "key": "",
+    "text_id": "Saya akan merasa takut jika harus bepergian dalam cuaca yang buruk."
+  },
+  {
+    "no": 6,
+    "facet": "Hsinc1*",
+    "key": "R",
+    "text_id": "Saya akan memperlakukan orang yang tidak saya sukai dengan sangat baik jika saya menginginkan sesuatu darinya."
+  },
+  {
+    "no": 7,
+    "facet": "Oinqu1",
+    "key": "",
+    "text_id": "Saya tertarik untuk mempelajari sejarah dan politik negara-negara lain."
+  },
+  {
+    "no": 8,
+    "facet": "Cdili1",
+    "key": "",
+    "text_id": "Saya sering membuat target-target ambisius untuk diri sendiri dalam bekerja."
+  },
+  {
+    "no": 9,
+    "facet": "Agent4*",
+    "key": "R",
+    "text_id": "Terkadang orang mengatakan bahwa saya terlalu suka mengkritik orang lain."
+  },
+  {
+    "no": 10,
+    "facet": "Xsocb2*",
+    "key": "R",
+    "text_id": "Saya jarang mengemukakan pendapat dalam diskusi atau rapat."
+  },
+  {
+    "no": 11,
+    "facet": "Eanxi1",
+    "key": "",
+    "text_id": "Terkadang saya tidak bisa untuk tidak mengkhawatirkan hal-hal sepele."
+  },
+  {
+    "no": 12,
+    "facet": "Hfair1*",
+    "key": "R",
+    "text_id": "Seandainya saya tahu saya tidak akan pernah tertangkap, saya akan bersedia mencuri milyaran rupiah."
+  },
+  {
+    "no": 13,
+    "facet": "Ocrea2*",
+    "key": "R",
+    "text_id": "Saya menginginkan pekerjaan yang harus mengikuti rutinitas daripada pekerjaan yang membutuhkan kreatifitas."
+  },
+  {
+    "no": 14,
+    "facet": "Cperf1",
+    "key": "",
+    "text_id": "Saya sering berkali-kali memeriksa pekerjaan saya agar tidak ada kesalahan yang terlewat."
+  },
+  {
+    "no": 15,
+    "facet": "Aflex1*",
+    "key": "R",
+    "text_id": "Terkadang orang mengatakan bahwa saya terlalu keras kepala."
+  },
+  {
+    "no": 16,
+    "facet": "Xsoci2*",
+    "key": "R",
+    "text_id": "Saya menghindari berbasa-basi dengan orang lain."
+  },
+  {
+    "no": 17,
+    "facet": "Edepe3",
+    "key": "",
+    "text_id": "Saya butuh seseorang untuk menghibur saya ketika mengalami kejadian yang menyakitkan."
+  },
+  {
+    "no": 18,
+    "facet": "Hgree2",
+    "key": "",
+    "text_id": "Memiliki banyak uang bukanlah hal yang terlalu penting bagi saya."
+  },
+  {
+    "no": 19,
+    "facet": "Ounco2*",
+    "key": "R",
+    "text_id": "Saya rasa memperhatikan ide-ide baru yang sangat tidak biasa itu membuang-buang waktu."
+  },
+  {
+    "no": 20,
+    "facet": "Cprud2*",
+    "key": "R",
+    "text_id": "Saya membuat keputusan berdasarkan suasana hati daripada pertimbangan matang."
+  },
+  {
+    "no": 21,
+    "facet": "Apati2*",
+    "key": "R",
+    "text_id": "Orang lain menganggap saya adalah orang yang cepat marah."
+  },
+  {
+    "no": 22,
+    "facet": "Xlive2",
+    "key": "",
+    "text_id": "Saya hampir setiap saat penuh dengan semangat."
+  },
+  {
+    "no": 23,
+    "facet": "Esent1",
+    "key": "",
+    "text_id": "Saya jadi ingin menangis ketika melihat orang lain menangis."
+  },
+  {
+    "no": 24,
+    "facet": "Hmode2",
+    "key": "",
+    "text_id": "Saya adalah orang biasa yang tidak lebih baik dari orang lain."
+  },
+  {
+    "no": 25,
+    "facet": "Oaesa3*",
+    "key": "R",
+    "text_id": "Saya tidak akan menghabiskan waktu saya membaca sebuah buku puisi."
+  },
+  {
+    "no": 26,
+    "facet": "Corga3",
+    "key": "",
+    "text_id": "Saya membuat rencana dan mengatur segala sesuatu sedemikian rupa agar tidak kelabakan di saat-saat terakhir."
+  },
+  {
+    "no": 27,
+    "facet": "Aforg3",
+    "key": "",
+    "text_id": "Sikap saya terhadap mereka yang telah memperlakukan saya dengan buruk adalah Òmaafkan dan lupakanÓ."
+  },
+  {
+    "no": 28,
+    "facet": "Xsses3",
+    "key": "",
+    "text_id": "Ada beberapa hal dalam kepribadian saya yang saya rasa disukai oleh kebanyakan orang."
+  },
+  {
+    "no": 29,
+    "facet": "Efear4*",
+    "key": "R",
+    "text_id": "Saya tidak keberatan melakukan pekerjaan yang berbahaya."
+  },
+  {
+    "no": 30,
+    "facet": "Hsinc4",
+    "key": "",
+    "text_id": "Saya tidak akan menggunakan sanjungan untuk mendapatkan kenaikan gaji atau pangkat di tempat kerja, bahkan jika saya kira itu akan berhasil."
+  },
+  {
+    "no": 31,
+    "facet": "Oinqu3",
+    "key": "",
+    "text_id": "Saya suka memperhatikan peta dari berbagai tempat."
+  },
+  {
+    "no": 32,
+    "facet": "Cdili2",
+    "key": "",
+    "text_id": "Saya sering berusaha sangat keras untuk dapat mencapai target yang saya inginkan."
+  },
+  {
+    "no": 33,
+    "facet": "Agent5",
+    "key": "",
+    "text_id": "Saya biasanya menerima kesalahan orang lain tanpa mengeluhkannya."
+  },
+  {
+    "no": 34,
+    "facet": "Xsocb3",
+    "key": "",
+    "text_id": "Dalam pertemuan sosial, saya biasanya berinisiatif untuk memulai pembicaraan dengan orang lain."
+  },
+  {
+    "no": 35,
+    "facet": "Eanxi4*",
+    "key": "R",
+    "text_id": "Dibandingkan kebanyakan orang, saya sangat jarang merasa khawatir."
+  },
+  {
+    "no": 36,
+    "facet": "Hfair4*",
+    "key": "R",
+    "text_id": "Saya akan tergoda untuk membeli barang curian jika saya sedang kesulitan keuangan."
+  },
+  {
+    "no": 37,
+    "facet": "Ocrea6",
+    "key": "",
+    "text_id": "Saya akan menikmati menciptakan karya seni, seperti novel, lagu, atau lukisan."
+  },
+  {
+    "no": 38,
+    "facet": "Cperf2*",
+    "key": "R",
+    "text_id": "Ketika mengerjakan sesuatu, saya tidak terlalu memperhatikan hal-hal kecil."
+  },
+  {
+    "no": 39,
+    "facet": "Aflex5",
+    "key": "",
+    "text_id": "Saat orang tidak setuju dengan pendapat saya, saya biasanya cukup fleksibel untuk menerimanya."
+  },
+  {
+    "no": 40,
+    "facet": "Xsoci3",
+    "key": "",
+    "text_id": "Saya suka berkumpul dengan banyak orang dan berbincang dengan mereka."
+  },
+  {
+    "no": 41,
+    "facet": "Edepe6*",
+    "key": "R",
+    "text_id": "Saya dapat mengatasi situasi sulit tanpa perlu dukungan moral dari orang lain."
+  },
+  {
+    "no": 42,
+    "facet": "Hgree4*",
+    "key": "R",
+    "text_id": "Saya ingin tinggal di perumahan mahal tempat orang-orang kaya tinggal."
+  },
+  {
+    "no": 43,
+    "facet": "Ounco5",
+    "key": "",
+    "text_id": "Saya suka orang yang memiliki pandangan tidak konvensional."
+  },
+  {
+    "no": 44,
+    "facet": "Cprud3*",
+    "key": "R",
+    "text_id": "Saya melakukan banyak kesalahan karena saya tidak berpikir sebelum bertindak."
+  },
+  {
+    "no": 45,
+    "facet": "Apati3",
+    "key": "",
+    "text_id": "Saya tidak mudah marah, bahkan saat orang-orang memperlakukan saya dengan agak buruk."
+  },
+  {
+    "no": 46,
+    "facet": "Xlive3",
+    "key": "",
+    "text_id": "Hampir setiap hari saya merasa ceria dan optimis."
+  },
+  {
+    "no": 47,
+    "facet": "Esent2",
+    "key": "",
+    "text_id": "Ketika orang dekat saya merasa sedih, saya hampir seperti dapat merasakan kesedihan mereka."
+  },
+  {
+    "no": 48,
+    "facet": "Hmode3",
+    "key": "",
+    "text_id": "Saya tidak ingin orang lain memperlakukan saya seolah-olah status saya lebih tinggi dari pada mereka."
+  },
+  {
+    "no": 49,
+    "facet": "Oaesa4",
+    "key": "",
+    "text_id": "Seandainya saja saat ini saya punya kesempatan, saya mau datang ke sebuah konser musik."
+  },
+  {
+    "no": 50,
+    "facet": "Corga6*",
+    "key": "R",
+    "text_id": "Kamar atau meja saya yang berantakan sering kali menjadi bahan lelucon bagi orang lain."
+  },
+  {
+    "no": 51,
+    "facet": "Aforg7*",
+    "key": "R",
+    "text_id": "Kalau seseorang sudah mencurangi saya sekali, saya akan selalu mencurigai orang tersebut."
+  },
+  {
+    "no": 52,
+    "facet": "Xsses5*",
+    "key": "R",
+    "text_id": "Saya merasa saya adalah orang yang tidak populer."
+  },
+  {
+    "no": 53,
+    "facet": "Efear7",
+    "key": "",
+    "text_id": "Saya sangat takut saat berhadapan dengan bahaya yang mengancam fisik saya."
+  },
+  {
+    "no": 54,
+    "facet": "Hsinc5*",
+    "key": "R",
+    "text_id": "Kalau saya menginginkan sesuatu dari seseorang, lelucon tidak lucu dari orang tersebut pun akan saya tertawakan."
+  },
+  {
+    "no": 55,
+    "facet": "Oinqu6*",
+    "key": "R",
+    "text_id": "Saya akan sangat bosan ketika membaca buku tentang sejarah ilmu pengetahuan dan teknologi."
+  },
+  {
+    "no": 56,
+    "facet": "Cdili5*",
+    "key": "R",
+    "text_id": "Saya sering menyerah di tengah jalan sebelum mencapai target yang saya tetapkan."
+  },
+  {
+    "no": 57,
+    "facet": "Agent6",
+    "key": "",
+    "text_id": "Saya cenderung bersikap lunak dalam menilai orang lain."
+  },
+  {
+    "no": 58,
+    "facet": "Xsocb4",
+    "key": "",
+    "text_id": "Ketika berada dalam sebuah kelompok, saya sering menjadi seseorang yang berbicara mewakili kelompok tersebut."
+  },
+  {
+    "no": 59,
+    "facet": "Eanxi6*",
+    "key": "R",
+    "text_id": "Saya jarang sekali, kalaupun pernah, sulit tidur karena stres atau cemas."
+  },
+  {
+    "no": 60,
+    "facet": "Hfair6",
+    "key": "",
+    "text_id": "Saya tidak akan pernah menerima suap, bahkan jika  jumlahnya sangat besar sekalipun."
+  },
+  {
+    "no": 61,
+    "facet": "Ocrea7",
+    "key": "",
+    "text_id": "Orang lain sering mengatakan bahwa saya memiliki imajinasi yang bagus."
+  },
+  {
+    "no": 62,
+    "facet": "Cperf3",
+    "key": "",
+    "text_id": "Saya selalu berusaha untuk akurat dalam bekerja, meskipun itu memakan banyak waktu."
+  },
+  {
+    "no": 63,
+    "facet": "Aflex7*",
+    "key": "R",
+    "text_id": "Ketika orang lain mengatakan bahwa saya salah, reaksi pertama saya adalah membantah mereka."
+  },
+  {
+    "no": 64,
+    "facet": "Xsoci5",
+    "key": "",
+    "text_id": "Saya lebih suka pekerjaan yang harus banyak berinteraksi dengan orang lain daripada yang harus bekerja sendiri."
+  },
+  {
+    "no": 65,
+    "facet": "Edepe7",
+    "key": "",
+    "text_id": "Kapanpun saya mengkhawatirkan sesuatu, saya ingin menceritakan kekhawatiran saya kepada orang lain."
+  },
+  {
+    "no": 66,
+    "facet": "Hgree5*",
+    "key": "R",
+    "text_id": "Saya ingin dilihat orang sedang mengendarai mobil yang sangat mahal."
+  },
+  {
+    "no": 67,
+    "facet": "Ounco6",
+    "key": "",
+    "text_id": "Saya menganggap diri saya sebagai seorang yang agak eksentrik."
+  },
+  {
+    "no": 68,
+    "facet": "Cprud4",
+    "key": "",
+    "text_id": "Saya tidak mengizinkan keinginan sesaat mengendalikan tingkah laku saya."
+  },
+  {
+    "no": 69,
+    "facet": "Apati4",
+    "key": "",
+    "text_id": "Kebanyakan orang cenderung lebih mudah marah daripada saya."
+  },
+  {
+    "no": 70,
+    "facet": "Xlive4*",
+    "key": "R",
+    "text_id": "Orang lain sering menganjurkan saya untuk berusaha menjadi lebih ceria."
+  },
+  {
+    "no": 71,
+    "facet": "Esent3",
+    "key": "",
+    "text_id": "Saya merasa sangat kehilangan ketika orang dekat saya pergi untuk waktu yang lama."
+  },
+  {
+    "no": 72,
+    "facet": "Hmode6*",
+    "key": "R",
+    "text_id": "Saya merasa seharusnya saya lebih dihormati dibandingkan orang kebanyakan."
+  },
+  {
+    "no": 73,
+    "facet": "Oaesa7",
+    "key": "",
+    "text_id": "Terkadang saya suka untuk hanya duduk dan melihat angin berhembus di sela-sela pepohonan."
+  },
+  {
+    "no": 74,
+    "facet": "Corga8*",
+    "key": "R",
+    "text_id": "Saya kadang mengalami kesulitan dalam bekerja karena ketidakrapian saya."
+  },
+  {
+    "no": 75,
+    "facet": "Aforg8*",
+    "key": "R",
+    "text_id": "Sulit bagi saya untuk benar-benar memaafkan seseorang yang telah menyakiti saya."
+  },
+  {
+    "no": 76,
+    "facet": "Xsses8*",
+    "key": "R",
+    "text_id": "Kadang saya merasa saya ini orang yang tidak berguna."
+  },
+  {
+    "no": 77,
+    "facet": "Efear8*",
+    "key": "R",
+    "text_id": "Saya tidak akan merasa panik meskipun dalam situasi genting."
+  },
+  {
+    "no": 78,
+    "facet": "Hsinc6",
+    "key": "",
+    "text_id": "Saya tidak akan berpura-pura menyukai seseorang hanya agar dia mau membantu saya."
+  },
+  {
+    "no": 79,
+    "facet": "Oinqu8*",
+    "key": "R",
+    "text_id": "Saya tidak pernah benar-benar menikmati membaca ensiklopedia."
+  },
+  {
+    "no": 80,
+    "facet": "Cdili6*",
+    "key": "R",
+    "text_id": "Saya hanya melakukan usaha minimum yang dibutuhkan untuk menyelesaikan pekerjaan saya."
+  },
+  {
+    "no": 81,
+    "facet": "Agent7",
+    "key": "",
+    "text_id": "Bahkan saat seseorang melakukan banyak kesalahan, saya jarang mengomel atau menggerutu."
+  },
+  {
+    "no": 82,
+    "facet": "Xsocb8*",
+    "key": "R",
+    "text_id": "Saya cenderung merasa agak canggung ketika berbicara di depan umum."
+  },
+  {
+    "no": 83,
+    "facet": "Eanxi8",
+    "key": "",
+    "text_id": "Saya merasa sangat cemas saat menunggu sebuah pengumuman penting."
+  },
+  {
+    "no": 84,
+    "facet": "Hfair8*",
+    "key": "R",
+    "text_id": "Saya akan tergoda untuk menggunakan uang palsu, jika saya yakin tidak akan ketahuan."
+  },
+  {
+    "no": 85,
+    "facet": "Ocrea8*",
+    "key": "R",
+    "text_id": "Saya tidak menganggap diri saya sebagai seorang yang artistik ataupun kreatif."
+  },
+  {
+    "no": 86,
+    "facet": "Cperf4",
+    "key": "",
+    "text_id": "Orang sering menyebut saya sebagai seorang perfeksionis."
+  },
+  {
+    "no": 87,
+    "facet": "Aflex8*",
+    "key": "R",
+    "text_id": "Sulit bagi saya untuk berkompromi dengan orang lain ketika saya sangat yakin bahwa saya benar."
+  },
+  {
+    "no": 88,
+    "facet": "Xsoci6",
+    "key": "",
+    "text_id": "Hal pertama yang selalu saya lakukan di tempat baru adalah mencari teman baru."
+  },
+  {
+    "no": 89,
+    "facet": "Edepe8*",
+    "key": "R",
+    "text_id": "Saya jarang menceritakan masalah saya kepada orang lain."
+  },
+  {
+    "no": 90,
+    "facet": "Hgree7*",
+    "key": "R",
+    "text_id": "Saya akan mendapatkan banyak kepuasan dari memiliki barang-barang mewah yang mahal."
+  },
+  {
+    "no": 91,
+    "facet": "Ounco8*",
+    "key": "R",
+    "text_id": "Bagi saya, diskusi filosofis itu membosankan."
+  },
+  {
+    "no": 92,
+    "facet": "Cprud8*",
+    "key": "R",
+    "text_id": "Saya lebih memilih untuk bertindak spontan daripada mengikuti rencana."
+  },
+  {
+    "no": 93,
+    "facet": "Apati6*",
+    "key": "R",
+    "text_id": "Sulit bagi saya menahan amarah saat orang lain menghina saya."
+  },
+  {
+    "no": 94,
+    "facet": "Xlive7*",
+    "key": "R",
+    "text_id": "Kebanyakan orang lebih lincah dan dinamis dibandingkan saya."
+  },
+  {
+    "no": 95,
+    "facet": "Esent7*",
+    "key": "R",
+    "text_id": "Saya tetap tidak merasakan apapun meskipun berada dalam situasi yang membuat banyak orang menjadi sangat sentimental."
+  },
+  {
+    "no": 96,
+    "facet": "Hmode8*",
+    "key": "R",
+    "text_id": "Saya ingin orang-orang tahu bahwa saya ini orang penting berstatus tinggi."
+  },
+  {
+    "no": 97,
+    "facet": "Alt3",
+    "key": "",
+    "text_id": "Saya bersimpati kepada orang yang kurang beruntung dibanding saya."
+  },
+  {
+    "no": 98,
+    "facet": "Alt4",
+    "key": "",
+    "text_id": "Saya berusaha untuk banyak memberi pada mereka yang membutuhkan."
+  },
+  {
+    "no": 99,
+    "facet": "Alt7*",
+    "key": "R",
+    "text_id": "Tidak masalah bagi saya untuk menyakiti seseorang yang tidak kusukai."
+  },
+  {
+    "no": 100,
+    "facet": "Alt8*",
+    "key": "R",
+    "text_id": "Orang menganggap saya sebagai seorang yang tidak berperasaan."
+  }
+]

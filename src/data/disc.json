@@ -1,0 +1,146 @@
+[
+  { "no": 1, "options": [
+    { "trait": "D", "text": "Berani mengambil risiko dan suka tantangan" },
+    { "trait": "I", "text": "Ekspresif, antusias, dan penuh semangat" },
+    { "trait": "S", "text": "Sabar, toleran, dan mudah berpuas diri" },
+    { "trait": "C", "text": "Berhati-hati, penuh pertimbangan, dan teliti" }
+  ]},
+  { "no": 2, "options": [
+    { "trait": "D", "text": "Suka mengambil alih dan memimpin keadaan" },
+    { "trait": "I", "text": "Menyenangkan, ramah, dan mudah bergaul" },
+    { "trait": "S", "text": "Pendengar yang baik dan kooperatif" },
+    { "trait": "C", "text": "Bekerja secara sistematis dan logis" }
+  ]},
+  { "no": 3, "options": [
+    { "trait": "D", "text": "Percaya diri dan yakin dengan kemampuan sendiri" },
+    { "trait": "I", "text": "Pandai bicara dan mudah meyakinkan orang lain" },
+    { "trait": "S", "text": "Setia dan merupakan pengikut yang baik" },
+    { "trait": "C", "text": "Suka menganalisa dan memperhatikan detail" }
+  ]},
+  { "no": 4, "options": [
+    { "trait": "D", "text": "Tegas dan cepat dalam mengambil keputusan" },
+    { "trait": "I", "text": "Bersahabat dan suka berada di sekitar orang banyak" },
+    { "trait": "S", "text": "Stabil, tenang, dan tidak mudah panik" },
+    { "trait": "C", "text": "Akurat dan selalu berfokus pada fakta" }
+  ]},
+  { "no": 5, "options": [
+    { "trait": "D", "text": "Kompetitif dan selalu ingin menang" },
+    { "trait": "I", "text": "Bersemangat tinggi dan ceria" },
+    { "trait": "S", "text": "Diplomatis dan selalu menjaga kedamaian" },
+    { "trait": "C", "text": "Selalu waspada dan menghindari kesalahan" }
+  ]},
+  { "no": 6, "options": [
+    { "trait": "D", "text": "Sangat mandiri dan mampu mendorong diri sendiri" },
+    { "trait": "I", "text": "Selalu optimis dan berpikir positif" },
+    { "trait": "S", "text": "Konsisten dan sangat dapat diandalkan" },
+    { "trait": "C", "text": "Memiliki standar yang tinggi (perfeksionis)" }
+  ]},
+  { "no": 7, "options": [
+    { "trait": "D", "text": "Inovator dan selalu mencari solusi baru" },
+    { "trait": "I", "text": "Komunikator ulung dan suka membangun jaringan" },
+    { "trait": "S", "text": "Penengah yang baik jika ada perselisihan" },
+    { "trait": "C", "text": "Perencana yang matang dan terorganisir" }
+  ]},
+  { "no": 8, "options": [
+    { "trait": "D", "text": "Suka mengarahkan dan memberikan instruksi" },
+    { "trait": "I", "text": "Suka tampil dan menjadi pusat perhatian" },
+    { "trait": "S", "text": "Sangat suportif dan senang menolong orang lain" },
+    { "trait": "C", "text": "Taat aturan dan menyukai struktur yang jelas" }
+  ]},
+  { "no": 9, "options": [
+    { "trait": "D", "text": "Asertif, terus terang, dan apa adanya" },
+    { "trait": "I", "text": "Periang dan suka menghidupkan suasana" },
+    { "trait": "S", "text": "Rendah hati dan tidak suka menonjolkan diri" },
+    { "trait": "C", "text": "Rapi dan sangat memperhatikan hal-hal kecil" }
+  ]},
+  { "no": 10, "options": [
+    { "trait": "D", "text": "Visioner dan selalu melihat gambaran besar" },
+    { "trait": "I", "text": "Kreatif dan kaya akan ide-ide baru" },
+    { "trait": "S", "text": "Harmonis dan selalu menghindari konflik" },
+    { "trait": "C", "text": "Bertindak berdasarkan data dan analisa yang kuat" }
+  ]},
+  { "no": 11, "options": [
+    { "trait": "D", "text": "Gigih, persisten, dan pantang mundur" },
+    { "trait": "I", "text": "Mudah beradaptasi dan fleksibel" },
+    { "trait": "S", "text": "Bekerja sama dengan baik dalam tim (team player)" },
+    { "trait": "C", "text": "Objektif, rasional, dan tidak memihak" }
+  ]},
+  { "no": 12, "options": [
+    { "trait": "D", "text": "Praktis, langsung pada inti permasalahan" },
+    { "trait": "I", "text": "Inspiratif dan mampu memotivasi orang lain" },
+    { "trait": "S", "text": "Bisa tetap tenang di bawah tekanan" },
+    { "trait": "C", "text": "Patuh pada Standar Operasional Prosedur (SOP)" }
+  ]},
+  { "no": 13, "options": [
+    { "trait": "D", "text": "Berorientasi kuat pada target dan hasil akhir" },
+    { "trait": "I", "text": "Bertindak spontan dan terkadang tidak terduga" },
+    { "trait": "S", "text": "Mudah bersimpati dan memiliki empati tinggi" },
+    { "trait": "C", "text": "Metodis, langkah demi langkah, dan sistematis" }
+  ]},
+  { "no": 14, "options": [
+    { "trait": "D", "text": "Penuh energi, dinamis, dan bergerak cepat" },
+    { "trait": "I", "text": "Humoris dan suka melontarkan candaan" },
+    { "trait": "S", "text": "Santai, pembawaannya tenang (easy-going)" },
+    { "trait": "C", "text": "Kritis dan suka mempertanyakan sesuatu" }
+  ]},
+  { "no": 15, "options": [
+    { "trait": "D", "text": "Berwibawa dan disegani oleh orang lain" },
+    { "trait": "I", "text": "Ceria dan selalu membawa kegembiraan" },
+    { "trait": "S", "text": "Hangat, ramah, dan penuh kasih sayang" },
+    { "trait": "C", "text": "Disiplin dan selalu tepat waktu" }
+  ]},
+  { "no": 16, "options": [
+    { "trait": "D", "text": "Proaktif dan selalu mengambil inisiatif" },
+    { "trait": "I", "text": "Suka melempar gagasan dan pembawa ide" },
+    { "trait": "S", "text": "Ahli dalam menyatukan perbedaan pendapat" },
+    { "trait": "C", "text": "Mampu mengevaluasi dan menilai secara kritis" }
+  ]},
+  { "no": 17, "options": [
+    { "trait": "D", "text": "Menuntut dan memiliki standar capaian tinggi" },
+    { "trait": "I", "text": "Berjiwa bebas dan tidak suka dikekang" },
+    { "trait": "S", "text": "Pembawa damai dan penuh toleransi" },
+    { "trait": "C", "text": "Sangat cermat dan tidak pernah terburu-buru" }
+  ]},
+  { "no": 18, "options": [
+    { "trait": "D", "text": "Sangat mandiri dalam menyelesaikan tugas" },
+    { "trait": "I", "text": "Interaktif dan senang berdiskusi panjang" },
+    { "trait": "S", "text": "Loyal dan setia mengabdi pada organisasi" },
+    { "trait": "C", "text": "Berpikir logis dan selalu masuk akal" }
+  ]},
+  { "no": 19, "options": [
+    { "trait": "D", "text": "Bertindak sebagai perintis dan pionir" },
+    { "trait": "I", "text": "Sebagai penyemangat yang menghidupkan suasana" },
+    { "trait": "S", "text": "Bersedia memelihara, merawat, dan menjaga" },
+    { "trait": "C", "text": "Ahli dalam membedah dan menganalisa masalah" }
+  ]},
+  { "no": 20, "options": [
+    { "trait": "D", "text": "Tidak kenal takut dan berani mengambil keputusan" },
+    { "trait": "I", "text": "Pencerita yang ulung dan menarik" },
+    { "trait": "S", "text": "Cenderung diam dan menghindari perdebatan" },
+    { "trait": "C", "text": "Suka membaca dan haus akan informasi" }
+  ]},
+  { "no": 21, "options": [
+    { "trait": "D", "text": "Tangguh dan pantang menyerah" },
+    { "trait": "I", "text": "Suka menarik perhatian orang lain" },
+    { "trait": "S", "text": "Sangat sensitif terhadap perasaan orang lain" },
+    { "trait": "C", "text": "Menyukai kegiatan yang terjadwal dan rutin" }
+  ]},
+  { "no": 22, "options": [
+    { "trait": "D", "text": "Bertindak seperti komandan yang memberi perintah" },
+    { "trait": "I", "text": "Jago dalam mempromosikan dan memasarkan ide" },
+    { "trait": "S", "text": "Fasilitator yang sabar dalam memandu orang" },
+    { "trait": "C", "text": "Pengawas yang ketat dalam memeriksa detail" }
+  ]},
+  { "no": 23, "options": [
+    { "trait": "D", "text": "Berani mengambil risiko jika diperlukan" },
+    { "trait": "I", "text": "Sering mengandalkan insting dan intuisi" },
+    { "trait": "S", "text": "Sangat bertanggung jawab dan dapat dipercaya" },
+    { "trait": "C", "text": "Berpikiran jernih dan sangat rasional" }
+  ]},
+  { "no": 24, "options": [
+    { "trait": "D", "text": "Terkadang keras kepala jika sudah punya tekad" },
+    { "trait": "I", "text": "Punya daya tarik dan karisma yang magnetis" },
+    { "trait": "S", "text": "Sangat dermawan dan berhati baik" },
+    { "trait": "C", "text": "Selalu berpikir dua kali sebelum bertindak" }
+  ]}
+]

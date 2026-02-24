@@ -1,0 +1,63 @@
+// Prisma schema for Lentera Batin Assessment App
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Submission {
+  id          String   @id @default(cuid())
+  submittedAt DateTime @default(now())
+
+  // Identitas Klien (Bagian 1)
+  nama      String
+  email     String
+  usia      Int?
+  instansi  String?
+  pekerjaan String?
+  jabatan   String?
+
+  // DISC Scores (Bagian 2: Profil Gaya Kerja)
+  discMostD      Int @default(0)
+  discMostI      Int @default(0)
+  discMostS      Int @default(0)
+  discMostC      Int @default(0)
+
+  discLeastD     Int @default(0)
+  discLeastI     Int @default(0)
+  discLeastS     Int @default(0)
+  discLeastC     Int @default(0)
+
+  discCompositeD Int @default(0)
+  discCompositeI Int @default(0)
+  discCompositeS Int @default(0)
+  discCompositeC Int @default(0)
+
+  discPattern    String?
+  discPrimary    String?
+
+  // HEXACO Factor Means (Bagian 3: Profil Karakter)
+  hexacoH Float @default(0)
+  hexacoE Float @default(0)
+  hexacoX Float @default(0)
+  hexacoA Float @default(0)
+  hexacoC Float @default(0)
+  hexacoO Float @default(0)
+
+  // HEXACO Facet Means (stored as JSON for flexibility)
+  hexacoFacetMeans Json?
+
+  // AI Interpretation Results
+  aiInsight Json?
+
+  // Raw data backup (full JSON of answers for audit/reprocessing)
+  rawData Json?
+
+  @@index([email])
+  @@index([nama])
+  @@index([submittedAt])
+}
