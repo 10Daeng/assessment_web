@@ -72,60 +72,57 @@ const intraDimPatterns = {
     'unco-high_crea-low': 'Ia berpikir di luar norma dan menantang konvensi, namun tidak selalu menghasilkan solusi kreatif. Ia lebih sebagai kritikus sistem daripada inovator.',
     'inqu-high_aesa-low': 'Ia haus akan pengetahuan dan eksplorasi intelektual, namun kurang sensitif terhadap keindahan artistik. Rasa ingin tahunya berorientasi akademis dan ilmiah.',
   },
-};
-
 // =========================================
-// CROSS-DIMENSION DYNAMICS (Expanded Local AI)
+// CROSS-DIMENSION DYNAMICS (Pure Behavioral)
 // =========================================
 const crossDimDynamics = {
   // H interactions
-  'H-high_X-high': 'Kombinasi kejujuran tinggi dan energi sosial (Ekstraversi) menjadikannya sosok yang jujur, terbuka, dan karismatik secara alami. Ia memikat orang lain bukan melalui manipulasi, melainkan dengan ketulusan yang disuguhkan secara energik.',
-  'H-high_A-low': 'Integritasnya yang sangat tinggi dipadukan dengan sifat keras kepalanya menciptakan penegak kebenaran yang tak kenal kompromi. Ia akan menyuarakan fakta, meskipun itu memicu konflik atau membuat orang lain merasa tidak nyaman.',
-  'H-mid_X-high': 'Dengan kejujuran yang moderat dan ekstraversi yang tinggi, ia sangat cerdas dalam membaca situasi sosial. Ia tahu persis kapan harus berbicara jujur secara gamblang dan kapan harus menahannya demi kelancaran berjejaring.',
-  'H-low_X-high': 'Pemahaman sosialnya yang luar biasa dan dorongan material/status membuatnya menjadi "Strategic Networker". Ia sangat terampil memikat orang lain dan memposisikan dirinya di titik yang paling menguntungkan secara personal.',
-  'H-high_C-high': 'Pribadi yang sangat bisa diandalkan. Perpaduan antara ketelitian bekerja (Conscientiousness) dan moralitas tangguh (Honesty-Humility) membuatnya tidak pernah mengambil jalan pintas dalam menyelesaikan tanggung jawab.',
-  'H-mid_C-low': 'Ia cenderung pragmatis dan fleksibel. Tanpa batasan moral yang kaku dan kelonggaran dalam kedisiplinan, ia akan memilih "cara paling mudah" atau jalan pintas tercepat untuk menyelesaikan masalah.',
+  'H-high_X-high': 'Terdapat perpaduan unik antara keterbukaan sosial dan ketulusan dalam dirinya. Ia memikat orang lain bukan melalui kepura-puraan, melainkan dengan kejujuran yang disuguhkan secara energik dan apa adanya.',
+  'H-high_A-low': 'Pendiriannya sangat kokoh jika menyangkut kebenaran. Ia memilih untuk menyuarakan fakta secara gamblang dan apa adanya, meskipun kejujurannya terkadang menembus batas kenyamanan sosial dan memicu perdebatan.',
+  'H-mid_X-high': 'Ia memiliki kecerdasan intrapersonal yang sangat baik dalam membaca dinamika ruang sosial. Ia tahu persis kapan harus berbicara lugas, dan kapan harus menahannya dengan diplomasi agar hubungan tetap terjalin baik.',
+  'H-low_X-high': 'Dalam pergaulan, langkahnya hampir selalu taktis. Kemampuannya mengartikan situasi sosial menjadikannya sosok yang mahir menempatkan diri di posisi yang paling menguntungkan secara personal dan profesional.',
+  'H-high_C-high': 'Ia adalah sosok yang amat sangat bisa diandalkan. Etos kerja yang terstruktur berpadu dengan moral yang kuat membuatnya tidak pernah mengambil jalan pintas, melainkan selalu berupaya memberikan hasil yang sebenar-benarnya.',
+  'H-mid_C-low': 'Ia memiliki pandangan yang sangat pragmatis dalam menyelesaikan masalah. Tanpa terlalu terikat pada aturan baku, ia selalu cekatan dalam menemukan trik atau jalan pintas tercepat untuk menuntaskan pekerjaan.',
 
   // E interactions
-  'E-high_A-high': 'Harmoni adalah segalanya baginya. Kombinasi kepekaan emosional dan keramahan murni menghasilkan sosok yang sangat mudah berempati, menjadikannya tempat curhat paling aman bagi rekan-rekannya.',
-  'E-high_C-low': 'Gejolak perasaannya (Emotionality) sering kali mengalahkan struktur kerjanya. Jika ia merasa cemas atau *mood*-nya sedang buruk, fokus kedisiplinannya terhadap jam kerja atau target bisa tiba-tiba runtuh.',
-  'E-low_C-high': 'Ketangguhan mental level tinggi. Ia adalah "Eksekutor Berdarah Dingin" yang mampu menyelesaikan tugas paling rumit dan penuh tekanan tanpa terganggu oleh drama emosional sedikit pun.',
-  'E-low_A-low': 'Rasionalitasnya mendominasi setiap aspek interaksi. Ia melihat masalah secara objektif dan akan memotong langsung ke inti permasalahan tanpa terlalu mempedulikan apakah keputusannya "menyakiti perasaan" orang lain.',
-  'E-mid_O-high': 'Kestabilan emosi yang cukup imbang ditambah keterbukaan pola pikir (Openness) membuatnya menjadi pengamat dunia yang tenang. Ia bisa meresapi keindahan seni atau filosofi tanpa harus menjadi terlalu larut atau emosional.',
+  'E-high_A-high': 'Kepedulian terhadap keharmonisan adalah prioritas utamanya. Ia mudah sekali menyerap emosi orang-orang di sekelilingnya, menjadikannya pendengar yang luar biasa dan tempat berlabuh yang aman bagi rekan-rekannya.',
+  'E-high_C-low': 'Suasana batinnya berdampak besar pada kinerjanya. Ketika suasana hatinya sedang tidak baik atau ia merasa cemas, fokus kedisiplinannya terhadap rutinitas atau target harian bisa dengan mudah buyar.',
+  'E-low_C-high': 'Ketangguhan mentalnya berada di level yang sangat tinggi. Ia mampu memisahkan ego dan perasaannya sepenuhnya, memungkinkannya menyelesaikan krisis terburuk sekalipun dengan sangat terukur bagai seorang eksekutor tanpa celah.',
+  'E-low_A-low': 'Cara berpikirnya bertumpu penuh pada rasionalitas murni. Ia membedah masalah secara mekanik, langsung menuju ke inti persoalan, tanpa merasa perlu memperhalus kata demi menjaga perasaan pihak lain.',
+  'E-mid_O-high': 'Ia memandang dunia sebagai tempat yang kaya akan filosofi. Ia bisa membedah dan menikmati kedalaman pemikiran, nilai seni, atau ide baru, dengan pikiran tenang yang tetap jernih dan tak larut secara emosional.',
 
   // X interactions
-  'X-high_A-low': 'Ekstraversi tinggi tanpa filter keramahan menjadikannya sosok yang dominan, asertif, dan suka berdebat. Ia memimpin percakapan namun sering kali secara tidak sadar mendominasi atau mendikte arah diskusi.',
-  'X-low_C-high': 'Introvert sejati yang sangat produktif. Ia menghindari keramaian karena interaksi sosial menguras energinya, dan lebih memilih menghabiskan seluruh fokusnya di dalam "gua kerja" miliknya untuk menciptakan karya berkualitas tinggi.',
-  'X-high_O-high': 'Ia adalah seorang eksekutor sosial yang sangat inovatif. Ide-ide briliannya (Openness) tidak hanya bersarang di kepala, melainkan terus-menerus dikomunikasikan dan dibagikan dengan antusias kepada jaringan luasnya.',
-  'X-mid_A-mid': 'Sosok yang sepenuhnya situasional secara sosial. Ia bisa menjadi pendengar yang sopan, atau tiba-tiba menjadi pembicara yang cukup aktif, sangat bergantung pada tingkat kenyamanannya terhadap orang-orang di ruangan tersebut.',
+  'X-high_A-low': 'Ia memiliki aura keberadaan yang sangat kuat namun asertif. Ia gemar mendominasi percakapan dan memimpin jalannya diskusi, seringkali menantang ide orang lain tanpa ragu sedikit pun.',
+  'X-low_C-high': 'Waktu yang dihabiskan sendirian justru merupakan bahan bakar utamanya. Ia menyalurkan energinya ke dalam fokus tajam saat bekerja sendiri, menghasilkan output luar biasa tanpa perlu mencari validasi dari publik.',
+  'X-high_O-high': 'Ia ibarat corong ide yang tak pernah redup. Gagasan-gagasan di kepalanya tidak hanya disimpan, namun selalu dibagikan dan dikomunikasikan dengan antusiasme tinggi untuk menginspirasi jaringan di sekitarnya.',
+  'X-mid_A-mid': 'Kepribadiannya bunglon yang sangat situasional. Ia bisa menjadi pendengar pasif di suatu kelompok, atau tiba-tiba menjadi pembicaraan yang hangat jika ia merasa diterima dan nyaman dengan lawan bicaranya.',
 
   // A interactions
-  'A-high_C-low': 'Orang yang menyenangkan untuk diajak *nongkrong* namun mungkin sulit diandalkan dalam tenggat waktu kerja. Ia sangat menghindari konflik dan ingin menyenangkan semua orang, sampai-sampai jadwal kerjanya berantakan.',
-  'A-low_C-high': 'Standar kerjanya sangat tinggi dan menuntut. Ia menjalankan kedisiplinan layaknya mesin, dan tidak akan menoleransi kelalaian dari anggota timnya. Evaluasinya seringkali tajam dan menusuk.',
-  'A-low_O-low': 'Konservatif, berpendirian teguh, dan tidak mau disetir. Ia sangat meyakini gaya dan nilai-nilai lama (tradisional) dan tidak akan ragu berkonfrontasi dengan siapa pun yang mencoba memaksakan ide radikal/baru kepadanya.',
+  'A-high_C-low': 'Ia sangat menyenangkan dan luwes untuk dijadikan teman berdiskusi. Demi menghindari perpecahan, ia sering kali menunda jadwal pribadinya atau mengorbankan keteraturan demi mendahulukan orang lain.',
+  'A-low_C-high': 'Standar yang ia terapkan untuk dirinya dan orang lain terasa sangat menuntut. Ia menjalankan rutinitas nyaris tanpa kompromi, di mana kelalaian kecil saja bisa mendapatkan teguran yang lugas darinya.',
+  'A-low_O-low': 'Ia bersandar pada nilai-nilai yang telah teruji waktu, memegang teguh tradisi, dan tidak punya masalah jika harus berbeda pendapat demi menolak hal-hal yang ia rasa keluar dari prinsip norma dasarnya.',
   
   // C & O interactions
-  'C-high_O-high': '"Visioner Terstruktur". Ini adalah kombinasi paling mahal dalam dunia profesional inovatif. Ia mampu melahirkan ide-ide *out-of-the-box* lalu meracik rencana detail dan sabar mengeksekusi ide tersebut dari nol hingga berhasil.',
-  'C-low_O-high': 'Kepalanya penuh dengan ratusan ide cemerlang, lukisan abstrak, dan imajinasi masa depan, namun sayangnya ia berisiko tidak pernah menyelesaikan satu pun dari ide tersebut menjadi kenyataan karena kelemahan organisasionalnya.',
-  'C-mid_O-mid': 'Individu yang membumi. Ia terbuka pada perubahan asal masuk akal secara praktis, dan memiliki ritme kerja yang tidak terlalu ekstrem (tidak gila kerja, tapi juga bukan pemalas).',
+  'C-high_O-high': 'Pikirannya mampu membayangkan hal-hal visioner yang tak terpikirkan siapapun, sekaligus memiliki kedisiplinan keras untuk menciptakan struktur nyata demi mewujudkan ide gila tersebut secara sistematis.',
+  'C-low_O-high': 'Imajinasinya melampaui batasan hari ini, meledak dengan konsep dan estetika. Namun, ide-ide mutakhir itu sering kali berisiko tak terealisasi jika ia tak didampingi karena gaya hidpnya yang terlalu mengalir.',
+  'C-mid_O-mid': 'Kakinya membumi dengan pas. Ia merengkuh hal-hal baru yang bermanfaat namun menolaknya jika terlalu muluk-muluk, menjaga ritme hidupnya tanpa menjadi terlalu monoton atau terlalu terlepas dari dunia nyata.',
 };
 
 // =========================================
-// CHARACTER ARCHETYPES (Expanded Local AI)
-// Based on dominant HEXACO profile combinations
+// CHARACTER ARCHETYPES (Pure Behavioral)
 // =========================================
 const archetypes = {
-  'H-high_C-high': { name: 'The Honorable Guardian', desc: 'Penjaga moral yang terstruktur. Bisa dipercaya seratus persen dengan tanggung jawab raksasa, karena ia lebih baik rugi finansial daripada mengorbankan kualitas pekerjaannya.' },
-  'E-high_A-high': { name: 'The Empathic Healer', desc: 'Sosok dengan radar emosi tak terhingga. Ia menyerap energi dan penderitaan orang lain secara alami, selalu hadir untuk menenangkan meski terkadang mengorbankan kedamaian mentalnya sendiri.' },
-  'H-low_X-high': { name: 'The Pragmatic Charm', desc: 'Pemikat sosial yang bergerak demi keuntungan. Memiliki aura karisma luar biasa yang ia gunakan secara taktis sebagai amunisi untuk melesat dalam anak tangga status dan materi.' },
-  'C-high_O-high': { name: 'The Master Architect', desc: 'Perancang masa depan. Seseorang yang tidak hanya berani bermimpi hal gila (inovasi/kreativitas tinggi) tapi sungguh-sungguh memiliki disiplin baja untuk mewujudkannya pelan-pelan di dunia nyata.' },
-  'X-low_C-high': { name: 'The Silent Specialist', desc: 'Pakar di belakang layar. Tak banyak omong, tak butuh panggung sorak-sorai, namun dedikasi dan akurasi karyanya bernilai jauh melampaui keheningannya.' },
-  'E-low_A-low': { name: 'The Cold Analyst', desc: 'Pemikir rasional tanpa bias perasaan. Ia bisa memecat orang atau mengambil keputusan bisnis tersulit sekalipun tanpa setetes keraguan maupun rasa bersalah.' },
-  'X-high_O-high': { name: 'The Expressive Explorer', desc: 'Petualang ide yang vokal. Ia memburu wawasan, mencoba konsep radikal baru, dan menginfeksi setiap orang di sekitarnya dengan energi antusiasme pemikiran pemikirannya.' },
-  'H-high_A-low': { name: 'The Harsh Truth-Teller', desc: 'Pedang keadilan. Secara alami, ia lebih suka mematahkan hati seseorang dengan kebenaran yang telanjang daripada memberikan ketenangan pasu dari sebuah kebohongan manis yang diplomatis.' },
-  'C-low_O-high': { name: 'The Chaotic Dreamer', desc: 'Sang pemimpi lepas. Otaknya meledak-ledak dengan seni dan kemungkinan inovasi yang tiada batas, namun ia nyaris selalu tersandung pada hal administratif atau jadwal harian.' },
-  'A-high_C-low': { name: 'The Easy-Going Companion', desc: 'Teman sejati yang santai. Tidak ada tekanan aturan yang ketat ketika bersamanya, ia selalu fleksibel dan memprioritaskan harmoni daripada ego memenangkan perdebatan.' },
-  'X-mid_C-mid': { name: 'The Balanced Citizen', desc: 'Individu adaptif yang tidak ekstrem. Berada di "zona penyeimbang"; mampu bersosialisasi dan bekerja cukup baik tanpa menjadi gila kerja atau seorang networker fanatik.' }
+  'H-high_C-high': 'Penjaga Integritas (The Guardian). Seseorang yang tak ubahnya jangkar moral yang kokoh. Ia memikul tanggung jawab besar bukan karena pujian, melainkan prinsip pribadinya yang tidak mengizinkan pekerjaan setengah matang.',
+  'E-high_A-high': 'Pemantik Empati (The Healer). Ia menyerap radar emosi dari ruang mana pun ia berada. Sosok yang selalu hadir menawarkan kehangatannya walau itu berarti menampung kelelahan batin orang di sekitarnya.',
+  'H-low_X-high': 'Pemikat Strategis (The Pragmatic Charm). Daya pikat alaminya memancar bukan hanya untuk kesenangan, meainkan diarahkan dengan penuh kalkulasi sebagai aset besar menapaki tangga kesuksesan.',
+  'C-high_O-high': 'Arsitek Masa Depan (The Mastermind). Keseimbangan langka dari seorang pendobrak batas yang juga seorang pekerja berdisiplin baja. Ia memikirkan hal spektakuler sekaligus sabar menuntaskannya langkah demi langkah.',
+  'X-low_C-high': 'Spesialis di Balik Layar (The Silent Specialist). Di tengah keriuhan dunia, ketenangan adalah studionya. Tanpa sorak-sorai, dedikasi dan akurasi karyanya berbicara jauh lebih vokal melampaui keheningannya.',
+  'E-low_A-low': 'Analis Tanpa Bias (The Cold Analyst). Ia mampu mengeksekusi perhitungan terberat meski keputusannya bisa terasa begitu hampa bagi pihak lain, karena kejernihan pikiran adalah dewanya.',
+  'X-high_O-high': 'Petualang Vokal (The Expressive Explorer). Pembawa arus inovasi. Ia mendobrak cara-cara lama, menelan pengetahuan baru, lalu menularkan obsesi penemuannya kepada setiap orang yang berinteraksi dengannya.',
+  'H-high_A-low': 'Pembawa Fakta Tajam (The Truth-Teller). Ia mengusung kebaikan melalui transparansi, walau akibatnya kata-katanya bisa melumpuhkan rasa nyaman mereka yang terlena oleh senyum diplomatis.',
+  'C-low_O-high': 'Pemimpi Bebas (The Dreamer). Pikiran yang senantiasa menari melampaui rutinitas batas administratif, menjadikannya sumber letupan ide meski ia begitu menolak dibelenggu oleh segala urusan penjadwalan kaku.',
+  'A-high_C-low': 'Kawan Tanpa Syarat (The Easy-Going Companion). Selalu meredam setiap ketegangan di antara teman-temannya. Tidak peduli betapa kusut tenggat waktu, harmoni akan selalu menang di matanya.',
+  'X-mid_C-mid': 'Katalis Seimbang (The Balanced Citizen). Sosok bunglon adaptif yang bergerak leluasa di zona aman. Tidak terhanyut arus maupun melawan arus tanpa sebab, ia menjaga agar kehidupan selalu bersahabat.'
 };
 
 // =========================================
@@ -137,8 +134,8 @@ function getLevel(mean) {
   return 'low';
 }
 
-function getPct(mean) {
-  return Math.round(Math.max(0, Math.min(100, ((mean - 1) / 4) * 100)));
+function getPct(val) {
+  return Math.min(Math.max(((val - 1) / 4) * 100, 0), 100);
 }
 
 // =========================================
@@ -151,10 +148,28 @@ export function analyzeHexacoProfile(factorMeans, facetMeans) {
   // ====== 1. DIMENSION OVERVIEW ======
   const factors = ['H', 'E', 'X', 'A', 'C', 'O'];
   const sortedFactors = factors
-    .map(f => ({ factor: f, mean: fm[f] || 3, pct: getPct(fm[f] || 3), name: FACET_MAP[f].name }))
+    .map(f => ({ factor: f, mean: fm[f] || 3, pct: getPct(fm[f] || 3) }))
     .sort((a, b) => b.pct - a.pct);
 
-  let dimensiOverview = `Secara mendasar, pendorong utama dari karakter individu ini sangat kuat dipengaruhi oleh aspek ${sortedFactors[0].name} dan ${sortedFactors[1].name}. Hal ini menjadikannya sosok yang memiliki keunggulan dan fokus besar di area tersebut. Sebaliknya, pendekatan hidupnya cenderung lebih fleksibel, rasional, atau pragmatis dalam hal ${sortedFactors[5].name} maupun ${sortedFactors[4].name}, yang menandakan area di mana ia mengambil jarak emosional atau komitmen.`;
+  const HIGH_FACTOR_DESC = {
+    H: 'memegang teguh prinsip lurus tanpa niat tersembunyi',
+    E: 'merasakan empati dan keterikatan yang mendalam terhadap sekitarnya',
+    X: 'menyerap energi penuh dari interaksi dan antusias dalam membangun jejaring',
+    A: 'memprioritaskan keharmonisan, kesabaran, dan diplomasi dalam berurusan dengan orang lain',
+    C: 'mengejar keteraturan, kedisiplinan, dan target kerja yang terencana dengan matang',
+    O: 'didorong oleh imajinasi liar dan keterbukaan terhadap segala wawasan baru'
+  };
+
+  const LOW_FACTOR_DESC = {
+    H: 'realistis melihat celah dan cerdik memposisikan diri demi keuntungan strategis',
+    E: 'menjaga jarak emosional agar tetap kebal saat berada di bawah tekanan',
+    X: 'menemukan kekuatan murni dalam kesendirian dan kedalaman interaksi pada lingkaran kecil',
+    A: 'menyuarakan keraguan atau bantahannya tanpa takut akan pecahnya perdebatan',
+    C: 'menikmati spontanitas total dan meliuk beradaptasi ketika keadaan tiba-tiba berantakan',
+    O: 'menajamkan fokusnya murni pada hal-hal yang konkret, pasti, dan sudah teruji oleh realita'
+  };
+
+  let dimensiOverview = `Secara mendasar, penggerak utama dari kebiasaan dan keputusannya adalah kecenderungannya yang secara alami gemar ${HIGH_FACTOR_DESC[sortedFactors[0].factor]} serta ${HIGH_FACTOR_DESC[sortedFactors[1].factor]}. Pola ini memberikannya fokus dan energi besar dalam keseharian. Di sisi lain penyeimbangnya, ia bersikap lebih luwes dan pragmatis dengan cara ${LOW_FACTOR_DESC[sortedFactors[5].factor]} maupun ${LOW_FACTOR_DESC[sortedFactors[4].factor]}.`;
 
   // ====== 2. INTRA-DIMENSION ANALYSIS ======
   const intraInsights = [];
