@@ -285,6 +285,7 @@ function getLevel(mean) {
 // MASTER: Generate Comprehensive Interpretation
 // =========================================
 import { analyzeDiscThreeGraphs } from './discAnalysis';
+import { analyzeHexacoProfile } from './hexacoAnalysis';
 
 export function generateLocalInterpretation(discPattern, hexacoFactorMeans, hexacoFacetMeans, discScores) {
   // 1. DISC pattern key
@@ -304,17 +305,23 @@ export function generateLocalInterpretation(discPattern, hexacoFactorMeans, hexa
     discAnalysisResult = analyzeDiscThreeGraphs(
       discScores.discMost, discScores.discLeast, discScores.discComposite
     );
-    // Enhance gayaKerja with 3-graph dynamics
     gayaKerja = disc.gayaKerja + '\n\n' + discAnalysisResult.profilUmum
       + '\n\n' + discAnalysisResult.dinamikaAdaptasi;
   }
 
-  // 3. Build comprehensive karakter inti
+  // 3. HEXACO Deep Analysis
   const fm = hexacoFactorMeans || {};
   const facets = hexacoFacetMeans || {};
+  const hexAnalysis = analyzeHexacoProfile(fm, facets);
 
-  // Dimension-level overview
+  // Build karakter inti narration
   let karakterInti = '';
+
+  // Overview of dimension ranking
+  karakterInti += hexAnalysis.dimensiOverview;
+
+  // Dimension-level descriptions
+  karakterInti += '\n\n';
   const factors = ['H', 'E', 'X', 'A', 'C', 'O'];
   factors.forEach(f => {
     const mean = fm[f] || 3;
@@ -322,8 +329,12 @@ export function generateLocalInterpretation(discPattern, hexacoFactorMeans, hexa
     karakterInti += dimTemplates[f][level] + ' ';
   });
 
-  // Add facet-level detail paragraph
-  karakterInti += '\n\nSecara lebih spesifik, ';
+  // Intra-dimension patterns (facet conflicts/patterns within a dimension)
+  if (hexAnalysis.intraInsights.length > 0) {
+    karakterInti += '\n\n' + hexAnalysis.intraInsights.join(' ');
+  }
+
+  // Notable facet details
   const facetDetails = [];
   const facetKeys = Object.keys(facetTemplates);
   for (const fk of facetKeys) {
@@ -336,33 +347,28 @@ export function generateLocalInterpretation(discPattern, hexacoFactorMeans, hexa
     }
   }
   if (facetDetails.length > 0) {
-    const notable = facetDetails.slice(0, 6);
-    karakterInti += notable.join(' Selain itu, ') + '.';
-  } else {
-    karakterInti += 'profil facet-facet kepribadiannya menunjukkan keseimbangan yang cukup baik di berbagai aspek kehidupan.';
+    karakterInti += '\n\nSecara lebih rinci, ' + facetDetails.slice(0, 6).join(' Selain itu, ') + '.';
   }
 
-  // Add cross-dimensional dynamics
-  const dynamics = [];
-  for (const key in crossDynamics) {
-    const [dim1Part, dim2Part] = key.split('_');
-    const [d1, l1] = dim1Part.split('-');
-    const [d2, l2] = dim2Part.split('-');
-    const actual1 = getLevel(fm[d1] || 3);
-    const actual2 = getLevel(fm[d2] || 3);
-    if (actual1 === l1 && actual2 === l2) {
-      dynamics.push(crossDynamics[key]);
-    }
+  // Cross-dimensional dynamics (from hexacoAnalysis — more extensive)
+  if (hexAnalysis.crossInsights.length > 0) {
+    karakterInti += '\n\n' + hexAnalysis.crossInsights.join(' ');
   }
-  if (dynamics.length > 0) {
-    karakterInti += '\n\n' + dynamics.slice(0, 2).join(' ');
+
+  // Archetype
+  if (hexAnalysis.archetype) {
+    karakterInti += `\n\nSecara keseluruhan, profil ini membentuk arketipe "${hexAnalysis.archetype.name}": ${hexAnalysis.archetype.desc}`;
+  }
+
+  // Altruism note
+  if (hexAnalysis.altruismNote) {
+    karakterInti += '\n\n' + hexAnalysis.altruismNote;
   }
 
   // 4. Build enhanced recommendations
   const recs = rekomendasi[patternKey] || rekomendasi['SC'];
   let rec1 = recs[0], rec2 = recs[1], rec3 = recs[2];
 
-  // Add DISC-specific development if available
   if (discAnalysisResult) {
     rec3 = discAnalysisResult.pengembangan;
   }
@@ -373,8 +379,8 @@ export function generateLocalInterpretation(discPattern, hexacoFactorMeans, hexa
     rekomendasi1: rec1,
     rekomendasi2: rec2,
     rekomendasi3: rec3,
-    // Attach analysis data for admin display
     discAnalysis: discAnalysisResult || null,
+    hexacoAnalysis: hexAnalysis,
   };
 }
 
