@@ -317,37 +317,43 @@ export function generateLocalInterpretation(discPattern, hexacoFactorMeans, hexa
   // Build karakter inti narration
   let karakterInti = '';
 
-  // Overview of dimension ranking
+  // Overview of dimension ranking (No numbers)
   karakterInti += hexAnalysis.dimensiOverview;
-
-  // Dimension-level descriptions
-  karakterInti += '\n\n';
-  const factors = ['H', 'E', 'X', 'A', 'C', 'O'];
-  factors.forEach(f => {
-    const mean = fm[f] || 3;
-    const level = getLevel(mean);
-    karakterInti += dimTemplates[f][level] + ' ';
-  });
-
+  
   // Intra-dimension patterns (facet conflicts/patterns within a dimension)
   if (hexAnalysis.intraInsights.length > 0) {
     karakterInti += '\n\n' + hexAnalysis.intraInsights.join(' ');
   }
 
-  // Notable facet details
-  const facetDetails = [];
+  // Build narrative strictly from Facets (to make it highly unique per individual)
+  const facetDetailsHigh = [];
+  const facetDetailsLow = [];
   const facetKeys = Object.keys(facetTemplates);
   for (const fk of facetKeys) {
     const val = facets[fk];
     if (val !== undefined) {
       const level = getLevel(val);
-      if (level !== 'mid') {
-        facetDetails.push(facetTemplates[fk][level].toLowerCase());
+      if (level === 'high') {
+        let text = facetTemplates[fk].high;
+        // make sure the text starts with lower case if it begins with "Ia"
+        text = text.replace(/^Ia /i, 'ia ');
+        facetDetailsHigh.push(text);
+      } else if (level === 'low') {
+        let text = facetTemplates[fk].low;
+        text = text.replace(/^Ia /i, 'ia ');
+        facetDetailsLow.push(text);
       }
     }
   }
-  if (facetDetails.length > 0) {
-    karakterInti += '\n\nSecara lebih rinci, ' + facetDetails.slice(0, 6).join(' Selain itu, ') + '.';
+
+  if (facetDetailsHigh.length > 0) {
+    karakterInti += '\n\nSecara spesifik, pendorong utama karakternya terlihat dari kecenderungannya di mana ' + 
+      facetDetailsHigh.slice(0, 5).join(' Selain itu, ') + '.';
+  }
+  
+  if (facetDetailsLow.length > 0) {
+    karakterInti += '\n\nDi sisi lain, pendekatannya yang rasional dan adaptif tercermin dari perilakunya di mana ' + 
+      facetDetailsLow.slice(0, 5).join(' Hal ini juga didukung oleh bagaimana ') + '.';
   }
 
   // Cross-dimensional dynamics (from hexacoAnalysis — more extensive)

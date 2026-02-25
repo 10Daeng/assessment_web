@@ -151,16 +151,12 @@ export function analyzeHexacoProfile(factorMeans, facetMeans) {
   const fac = facetMeans || {};
 
   // ====== 1. DIMENSION OVERVIEW ======
-  const dimProfiles = [];
   const factors = ['H', 'E', 'X', 'A', 'C', 'O'];
   const sortedFactors = factors
     .map(f => ({ factor: f, mean: fm[f] || 3, pct: getPct(fm[f] || 3), name: FACET_MAP[f].name }))
     .sort((a, b) => b.pct - a.pct);
 
-  let dimensiOverview = `Dimensi karakter yang paling menonjol pada individu ini adalah ${sortedFactors[0].name} (${sortedFactors[0].pct}%), `;
-  dimensiOverview += `diikuti ${sortedFactors[1].name} (${sortedFactors[1].pct}%). `;
-  dimensiOverview += `Sementara dimensi yang paling rendah adalah ${sortedFactors[5].name} (${sortedFactors[5].pct}%) `;
-  dimensiOverview += `dan ${sortedFactors[4].name} (${sortedFactors[4].pct}%).`;
+  let dimensiOverview = `Secara mendasar, pendorong utama dari karakter individu ini sangat kuat dipengaruhi oleh aspek ${sortedFactors[0].name} dan ${sortedFactors[1].name}. Hal ini menjadikannya sosok yang memiliki keunggulan dan fokus besar di area tersebut. Sebaliknya, pendekatan hidupnya cenderung lebih fleksibel, rasional, atau pragmatis dalam hal ${sortedFactors[5].name} maupun ${sortedFactors[4].name}, yang menandakan area di mana ia mengambil jarak emosional atau komitmen.`;
 
   // ====== 2. INTRA-DIMENSION ANALYSIS ======
   const intraInsights = [];
@@ -199,7 +195,7 @@ export function analyzeHexacoProfile(factorMeans, facetMeans) {
         const highest = sorted[0];
         const lowest = sorted[sorted.length - 1];
         intraInsights.push(
-          `Dalam dimensi ${FACET_MAP[dimKey].name}, terdapat kontras menarik: aspek ${FACET_NAMES[highest.key]} sangat menonjol (${getPct(highest.val)}%) sementara ${FACET_NAMES[lowest.key]} justru rendah (${getPct(lowest.val)}%). Perbedaan ini menunjukkan bahwa dimensi ini tidak dialami secara seragam.`
+          `Satu hal menonjol dalam spektrum ${FACET_MAP[dimKey].name} adalah adanya perbedaan cara ia merespons situasi. Di satu sisi, elemen ${FACET_NAMES[highest.key]} tampil sangat dominan sebagai penggerak sikapnya, namun uniknya, elemen ${FACET_NAMES[lowest.key]} justru sangat dikesampingkan. Kontras ini membuat reaksinya tidak bisa disamaratakan; ia menonjol di area tertentu secara intens tanpa harus mencakup seluruh aspek di dimensi tersebut.`
         );
       }
     }
@@ -306,9 +302,9 @@ export function analyzeHexacoProfile(factorMeans, facetMeans) {
   if (altrVal !== undefined) {
     const altrPct = getPct(altrVal);
     if (altrPct >= 70) {
-      altruismNote = `Sebagai catatan penting, individu ini memiliki skor Altruisme yang sangat tinggi (${altrPct}%), menunjukkan kepedulian yang luar biasa terhadap kesejahteraan orang lain. Ia secara alami terdorong untuk membantu orang yang membutuhkan, bahkan dengan mengorbankan kepentingan pribadinya.`;
+      altruismNote = `Sebagai catatan tambahan terkait dinamika interpersonalnya, individu ini memiliki dorongan alami yang sangat kuat untuk membantu sesama (Altruisme tinggi). Ia cenderung mau berkorban meluangkan waktu atau tenaganya demi meringankan beban orang lain, menjadikannya sosok yang sangat bisa diandalkan ketika lingkungannya berada dalam posisi sulit.`;
     } else if (altrPct <= 30) {
-      altruismNote = `Skor Altruisme individu ini tergolong rendah (${altrPct}%), menunjukkan bahwa ia cenderung memprioritaskan kepentingan pribadi. Ini tidak berarti ia tidak peduli, namun ia lebih selektif dalam memberikan bantuan.`;
+      altruismNote = `Terkait dengan interaksinya dalam membantu sesama (Altruisme), individu ini memutuskan untuk bersikap sangat rasional. Ia cenderung fokus membereskan masalah pribadinya terlebih dahulu sebelum terjun membantu masalah orang lain. Pendekatan ini bukan berarti ia tidak peduli, melainkan ia sangat efektif dalam menjaga batasan diri agar tidak kehabisan energi untuk hal yang di luar wewenangnya.`;
     }
   }
 
