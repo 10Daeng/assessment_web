@@ -4,6 +4,7 @@ import dynamic from 'next/dynamic';
 import Link from 'next/link';
 import { getDiscPatternName } from '@/utils/scoring';
 import { hexaco100Questions } from '@/data/hexaco';
+import { calculateValidityIndex } from '@/utils/validityCheck';
 
 const PDFExport = dynamic(() => import('@/components/PDFExport'), { ssr: false });
 
@@ -199,6 +200,55 @@ export default function ReportDetailPage({ params }) {
           </div>
         </div>
       </div>
+
+      {/* VALIDITY INDEX Section */}
+      {(() => {
+        const validity = calculateValidityIndex(sub.rawData);
+        return (
+          <div className="bg-slate-900 border border-slate-800 rounded-2xl p-6 space-y-4">
+            <div className="flex items-center justify-between">
+              <h2 className="text-lg font-bold text-white">🛡️ Indeks Validitas Isian</h2>
+              <span className="font-bold px-5 py-1.5 rounded-full text-sm" style={{ backgroundColor: validity.overallColor + '25', color: validity.overallColor }}>
+                {validity.overallScore}/100 — {validity.overallLabel}
+              </span>
+            </div>
+
+            {/* Overall progress bar */}
+            <div className="w-full h-4 bg-slate-800 rounded-full overflow-hidden">
+              <div className="h-full rounded-full transition-all duration-700" style={{ width: `${validity.overallScore}%`, backgroundColor: validity.overallColor }}></div>
+            </div>
+
+            {/* 4 Indicators Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+              {[
+                { icon: '⏱️', title: 'Durasi Pengerjaan', data: validity.indicators.duration },
+                { icon: '📏', title: 'Keseragaman Jawaban (Straight-Lining)', data: validity.indicators.straightLining },
+                { icon: '⚡', title: 'Jawaban Ekstrem', data: validity.indicators.extreme },
+                { icon: '🔄', title: 'Konsistensi Internal (Reverse-Pairs)', data: validity.indicators.inconsistency },
+              ].map(({ icon, title, data }) => (
+                <div key={title} className="bg-slate-800/60 rounded-xl p-4">
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-sm text-white font-medium">{icon} {title}</span>
+                    <span className="text-xs font-mono px-2 py-0.5 rounded-md" style={{ 
+                      backgroundColor: data.score >= 85 ? '#22c55e25' : data.score >= 60 ? '#eab30825' : data.score >= 30 ? '#f9731625' : '#ef444425',
+                      color: data.score >= 85 ? '#22c55e' : data.score >= 60 ? '#eab308' : data.score >= 30 ? '#f97316' : '#ef4444'
+                    }}>
+                      {data.score}/100 — {data.label}
+                    </span>
+                  </div>
+                  <div className="w-full h-2 bg-slate-700 rounded-full overflow-hidden mb-2">
+                    <div className="h-full rounded-full transition-all" style={{ 
+                      width: `${data.score}%`, 
+                      backgroundColor: data.score >= 85 ? '#22c55e' : data.score >= 60 ? '#eab308' : data.score >= 30 ? '#f97316' : '#ef4444'
+                    }}></div>
+                  </div>
+                  <p className="text-xs text-slate-400">{data.detail}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        );
+      })()}
 
       {/* DISC Section */}
       <div className="bg-slate-900 border border-slate-800 rounded-2xl p-6 space-y-6">
