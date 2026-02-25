@@ -39,7 +39,7 @@ function BarChart({ value, max, color, label }) {
       <div className="flex-1 h-3 bg-slate-800 rounded-full overflow-hidden">
         <div className="h-full rounded-full transition-all duration-500" style={{ width: `${pct}%`, backgroundColor: color }}></div>
       </div>
-      <span className="text-xs text-white font-mono w-10 text-right">{typeof value === 'number' ? value.toFixed(2) : '-'}</span>
+      <span className="text-xs text-white font-mono w-10 text-right">{Math.round(pct)}%</span>
     </div>
   );
 }
@@ -270,7 +270,7 @@ export default function ReportDetailPage({ params }) {
               <div className="flex items-center justify-between mb-1">
                 <h3 className="font-bold text-white text-sm">{group.name}</h3>
                 <span className="font-mono text-sm px-3 py-0.5 rounded-full" style={{ backgroundColor: group.color + '30', color: group.color }}>
-                  {fm[group.factor]?.toFixed(2) || '-'}
+                  {fm[group.factor] ? `${Math.round(((fm[group.factor] - 1) / 4) * 100)}%` : '-'}
                 </span>
               </div>
               {/* Factor bar */}

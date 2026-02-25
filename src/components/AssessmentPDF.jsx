@@ -290,7 +290,7 @@ export default function AssessmentPDF({ userData, discScores, hexacoScores, aiIn
 
               return (
                 <View key={group.factor} style={styles.hexacoFactorBox}>
-                  <Text style={styles.hexacoFactorName}>{group.name} ({factorMean?.toFixed(2)})</Text>
+                  <Text style={styles.hexacoFactorName}>{group.name} ({Math.round(factorPct)}%)</Text>
                   
                   {/* Factor Bar */}
                   <View style={{...styles.hexacoFacetBarContainer, width: '100%', height: 8, marginBottom: 4}}>
@@ -303,7 +303,7 @@ export default function AssessmentPDF({ userData, discScores, hexacoScores, aiIn
                     const facetPct = getHexacoPct(facetMean);
                     return (
                       <View style={styles.hexacoFacetRow} key={facet.k}>
-                        <Text style={styles.hexacoFacetName}>{facet.n} ({facetMean?.toFixed(2) || '-'})</Text>
+                        <Text style={styles.hexacoFacetName}>{facet.n} ({Math.round(facetPct)}%)</Text>
                         <View style={styles.hexacoFacetBarContainer}>
                           <View style={[styles.discBar, { width: `${facetPct}%`, backgroundColor: color, opacity: 0.6 }]} />
                         </View>
@@ -324,7 +324,7 @@ export default function AssessmentPDF({ userData, discScores, hexacoScores, aiIn
 
               return (
                 <View key={group.factor} style={styles.hexacoFactorBox}>
-                  <Text style={styles.hexacoFactorName}>{group.name} ({factorMean?.toFixed(2)})</Text>
+                  <Text style={styles.hexacoFactorName}>{group.name} ({Math.round(factorPct)}%)</Text>
                   
                   {/* Factor Bar */}
                   <View style={{...styles.hexacoFacetBarContainer, width: '100%', height: 8, marginBottom: 4}}>
@@ -337,7 +337,7 @@ export default function AssessmentPDF({ userData, discScores, hexacoScores, aiIn
                     const facetPct = getHexacoPct(facetMean);
                     return (
                       <View style={styles.hexacoFacetRow} key={facet.k}>
-                        <Text style={styles.hexacoFacetName}>{facet.n} ({facetMean?.toFixed(2) || '-'})</Text>
+                        <Text style={styles.hexacoFacetName}>{facet.n} ({Math.round(facetPct)}%)</Text>
                         <View style={styles.hexacoFacetBarContainer}>
                           <View style={[styles.discBar, { width: `${facetPct}%`, backgroundColor: color, opacity: 0.6 }]} />
                         </View>
@@ -350,7 +350,7 @@ export default function AssessmentPDF({ userData, discScores, hexacoScores, aiIn
             
             {/* Altruism Interstitial */}
             <View style={styles.hexacoFactorBox}>
-              <Text style={styles.hexacoFactorName}>Altruism (Interstitial) ({hexacoScores.facetMeans['altr']?.toFixed(2)})</Text>
+              <Text style={styles.hexacoFactorName}>Altruism (Interstitial) ({Math.round(getHexacoPct(hexacoScores.facetMeans['altr']))}%)</Text>
               <View style={{...styles.hexacoFacetBarContainer, width: '100%', height: 8, marginBottom: 4}}>
                 <View style={[styles.discBar, { width: `${getHexacoPct(hexacoScores.facetMeans['altr'])}%`, backgroundColor: '#e67e22' }]} />
               </View>
