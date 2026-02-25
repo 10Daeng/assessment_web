@@ -27,7 +27,8 @@ export async function POST(request) {
       const insight = await generatePersonalityDescription(
         data.discScores?.pattern || 'Uncategorized',
         fm.H || 3, fm.E || 3, fm.X || 3, fm.A || 3, fm.C || 3, fm.O || 3,
-        facetMeans
+        facetMeans,
+        data.discScores
       );
       await updateSubmissionAiInsight(record.id, insight);
     } catch (aiErr) {

@@ -284,7 +284,9 @@ function getLevel(mean) {
 // =========================================
 // MASTER: Generate Comprehensive Interpretation
 // =========================================
-export function generateLocalInterpretation(discPattern, hexacoFactorMeans, hexacoFacetMeans) {
+import { analyzeDiscThreeGraphs } from './discAnalysis';
+
+export function generateLocalInterpretation(discPattern, hexacoFactorMeans, hexacoFacetMeans, discScores) {
   // 1. DISC pattern key
   let patternKey = 'SC';
   if (discPattern) {
@@ -293,9 +295,21 @@ export function generateLocalInterpretation(discPattern, hexacoFactorMeans, hexa
   }
 
   const disc = DISC_PATTERNS[patternKey] || DISC_PATTERNS['SC'];
-  const gayaKerja = disc.gayaKerja;
 
-  // 2. Build comprehensive karakter inti
+  // 2. DISC 3-Graph Deep Analysis
+  let gayaKerja = disc.gayaKerja;
+  let discAnalysisResult = null;
+
+  if (discScores?.discMost && discScores?.discLeast && discScores?.discComposite) {
+    discAnalysisResult = analyzeDiscThreeGraphs(
+      discScores.discMost, discScores.discLeast, discScores.discComposite
+    );
+    // Enhance gayaKerja with 3-graph dynamics
+    gayaKerja = disc.gayaKerja + '\n\n' + discAnalysisResult.profilUmum
+      + '\n\n' + discAnalysisResult.dinamikaAdaptasi;
+  }
+
+  // 3. Build comprehensive karakter inti
   const fm = hexacoFactorMeans || {};
   const facets = hexacoFacetMeans || {};
 
@@ -316,14 +330,12 @@ export function generateLocalInterpretation(discPattern, hexacoFactorMeans, hexa
     const val = facets[fk];
     if (val !== undefined) {
       const level = getLevel(val);
-      // Only mention notable facets (high or low, skip mid to keep it concise)
       if (level !== 'mid') {
         facetDetails.push(facetTemplates[fk][level].toLowerCase());
       }
     }
   }
   if (facetDetails.length > 0) {
-    // Pick most notable (up to 6 to keep it readable)
     const notable = facetDetails.slice(0, 6);
     karakterInti += notable.join(' Selain itu, ') + '.';
   } else {
@@ -346,14 +358,23 @@ export function generateLocalInterpretation(discPattern, hexacoFactorMeans, hexa
     karakterInti += '\n\n' + dynamics.slice(0, 2).join(' ');
   }
 
-  // 3. Recommendations
+  // 4. Build enhanced recommendations
   const recs = rekomendasi[patternKey] || rekomendasi['SC'];
+  let rec1 = recs[0], rec2 = recs[1], rec3 = recs[2];
+
+  // Add DISC-specific development if available
+  if (discAnalysisResult) {
+    rec3 = discAnalysisResult.pengembangan;
+  }
 
   return {
     gayaKerja,
     karakterInti: karakterInti.trim(),
-    rekomendasi1: recs[0],
-    rekomendasi2: recs[1],
-    rekomendasi3: recs[2],
+    rekomendasi1: rec1,
+    rekomendasi2: rec2,
+    rekomendasi3: rec3,
+    // Attach analysis data for admin display
+    discAnalysis: discAnalysisResult || null,
   };
 }
+

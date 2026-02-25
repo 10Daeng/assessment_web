@@ -16,13 +16,14 @@ export async function POST(request, context) {
       return NextResponse.json({ success: true, aiInsight: sub.aiInsight, cached: true });
     }
 
-    // Call AI / Local Dictionary
+    // Call AI / Local Dictionary (with 3-graph DISC analysis)
     const fm = sub.hexacoScores?.factorMeans || {};
     const facetMeans = sub.hexacoScores?.facetMeans || {};
     const insight = await generatePersonalityDescription(
       sub.discScores?.pattern || 'Uncategorized',
       fm.H || 3, fm.E || 3, fm.X || 3, fm.A || 3, fm.C || 3, fm.O || 3,
-      facetMeans
+      facetMeans,
+      sub.discScores
     );
 
     // Save to database

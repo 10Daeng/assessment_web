@@ -2,15 +2,16 @@ import { generateLocalInterpretation } from './interpretationDict';
 
 /**
  * Generate personality description.
- * PRIMARY: Local dictionary (offline, instant, free) — includes facet-level analysis
+ * PRIMARY: Local dictionary (offline, instant, free) — includes 3-graph DISC + facet HEXACO
  * FALLBACK: Gemini API (optional enhancement)
  */
-export async function generatePersonalityDescription(discPattern, hexacoMeanH, hexacoMeanE, hexacoMeanX, hexacoMeanA, hexacoMeanC, hexacoMeanO, hexacoFacetMeans) {
-  // Always generate local interpretation first
+export async function generatePersonalityDescription(discPattern, hexacoMeanH, hexacoMeanE, hexacoMeanX, hexacoMeanA, hexacoMeanC, hexacoMeanO, hexacoFacetMeans, discScores) {
+  // Always generate local interpretation first (instant, free, comprehensive)
   const local = generateLocalInterpretation(
     discPattern,
     { H: hexacoMeanH, E: hexacoMeanE, X: hexacoMeanX, A: hexacoMeanA, C: hexacoMeanC, O: hexacoMeanO },
-    hexacoFacetMeans || {}
+    hexacoFacetMeans || {},
+    discScores || null
   );
 
   // Optionally try Gemini for richer narrative
@@ -58,8 +59,10 @@ PENTING: TANPA jargon teknis (DISC/HEXACO/High D/Low C/skor). Bahasa natural, pr
     const data = await response.json();
     const text = data.candidates?.[0]?.content?.parts?.[0]?.text || '';
     const clean = text.replace(/```json/gi, '').replace(/```/g, '').trim();
+    const geminiResult = JSON.parse(clean);
     console.log("[AI] Gemini enhancement succeeded.");
-    return JSON.parse(clean);
+    // Merge: use Gemini narrative but keep local discAnalysis data
+    return { ...geminiResult, discAnalysis: local.discAnalysis };
   } catch (err) {
     console.warn("[AI] Gemini failed, using local dictionary:", err.message);
     return local;
