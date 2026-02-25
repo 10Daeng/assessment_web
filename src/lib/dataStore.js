@@ -144,5 +144,6 @@ function transformSubmission(sub) {
       facetMeans: typeof sub.hexacoFacetMeans === 'string' ? JSON.parse(sub.hexacoFacetMeans) : (sub.hexacoFacetMeans || {}),
     },
     aiInsight: typeof sub.aiInsight === 'string' ? JSON.parse(sub.aiInsight) : (sub.aiInsight || null),
+    rawData: typeof sub.rawData === 'string' ? JSON.parse(sub.rawData) : (sub.rawData || null),
   };
 }

@@ -72,6 +72,44 @@ export default function ReportDetailPage({ params }) {
   const [sub, setSub] = useState(null);
   const [loading, setLoading] = useState(true);
 
+  // Helper to trigger raw data download
+  const downloadRawData = () => {
+    if (!sub || !sub.rawData) return;
+    
+    // Construct CSV Header
+    let csv = "Item,Dimensi,Jawaban (Skor 1-5)\n";
+    
+    // Append DISC answers (if any)
+    const discAnswers = sub.rawData.answers?.disc || sub.rawData.answers_disc;
+    if (discAnswers) {
+      for (let i = 1; i <= Object.keys(discAnswers || {}).length; i++) {
+        const d = discAnswers[i];
+        if (d) {
+          csv += `DISC No. ${i},Most: ${d.most || '-'} | Least: ${d.least || '-'},\n`;
+        }
+      }
+    }
+    
+    // Append HEXACO answers
+    const hexacoAnswers = sub.rawData.answers?.hexaco || sub.rawData.answers_hexaco;
+    if (hexacoAnswers) {
+      for (let i = 1; i <= 100; i++) {
+        const h = hexacoAnswers[i];
+        csv += `HEXACO No. ${i},-,${h || '-'}\n`;
+      }
+    }
+
+    // Create and trigger download
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.setAttribute('download', `RawData_${sub.userData?.nama || 'Klien'}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   useEffect(() => {
     fetch(`/api/admin/submissions/${id}`)
       .then(r => r.json())
@@ -106,12 +144,21 @@ export default function ReportDetailPage({ params }) {
         <Link href="/admin/reports" className="text-slate-400 hover:text-white text-sm flex items-center gap-2 transition-colors">
           ← Kembali ke Daftar
         </Link>
-        <PDFExport
-          userData={sub.userData}
-          discScores={sub.discScores}
-          hexacoScores={sub.hexacoScores}
-          aiInsight={sub.aiInsight}
-        />
+        <div className="flex items-center gap-3">
+          <button 
+            onClick={downloadRawData}
+            className="text-slate-300 bg-slate-800 hover:bg-slate-700 hover:text-white px-4 py-2 rounded-xl text-xs font-medium transition-all"
+            title="Download jawaban asli per butir soal (CSV)"
+          >
+            ↓ Data Mentah (CSV)
+          </button>
+          <PDFExport
+            userData={sub.userData}
+            discScores={sub.discScores}
+            hexacoScores={sub.hexacoScores}
+            aiInsight={sub.aiInsight}
+          />
+        </div>
       </div>
 
       {/* Identity Card */}
