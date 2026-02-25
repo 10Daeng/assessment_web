@@ -143,7 +143,6 @@ export default function Home() {
                 </ul>
               </div>
             </div>
-            </div>
 
             {/* Soft Selling CTA */}
             <div className="mt-8 bg-gradient-to-br from-green-50 to-teal-50 border border-green-100 rounded-3xl p-8 shadow-lg text-center animate-in fade-in slide-in-from-bottom-4 duration-700 delay-300 relative overflow-hidden">
@@ -153,9 +152,9 @@ export default function Home() {
               
               <div className="relative z-10 w-full flex flex-col md:flex-row items-center gap-6">
                 <div className="flex-1 text-left">
-                  <h3 className="text-xl font-bold text-slate-800 mb-2">Ingin tahu lebih dalam tentang potensi Anda?</h3>
+                  <h3 className="text-xl font-bold text-slate-800 mb-2">Ingin membedah hasil tes ini lebih dalam?</h3>
                   <p className="text-slate-600 mb-4 text-sm leading-relaxed">
-                    Dapatkan laporan lengkap secara pribadi beserta sesi konseling eksklusif bersama psikolog profesional <strong>Lentera Batin</strong>. Konsultasikan arah karier, gaya komunikasi, dan pengembangan diri Anda secara detail.
+                    Hasil asesmen gratis hanya menunjukkan <strong>Siapa</strong> Anda. Melalui <strong>Sesi Konseling Premium</strong>, Psikolog Lentera Batin akan membedah <strong>Mengapa</strong> Anda merasakan kelelahan adaptasi, menemukan titik buta (<em>blind spots</em>) karier yang selama ini menghambat potensi Anda, serta memformulasikan strategi nyata agar Anda lebih optimal dalam karier maupun relasi asmara.
                   </p>
                 </div>
                 <div className="flex-shrink-0">

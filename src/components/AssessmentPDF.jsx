@@ -192,7 +192,7 @@ export default function AssessmentPDF({ userData, discScores, hexacoScores, aiIn
             ['Asal Instansi', userData?.instansi || '-'],
             ['Pekerjaan', userData?.pekerjaan || '-'],
             ['Jabatan', userData?.jabatan || '-'],
-            ['Durasi Pengerjaan', userData?.durasi || '-'],
+            ['Tanggal Asesmen', formatDate(submittedAt)],
           ].map(([label, value]) => (
             <View style={styles.identityRow} key={label}>
               <Text style={styles.identityLabel}>{label}</Text>
@@ -313,6 +313,19 @@ export default function AssessmentPDF({ userData, discScores, hexacoScores, aiIn
           ) : (
             <Text style={styles.narrativeBody}>Rekomendasi belum tersedia. Silakan generate interpretasi AI terlebih dahulu melalui panel admin.</Text>
           )}
+        </View>
+
+        {/* Premium Upsell Box */}
+        <View style={{ marginTop: 25, padding: 15, borderRadius: 8, borderWidth: 1, borderColor: '#3b82f6', backgroundColor: '#eff6ff' }}>
+          <Text style={{ fontSize: 11, fontFamily: 'Helvetica-Bold', color: '#1e40af', marginBottom: 6 }}>
+            Ingin Membedah Hasil Ini Lebih Dalam?
+          </Text>
+          <Text style={{ fontSize: 10, color: '#1e3a8a', lineHeight: 1.5, marginBottom: 8 }}>
+            Laporan ini hanya menunjukkan "Siapa" Anda. Melalui Sesi Konseling Premium, Psikolog Lentera Batin akan membedah "Mengapa" Anda merasakan kelelahan adaptasi, menemukan titik buta (blind spots) yang menghambat karir, serta menyusun strategi nyata untuk hubungan sosial dan asmara Anda.
+          </Text>
+          <Text style={{ fontSize: 10, fontFamily: 'Helvetica-Bold', color: '#2563eb' }}>
+            Hubungi Admin via WhatsApp: 0851-1777-8798
+          </Text>
         </View>
 
         {/* Closing */}
