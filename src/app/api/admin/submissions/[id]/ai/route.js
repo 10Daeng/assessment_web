@@ -12,7 +12,14 @@ export async function POST(request, context) {
       return NextResponse.json({ success: false, error: 'Submission not found' }, { status: 404 });
     }
 
-    if (sub.aiInsight) {
+    // Check if force regeneration requested
+    let force = false;
+    try {
+      const body = await request.json();
+      force = body?.force === true;
+    } catch { /* no body = normal request */ }
+
+    if (sub.aiInsight && !force) {
       return NextResponse.json({ success: true, aiInsight: sub.aiInsight, cached: true });
     }
 

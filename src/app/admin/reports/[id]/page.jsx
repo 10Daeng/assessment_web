@@ -390,12 +390,12 @@ export default function ReportDetailPage({ params }) {
           <div className="space-y-6">
             <div className="bg-slate-800/30 rounded-xl p-5 border border-slate-700/50">
               <h4 className="text-blue-400 font-medium text-sm mb-3">Dinamika Gaya Kerja</h4>
-              <p className="text-slate-300 text-sm leading-relaxed">{sub.aiInsight.gayaKerja}</p>
+              <p className="text-slate-300 text-sm leading-relaxed whitespace-pre-line">{sub.aiInsight.gayaKerja}</p>
             </div>
             
             <div className="bg-slate-800/30 rounded-xl p-5 border border-slate-700/50">
               <h4 className="text-purple-400 font-medium text-sm mb-3">Dinamika Karakter Inti</h4>
-              <p className="text-slate-300 text-sm leading-relaxed">{sub.aiInsight.karakterInti}</p>
+              <p className="text-slate-300 text-sm leading-relaxed whitespace-pre-line">{sub.aiInsight.karakterInti}</p>
             </div>
             
             <div className="bg-slate-800/30 rounded-xl p-5 border border-slate-700/50">
@@ -405,6 +405,38 @@ export default function ReportDetailPage({ params }) {
                 <li>{sub.aiInsight.rekomendasi2}</li>
                 <li>{sub.aiInsight.rekomendasi3}</li>
               </ul>
+            </div>
+
+            {/* Regenerate Button */}
+            <div className="flex justify-center pt-2">
+              <button
+                id="btn-regen-ai"
+                onClick={async () => {
+                  const btn = document.getElementById('btn-regen-ai');
+                  btn.disabled = true;
+                  btn.innerHTML = '⏳ Sedang Memproses...';
+                  try {
+                    const r = await fetch(`/api/admin/submissions/${id}/ai`, {
+                      method: 'POST',
+                      headers: { 'Content-Type': 'application/json' },
+                      body: JSON.stringify({ force: true })
+                    });
+                    const j = await r.json();
+                    if (j.success) {
+                      setSub(prev => ({ ...prev, aiInsight: j.aiInsight }));
+                    } else {
+                      alert('Gagal: ' + j.error);
+                    }
+                  } catch (e) {
+                    alert('Kesalahan jaringan.');
+                  }
+                  btn.disabled = false;
+                  btn.innerHTML = '🔄 Hasilkan Ulang Interpretasi';
+                }}
+                className="bg-slate-700 hover:bg-slate-600 text-white font-medium py-2.5 px-6 rounded-xl text-sm transition-all flex items-center gap-2 disabled:opacity-50"
+              >
+                🔄 Hasilkan Ulang Interpretasi
+              </button>
             </div>
           </div>
         )}
