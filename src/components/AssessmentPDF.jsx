@@ -269,12 +269,13 @@ export default function AssessmentPDF({ userData, discScores, hexacoScores, aiIn
       </Page>
 
       {/* ============================================================ */}
-      {/* PAGE 3 — DINAMIKA KEPRIBADIAN                                */}
+      {/* PAGE 3+ — DINAMIKA KEPRIBADIAN & REKOMENDASI                   */}
+      {/* (Will wrap across pages automatically as needed)              */}
       {/* ============================================================ */}
-      <Page size="A4" style={styles.page}>
+      <Page size="A4" style={styles.page} wrap>
         <Image src="/logo.png" style={styles.watermark} />
 
-        <Text style={{ ...styles.mainTitle, fontSize: 15 }}>DESKRIPSI KEPRIBADIAN</Text>
+        <Text style={{ ...styles.mainTitle, fontSize: 13, marginBottom: 15 }}>DESKRIPSI KEPRIBADIAN</Text>
 
         <View style={{ marginBottom: 20 }}>
           <Text style={styles.narrativeTitle}>1. Dinamika Gaya Kerja</Text>
@@ -290,14 +291,8 @@ export default function AssessmentPDF({ userData, discScores, hexacoScores, aiIn
           </Text>
         </View>
 
-        <Text style={styles.pageNum}>Hal. 3</Text>
+        <Text style={styles.pageNum} render={({ pageNumber }) => (`Hal. ${pageNumber}`)} fixed />
       </Page>
-
-      {/* ============================================================ */}
-      {/* PAGE 4 — REKOMENDASI PENGEMBANGAN                            */}
-      {/* ============================================================ */}
-      <Page size="A4" style={styles.page}>
-        <Image src="/logo.png" style={styles.watermark} />
 
         <View style={{ marginBottom: 20 }}>
           <Text style={styles.narrativeTitle}>3. Rekomendasi Pengembangan Diri</Text>
@@ -344,8 +339,6 @@ export default function AssessmentPDF({ userData, discScores, hexacoScores, aiIn
             <Text style={{ fontSize: 8, color: c.grey }}>Assessor / Konselor</Text>
           </View>
         </View>
-
-        <Text style={styles.pageNum}>Hal. 4</Text>
       </Page>
     </Document>
   );
