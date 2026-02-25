@@ -190,6 +190,10 @@ export default function ReportDetailPage({ params }) {
             <p className="text-white">{[sub.userData?.pekerjaan, sub.userData?.jabatan].filter(Boolean).join(' — ') || '-'}</p>
           </div>
           <div>
+            <p className="text-[10px] text-slate-500 uppercase tracking-widest mb-1">Durasi Pengerjaan</p>
+            <p className="text-white">{sub.rawData?.userData?.durasi || 'Tidak diketahui'}</p>
+          </div>
+          <div>
             <p className="text-[10px] text-slate-500 uppercase tracking-widest mb-1">Tanggal Asesmen</p>
             <p className="text-white">{sub.submittedAt ? new Date(sub.submittedAt).toLocaleString('id-ID', { timeZone: 'Asia/Jakarta', dateStyle: 'long', timeStyle: 'medium' }) + ' WIB' : '-'}</p>
           </div>
@@ -297,16 +301,15 @@ export default function ReportDetailPage({ params }) {
             <div className="w-16 h-16 bg-blue-500/10 rounded-full flex items-center justify-center mb-4">
               <span className="text-3xl">🧩</span>
             </div>
-            <h3 className="text-white font-medium mb-2">Interpretasi Belum Dibuat</h3>
+            <h3 className="text-white font-medium mb-2">Interpretasi Sedang Diproses/Belum Selesai</h3>
             <p className="text-slate-400 text-sm max-w-md mx-auto mb-6">
-              Klik tombol di bawah ini untuk menghasilkan interpertasi natural secara otomatis dari hasil DISC dan HEXACO klien ini. 
-              Gunakan fitur ini sebelum mengunduh PDF agar halaman 2 terisi penuh.
+              Sistem AI mungkin belum selesai menghasilkan interpertasi natural untuk laporan ini. Anda dapat mencoba klik tombol di bawah untuk men-generate/memaksa ulang secara manual.
             </p>
             <button 
               onClick={async () => {
                 const btn = document.getElementById('btn-gen-ai');
                 btn.disabled = true;
-                btn.innerHTML = 'Sedang Memproses...';
+                btn.innerHTML = 'Sedang Memproses... (mungkin butuh 10-15 detik)';
                 try {
                   const r = await fetch(`/api/admin/submissions/${id}/ai`, { method: 'POST' });
                   const j = await r.json();
@@ -315,18 +318,18 @@ export default function ReportDetailPage({ params }) {
                   } else {
                     alert('Gagal menghasilkan interpretasi: ' + j.error);
                     btn.disabled = false;
-                    btn.innerHTML = 'Hasilkan Interpretasi Otomatis';
+                    btn.innerHTML = 'Hasilkan Ulang Interpretasi Otomatis';
                   }
                 } catch (e) {
                   alert('Terjadi kesalahan jaringan.');
                   btn.disabled = false;
-                  btn.innerHTML = 'Hasilkan Interpretasi Otomatis';
+                  btn.innerHTML = 'Hasilkan Ulang Interpretasi Otomatis';
                 }
               }}
               id="btn-gen-ai"
               className="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2.5 px-6 rounded-xl text-sm transition-all flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              Hasilkan Interpretasi Otomatis
+              Hasilkan Ulang Interpretasi Otomatis
             </button>
           </div>
         ) : (

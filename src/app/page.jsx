@@ -14,8 +14,10 @@ export default function Home() {
   const [userData, setUserData] = useState({});
   const [finalScores, setFinalScores] = useState({ disc: null, hexaco: null });
   const [isProcessing, setIsProcessing] = useState(false);
+  const [startTime, setStartTime] = useState(null);
 
   const handleStart = () => {
+    setStartTime(Date.now());
     setStep(1);
   };
 
@@ -43,16 +45,31 @@ export default function Home() {
 
       setFinalScores(prev => ({ ...prev, disc, hexaco }));
 
-      // 2. Transmit to remote Database (Placeholder for API route later)
+      // 2. Kalkulasi durasi
+      let durasiText = "Tidak diketahui";
+      if (startTime) {
+        const diffInSeconds = Math.floor((Date.now() - startTime) / 1000);
+        const mins = Math.floor(diffInSeconds / 60);
+        const secs = diffInSeconds % 60;
+        durasiText = `${mins} menit ${secs} detik`;
+      }
+      
+      const payloadUserData = { ...userData, durasi: durasiText };
+
+      // 3. Transmit to remote Database
       await fetch('/api/submit', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          userData,
+          userData: payloadUserData,
           discScores: disc,
-          hexacoScores: hexaco
+          hexacoScores: hexaco,
+          answers: {
+            disc: finalScores.discRawAnswers,
+            hexaco: answers
+          }
         })
-      }).catch(err => console.error("Database persistence skipped/failed:", err));
+      });
       
       setIsProcessing(false);
       

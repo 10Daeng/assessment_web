@@ -2,8 +2,9 @@ import { NextResponse } from 'next/server';
 import { getSubmissionById, updateSubmissionAiInsight } from '@/lib/dataStore';
 import { generatePersonalityDescription } from '@/lib/gemini';
 
-export async function POST(request, { params }) {
+export async function POST(request, context) {
   try {
+    const params = await context.params;
     const { id } = params;
     const sub = await getSubmissionById(id);
     

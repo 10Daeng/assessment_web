@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
-import { addSubmission } from '@/lib/dataStore';
+import { addSubmission, updateSubmissionAiInsight } from '@/lib/dataStore';
+import { generatePersonalityDescription } from '@/lib/gemini';
 
 export async function POST(request) {
   try {
@@ -17,6 +18,19 @@ export async function POST(request) {
         },
         body: JSON.stringify(data),
       }).catch(err => console.error("Webhook Error:", err));
+    }
+
+    // Auto-generate AI interpretation synchronously right away
+    try {
+      const fm = data.hexacoScores?.factorMeans || {};
+      const insight = await generatePersonalityDescription(
+        data.discScores?.pattern || 'Uncategorized',
+        fm.H || 3, fm.E || 3, fm.X || 3, fm.A || 3, fm.C || 3, fm.O || 3
+      );
+      await updateSubmissionAiInsight(record.id, insight);
+    } catch (aiErr) {
+      console.error("Auto AI Generation failed:", aiErr);
+      // We don't block the request if AI fails, user can manually retry on admin panel
     }
 
     return NextResponse.json({ 

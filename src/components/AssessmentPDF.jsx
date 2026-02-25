@@ -240,6 +240,12 @@ export default function AssessmentPDF({ userData, discScores, hexacoScores, aiIn
           
           <Text style={styles.colLabel}>Jabatan:</Text>
           <Text style={styles.colValue}>{userData.jabatan || '-'}</Text>
+
+          <Text style={styles.colLabel}>Asal Instansi:</Text>
+          <Text style={styles.colValue}>{userData.instansi || '-'}</Text>
+
+          <Text style={styles.colLabel}>Durasi Asesmen:</Text>
+          <Text style={styles.colValue}>{userData.durasi || '-'}</Text>
         </View>
 
         {/* DISC SECTION */}
@@ -368,17 +374,17 @@ export default function AssessmentPDF({ userData, discScores, hexacoScores, aiIn
         </View>
 
         <View style={styles.descSection}>
-          <Text style={styles.page2Title}>1. Dinamika Gaya Kerja (Berdasarkan Pola DISC: {getDiscPatternName(discScores?.pattern)})</Text>
+          <Text style={styles.page2Title}>1. Dinamika Gaya Kerja</Text>
           <Text style={styles.descText}>
-            Secara umum, individu dengan pola gaya kerja {getDiscPatternName(discScores?.pattern)} digambarkan sebagai sosok yang memiliki kecenderungan karakteristik spesifik dalam merespon sebuah instruksi kerja, mengelola relasi profesional, serta membuat keputusan di tempat kerja.
+            Secara umum, individu dinilai memiliki kecenderungan karakteristik spesifik dalam merespon sebuah instruksi kerja, mengelola relasi profesional, serta membuat keputusan di tempat kerja.
           </Text>
           <Text style={styles.descText}>
-            {aiInsight?.gayaKerja || `[Deskripsi spesifik untuk pola ${discScores.pattern} belum digenerate.]`}
+            {aiInsight?.gayaKerja || `[Deskripsi gaya kerja belum digenerate.]`}
           </Text>
         </View>
 
         <View style={styles.descSection}>
-          <Text style={styles.page2Title}>2. Dinamika Karakter Inti (Berdasarkan Profil HEXACO)</Text>
+          <Text style={styles.page2Title}>2. Dinamika Karakter Inti</Text>
           <Text style={styles.descText}>
             Profil karakter inti seseorang memberikan gambaran mengenai cara individu memaknai interaksi sosial, merespon tantangan emosional, serta menjalankan komitmen dan nilai moral sehari-hari. 
           </Text>
