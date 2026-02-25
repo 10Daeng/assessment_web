@@ -163,6 +163,7 @@ export default function ReportDetailPage({ params }) {
             discScores={sub.discScores}
             hexacoScores={sub.hexacoScores}
             aiInsight={sub.aiInsight}
+            submittedAt={sub.submittedAt}
           />
         </div>
       </div>
@@ -264,13 +265,13 @@ export default function ReportDetailPage({ params }) {
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <div className="bg-slate-800/50 rounded-xl p-4">
-            <DiscBar scoreObj={sub.discScores?.discMost} label="Grafik 1 — Mask (Most)" maxVal={24} />
+            <DiscBar scoreObj={sub.discScores?.discMost} label="Grafik 1 — Publik (Mask)" maxVal={24} />
           </div>
           <div className="bg-slate-800/50 rounded-xl p-4">
-            <DiscBar scoreObj={sub.discScores?.discLeast} label="Grafik 2 — Core (Least)" maxVal={24} />
+            <DiscBar scoreObj={sub.discScores?.discLeast} label="Grafik 2 — Pribadi (Core)" maxVal={24} />
           </div>
           <div className="bg-slate-800/50 rounded-xl p-4">
-            <DiscBar scoreObj={sub.discScores?.discComposite} label="Grafik 3 — Composite" maxVal={24} />
+            <DiscBar scoreObj={sub.discScores?.discComposite} label="Grafik 3 — Aktual (Composite)" maxVal={24} />
           </div>
         </div>
 
@@ -280,9 +281,9 @@ export default function ReportDetailPage({ params }) {
             <thead>
               <tr className="text-slate-400 text-xs uppercase border-b border-slate-700">
                 <th className="text-left px-4 py-2">Dimensi</th>
-                <th className="text-center px-4 py-2">Most (G1)</th>
-                <th className="text-center px-4 py-2">Least (G2)</th>
-                <th className="text-center px-4 py-2">Composite (G3)</th>
+                <th className="text-center px-4 py-2">Publik (G1)</th>
+                <th className="text-center px-4 py-2">Pribadi (G2)</th>
+                <th className="text-center px-4 py-2">Aktual (G3)</th>
               </tr>
             </thead>
             <tbody>

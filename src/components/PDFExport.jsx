@@ -2,7 +2,7 @@
 import { PDFDownloadLink } from '@react-pdf/renderer';
 import AssessmentPDF from './AssessmentPDF';
 
-export default function PDFExport({ userData, discScores, hexacoScores, aiInsight }) {
+export default function PDFExport({ userData, discScores, hexacoScores, aiInsight, submittedAt }) {
   return (
     <PDFDownloadLink 
       document={
@@ -11,6 +11,7 @@ export default function PDFExport({ userData, discScores, hexacoScores, aiInsigh
           discScores={discScores} 
           hexacoScores={hexacoScores} 
           aiInsight={aiInsight}
+          submittedAt={submittedAt}
         />
       }
       fileName={`${(userData?.nama || 'Klien').replace(/[^a-zA-Z0-9\s-]/g, '').trim().replace(/\s+/g, '_')}_${(userData?.instansi || 'Instansi').replace(/[^a-zA-Z0-9\s-]/g, '').trim().replace(/\s+/g, '_')}.pdf`}
