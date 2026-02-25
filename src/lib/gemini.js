@@ -2,17 +2,18 @@ import { generateLocalInterpretation } from './interpretationDict';
 
 /**
  * Generate personality description.
- * PRIMARY: Local dictionary (offline, instant, free)
+ * PRIMARY: Local dictionary (offline, instant, free) — includes facet-level analysis
  * FALLBACK: Gemini API (optional enhancement)
  */
-export async function generatePersonalityDescription(discPattern, hexacoMeanH, hexacoMeanE, hexacoMeanX, hexacoMeanA, hexacoMeanC, hexacoMeanO) {
-  // Always generate local interpretation first (instant, free, reliable)
-  const local = generateLocalInterpretation(discPattern, {
-    H: hexacoMeanH, E: hexacoMeanE, X: hexacoMeanX,
-    A: hexacoMeanA, C: hexacoMeanC, O: hexacoMeanO,
-  });
+export async function generatePersonalityDescription(discPattern, hexacoMeanH, hexacoMeanE, hexacoMeanX, hexacoMeanA, hexacoMeanC, hexacoMeanO, hexacoFacetMeans) {
+  // Always generate local interpretation first
+  const local = generateLocalInterpretation(
+    discPattern,
+    { H: hexacoMeanH, E: hexacoMeanE, X: hexacoMeanX, A: hexacoMeanA, C: hexacoMeanC, O: hexacoMeanO },
+    hexacoFacetMeans || {}
+  );
 
-  // Optionally try Gemini for richer narrative (non-blocking)
+  // Optionally try Gemini for richer narrative
   const apiKey = process.env.GEMINI_API_KEY;
   if (!apiKey) {
     console.log("[AI] No GEMINI_API_KEY, using local dictionary.");
@@ -52,16 +53,13 @@ PENTING: TANPA jargon teknis (DISC/HEXACO/High D/Low C/skor). Bahasa natural, pr
     });
 
     clearTimeout(timeout);
-
     if (!response.ok) throw new Error(`Gemini ${response.status}`);
 
     const data = await response.json();
     const text = data.candidates?.[0]?.content?.parts?.[0]?.text || '';
     const clean = text.replace(/```json/gi, '').replace(/```/g, '').trim();
-    const result = JSON.parse(clean);
-
     console.log("[AI] Gemini enhancement succeeded.");
-    return result;
+    return JSON.parse(clean);
   } catch (err) {
     console.warn("[AI] Gemini failed, using local dictionary:", err.message);
     return local;

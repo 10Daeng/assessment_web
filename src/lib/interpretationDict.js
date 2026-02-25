@@ -1,10 +1,12 @@
 /**
- * Kamus Interpretasi DISC + HEXACO — 100% Lokal (Tanpa API)
- * Berdasarkan DISC 15 Patterns dan HEXACO Scale Interpretations
+ * Kamus Interpretasi DISC + HEXACO Komprehensif — 100% Lokal
+ * 
+ * DISC: 15 pola gaya kerja
+ * HEXACO: 6 dimensi × 3 level + 25 facet × 3 level + kombinasi dinamis
  */
 
 // =========================================
-// DISC 15 PATTERNS DICTIONARY
+// DISC 15 PATTERNS
 // =========================================
 export const DISC_PATTERNS = {
   DI: { name: 'Inspirational', gayaKerja: 'Individu ini secara alami memiliki daya penggerak yang kuat terhadap orang-orang di sekelilingnya. Dalam bekerja, ia cenderung mengarahkan dan mempersuasi secara bersamaan — menetapkan tujuan dengan tegas sambil membangun dukungan melalui komunikasi yang menawan. Ia mampu membaca motivasi orang lain dengan cerdik dan menyesuaikan pendekatannya untuk mendapatkan hasil yang diinginkan.\n\nGaya pengambilan keputusannya bersifat strategis namun berorientasi pada aksi. Ia tidak ragu untuk mengambil kendali situasi, tetapi lebih memilih jalur persuasi dibanding dominasi. Dalam komunikasi, ia menggabungkan ketegasan dengan karisma, membuat orang lain merasa terlibat sekaligus terarah.' },
@@ -26,49 +28,230 @@ export const DISC_PATTERNS = {
 };
 
 // =========================================
-// HEXACO INTERPRETATION TEMPLATES
+// HEXACO DIMENSION-LEVEL TEMPLATES
 // =========================================
-const hexacoTemplates = {
+const dimTemplates = {
   H: {
-    high: 'Individu ini menunjukkan tingkat kejujuran dan ketulusan yang tinggi dalam interaksinya dengan orang lain. Ia cenderung menghindari manipulasi untuk keuntungan pribadi, bersikap adil dalam transaksi, tidak tertarik pada kemewahan berlebihan, dan tidak merasa berhak mendapatkan perlakuan istimewa.',
-    mid: 'Individu ini memiliki kesadaran sosial yang seimbang — mampu bersikap jujur namun juga pragmatis dalam situasi tertentu. Ia menghargai keadilan tetapi dapat bersikap fleksibel dalam bernegosiasi demi kepentingan bersama.',
-    low: 'Individu ini cenderung pragmatis dalam interaksi sosial dan mungkin menggunakan strategi persuasi yang beragam untuk mencapai tujuannya. Ia menghargai status dan pencapaian material sebagai indikator kesuksesan.',
+    high: 'Dalam aspek kejujuran dan kerendahhatian, individu ini menunjukkan integritas moral yang kuat. Ia cenderung tulus dalam berinteraksi, menghindari manipulasi, dan tidak tertarik pada kemewahan berlebihan.',
+    mid: 'Individu ini memiliki kesadaran moral yang seimbang — mampu bersikap jujur namun juga pragmatis ketika situasi menuntut. Ia menghargai keadilan tetapi dapat bernegosiasi secara fleksibel.',
+    low: 'Individu ini cenderung pragmatis dan strategis dalam interaksi sosial. Ia menghargai pencapaian material dan status sosial, serta terampil dalam menggunakan berbagai pendekatan persuasi.',
   },
   E: {
-    high: 'Individu ini memiliki kepekaan emosional yang tinggi terhadap lingkungan dan orang-orang di sekitarnya. Ia mudah merasa cemas dalam situasi yang tidak pasti, memiliki kebutuhan emosional yang kuat terhadap orang terdekat, dan menunjukkan empati mendalam terhadap penderitaan orang lain.',
-    mid: 'Individu ini memiliki keseimbangan emosional yang cukup baik — mampu merasakan empati tanpa terlalu larut dalam emosi orang lain. Ia dapat menghadapi situasi stres dengan cukup tenang meskipun tetap responsif terhadap kebutuhan emosional.',
-    low: 'Individu ini cenderung stabil secara emosional dan tidak mudah terpengaruh oleh tekanan situasional. Ia mampu tetap tenang dalam situasi berbahaya, mandiri secara emosional, dan mengandalkan logika dalam menghadapi permasalahan.',
+    high: 'Dari segi emosionalitas, individu ini memiliki kepekaan emosional yang tinggi. Ia cenderung merasakan emosi secara intens, memiliki kebutuhan afektif yang kuat, dan menunjukkan empati mendalam kepada orang lain.',
+    mid: 'Individu ini memiliki keseimbangan emosional yang baik — responsif terhadap perasaan orang lain tanpa terlalu larut dalam emosi. Ia mampu mengelola stres dengan cukup efektif.',
+    low: 'Individu ini menunjukkan stabilitas emosional yang kokoh. Ia tidak mudah terguncang oleh tekanan, mandiri secara emosional, dan cenderung mengandalkan logika dalam menghadapi tantangan.',
   },
   X: {
-    high: 'Individu ini memiliki rasa percaya diri sosial yang kuat dan menikmati interaksi dengan banyak orang. Ia merasa nyaman memimpin diskusi, aktif mencari pengalaman sosial, dan memiliki pandangan positif tentang dirinya sendiri. Energi dan antusiasmenya menular kepada orang-orang di sekitarnya.',
-    mid: 'Individu ini memiliki keseimbangan yang baik antara kebutuhan bersosialisasi dan waktu untuk diri sendiri. Ia nyaman dalam kelompok maupun situasi yang lebih intim, dan mampu menyesuaikan tingkat keterlibatan sosialnya sesuai konteks.',
-    low: 'Individu ini cenderung lebih introvert dan memilih lingkungan sosial yang lebih kecil dan intim. Ia menikmati waktu sendiri untuk refleksi dan tidak terlalu membutuhkan validasi sosial. Meskipun tampak pendiam, ia memiliki dunia batin yang kaya.',
+    high: 'Dalam dimensi ekstraversi, individu ini menunjukkan rasa percaya diri sosial yang kuat. Ia menikmati interaksi dengan banyak orang, nyaman memimpin percakapan, dan membawa energi positif ke lingkungannya.',
+    mid: 'Individu ini memiliki keseimbangan yang baik antara bersosialisasi dan menyendiri. Ia nyaman baik dalam kelompok besar maupun situasi yang lebih intim.',
+    low: 'Individu ini cenderung introspektif dan memilih lingkungan sosial yang lebih kecil. Ia menikmati waktu sendiri untuk berpikir mendalam dan tidak membutuhkan validasi sosial.',
   },
   A: {
-    high: 'Individu ini sangat toleran dan pemaaf dalam hubungan interpersonal. Ia cenderung menghindari konflik, bersikap lembut dalam memberikan penilaian, fleksibel dalam mengakomodasi kebutuhan orang lain, dan sabar menghadapi provokasi. Ia menghargai keharmonisan dalam relasi.',
-    mid: 'Individu ini memiliki keseimbangan yang baik antara ketegasan dan keramahan. Ia mampu bersikap tegas jika diperlukan namun tetap menghargai hubungan baik dengan orang lain. Ia dapat mengelola konflik secara konstruktif.',
-    low: 'Individu ini cenderung memiliki standar tinggi dalam menilai orang lain dan tidak segan menyampaikan kritik secara langsung. Ia tegas dalam mempertahankan pendapatnya dan tidak mudah berkompromi jika merasa yakin dengan posisinya.',
+    high: 'Dalam hal keramahan, individu ini sangat toleran dan pemaaf. Ia menghindari konfrontasi, bersikap lembut dalam berinteraksi, dan memprioritaskan keharmonisan hubungan.',
+    mid: 'Individu ini memiliki keseimbangan antara ketegasan dan keramahan. Ia mampu bersikap tegas ketika diperlukan namun tetap menghargai relasi yang positif.',
+    low: 'Individu ini cenderung tegas dan kritis dalam menilai orang lain. Ia tidak segan menyampaikan pendapat secara langsung dan mempertahankan posisinya dengan kukuh.',
   },
   C: {
-    high: 'Individu ini menunjukkan tingkat disiplin dan ketelitian yang tinggi dalam bekerja. Ia tertata dalam mengelola waktu dan sumber daya, tekun mengejar tujuan, cermat memperhatikan detail, dan bijaksana dalam menimbang konsekuensi sebelum bertindak.',
-    mid: 'Individu ini memiliki keseimbangan yang cukup baik antara keteraturan dan fleksibilitas. Ia mampu bekerja secara terstruktur namun juga bisa beradaptasi ketika situasi memerlukan spontanitas.',
-    low: 'Individu ini cenderung lebih spontan dan fleksibel dalam bekerja. Ia lebih mengutamakan kreativitas dan adaptabilitas dibandingkan prosedur yang kaku, dan mungkin lebih efektif dalam lingkungan yang dinamis dan tidak terstruktur.',
+    high: 'Pada dimensi kehati-hatian, individu ini sangat terorganisir dan disiplin. Ia tertata dalam mengelola pekerjaan, tekun mengejar tujuan, dan cermat mempertimbangkan konsekuensi sebelum bertindak.',
+    mid: 'Individu ini memiliki keseimbangan antara keteraturan dan fleksibilitas. Ia mampu bekerja secara terstruktur namun juga beradaptasi ketika situasi memerlukan spontanitas.',
+    low: 'Individu ini cenderung spontan dan fleksibel. Ia mengutamakan kreativitas dan adaptabilitas, serta lebih efektif dalam lingkungan yang dinamis dan tidak terlalu kaku.',
   },
   O: {
-    high: 'Individu ini memiliki ketertarikan mendalam terhadap keindahan, pengetahuan baru, dan ide-ide yang tidak konvensional. Ia menikmati eksplorasi intelektual, menghargai seni dan estetika, dan terbuka terhadap perspektif yang berbeda dari umumnya.',
-    mid: 'Individu ini memiliki keterbukaan yang moderat terhadap pengalaman baru. Ia mampu menghargai tradisi sekaligus terbuka pada inovasi, menjadikannya adaptif dalam berbagai lingkungan kerja dan sosial.',
-    low: 'Individu ini cenderung lebih praktis dan realistis dalam orientasinya. Ia menghargai pendekatan yang sudah terbukti dan mungkin lebih nyaman dengan hal-hal yang konkret dan dapat diukur dibandingkan konsep abstrak.',
+    high: 'Dalam aspek keterbukaan, individu ini memiliki ketertarikan mendalam terhadap keindahan, ide-ide baru, dan perspektif yang tidak konvensional. Ia menikmati eksplorasi intelektual dan kreativitas.',
+    mid: 'Individu ini moderat dalam keterbukaan terhadap hal baru. Ia mampu menghargai tradisi sekaligus terbuka pada inovasi, menjadikannya adaptif dalam berbagai konteks.',
+    low: 'Individu ini lebih berorientasi pada hal-hal praktis dan konkret. Ia menghargai pendekatan yang sudah terbukti dan cenderung nyaman dengan rutinitas yang terprediksi.',
   },
 };
 
-function getLevel(mean) {
-  if (mean >= 3.8) return 'high';
-  if (mean >= 2.5) return 'mid';
-  return 'low';
-}
+// =========================================
+// HEXACO FACET-LEVEL TEMPLATES (25 facets)
+// =========================================
+const facetTemplates = {
+  // === H — Honesty-Humility ===
+  sinc: {
+    name: 'Ketulusan (Sincerity)',
+    high: 'Ia cenderung tulus dan apa adanya dalam menjalin hubungan, menghindari sikap berpura-pura atau memanipulasi orang lain demi keuntungan pribadi.',
+    mid: 'Dalam hubungan sosial, ia umumnya bersikap tulus meskipun terkadang dapat menyesuaikan pendekatannya sesuai konteks.',
+    low: 'Ia cukup terampil dalam menyesuaikan cara berkomunikasi sesuai siapa yang dihadapi, dan tidak ragu menggunakan strategi sosial untuk mencapai tujuan.',
+  },
+  fair: {
+    name: 'Keadilan (Fairness)',
+    high: 'Ia sangat menjunjung tinggi prinsip keadilan dan tidak bersedia mengambil keuntungan dari orang lain meskipun ada kesempatan.',
+    mid: 'Ia menghargai keadilan dalam transaksi, namun cukup realistis dalam melihat bahwa tidak semua situasi bisa selalu adil.',
+    low: 'Ia cenderung oportunistik — mampu melihat dan memanfaatkan peluang untuk keuntungan pribadi, termasuk jika itu berarti melanggar aturan tertentu.',
+  },
+  gree: {
+    name: 'Penghindaran Keserakahan (Greed Avoidance)',
+    high: 'Ia tidak tertarik pada kemewahan berlebihan dan tidak terdorong oleh kekayaan atau status material sebagai motivasi utama.',
+    mid: 'Ia menghargai kenyamanan material namun tidak terobsesi dengannya. Ia melihat uang sebagai sarana, bukan tujuan akhir.',
+    low: 'Ia memiliki motivasi kuat untuk mencapai kemakmuran material dan menikmati simbol-simbol kesuksesan serta gaya hidup mewah.',
+  },
+  mode: {
+    name: 'Kerendahhatian (Modesty)',
+    high: 'Ia cenderung rendah hati dan tidak merasa layak mendapat perlakuan istimewa. Ia tidak ingin menjadi pusat perhatian dan menghindari sikap sombong.',
+    mid: 'Ia memiliki rasa percaya diri yang sehat tanpa menjadi arogan. Ia dapat menerima pujian dengan baik namun tidak mencarinya secara aktif.',
+    low: 'Ia memiliki kepercayaan diri yang tinggi terhadap keistimewaan dirinya dan merasa layak mendapatkan perhatian serta penghargaan khusus dari lingkungan.',
+  },
+
+  // === E — Emotionality ===
+  fear: {
+    name: 'Kecemasan Fisik (Fearfulness)',
+    high: 'Ia cenderung waspada terhadap bahaya fisik dan menghindari situasi yang mengandung risiko keselamatan.',
+    mid: 'Ia memiliki kesadaran yang wajar terhadap risiko tanpa menjadi terlalu khawatir. Ia mampu mengelola rasa takut dengan cukup baik.',
+    low: 'Ia berani menghadapi situasi berbahaya dan tidak mudah gentar oleh ancaman fisik. Ia menikmati tantangan dan aktivitas yang mengandung risiko.',
+  },
+  anxi: {
+    name: 'Kecemasan Psikologis (Anxiety)',
+    high: 'Ia mudah merasa cemas dan khawatir tentang berbagai hal, bahkan dalam situasi yang relatif netral. Pikiran-pikiran negatif cenderung muncul secara berulang.',
+    mid: 'Ia memiliki tingkat kecemasan yang normal — khawatir pada saat yang tepat namun mampu mengendalikan kekhawatiran agar tidak berlebihan.',
+    low: 'Ia jarang merasa cemas dan mampu tetap tenang bahkan dalam situasi yang penuh tekanan. Ia memiliki stabilitas psikologis yang kuat.',
+  },
+  depe: {
+    name: 'Ketergantungan Emosional (Dependence)',
+    high: 'Ia memiliki kebutuhan kuat untuk mendapatkan dukungan emosional dari orang-orang terdekat dan merasa tidak nyaman jika harus menghadapi masalah sendirian.',
+    mid: 'Ia menghargai dukungan emosional dari orang lain namun juga mampu menghadapi tantangan secara mandiri jika diperlukan.',
+    low: 'Ia sangat mandiri secara emosional dan jarang merasa perlu mencari dukungan dari orang lain. Ia percaya pada kemampuannya sendiri untuk mengatasi masalah.',
+  },
+  sent: {
+    name: 'Sentimentalitas (Sentimentality)',
+    high: 'Ia memiliki ikatan emosional yang sangat kuat dengan orang-orang di sekitarnya dan mudah tersentuh oleh situasi emosional.',
+    mid: 'Ia memiliki empati yang cukup baik — mampu merasakan emosi orang lain tanpa terlalu larut dalam perasaan tersebut.',
+    low: 'Ia cenderung terpisah secara emosional dan tidak mudah terpengaruh oleh emosi orang lain. Ia merespons situasi dengan logika lebih dari perasaan.',
+  },
+
+  // === X — eXtraversion ===
+  sses: {
+    name: 'Harga Diri Sosial (Social Self-Esteem)',
+    high: 'Ia memiliki pandangan yang sangat positif tentang dirinya sendiri dan merasa yakin bahwa ia diterima dan dihargai oleh orang lain.',
+    mid: 'Ia memiliki rasa percaya diri yang cukup sehat, meskipun terkadang ragu tentang bagaimana orang lain memandangnya.',
+    low: 'Ia cenderung meragukan nilai dirinya dalam konteks sosial dan mungkin merasa kurang dihargai atau kurang menarik dibandingkan orang lain.',
+  },
+  socb: {
+    name: 'Keberanian Sosial (Social Boldness)',
+    high: 'Ia nyaman menjadi pusat perhatian, percaya diri berbicara di depan umum, dan tidak canggung berinteraksi dengan orang yang baru dikenal.',
+    mid: 'Ia cukup nyaman dalam situasi sosial, meskipun terkadang merasa sedikit gugup dalam kelompok besar atau di depan orang asing.',
+    low: 'Ia cenderung pemalu dan tidak nyaman menjadi pusat perhatian. Ia lebih memilih untuk mendengarkan daripada memimpin percakapan.',
+  },
+  soci: {
+    name: 'Kebutuhan Sosial (Sociability)',
+    high: 'Ia sangat menikmati kegiatan sosial, pesta, dan berkumpul dengan banyak orang. Ia merasa bersemangat dalam keramaian.',
+    mid: 'Ia menikmati aktivitas sosial namun juga menghargai waktu untuk menyendiri. Kebutuhannya akan interaksi sosial bersifat moderat.',
+    low: 'Ia lebih menyukai kesendirian atau pertemuan kecil dibandingkan acara sosial besar. Ia merasa cepat lelah dalam keramaian.',
+  },
+  live: {
+    name: 'Vitalitas (Liveliness)',
+    high: 'Ia penuh semangat dan antusiasme dalam menjalani aktivitas sehari-hari. Ia memancarkan energi positif dan keceriaan yang menular.',
+    mid: 'Ia memiliki tingkat energi yang cukup stabil — antusias dalam hal-hal yang menarik minatnya namun tidak selalu ekspresif.',
+    low: 'Ia cenderung kalem dan lebih pendiam. Ia tidak terlalu ekspresif secara emosional dan lebih menyukai suasana yang tenang.',
+  },
+
+  // === A — Agreeableness ===
+  forg: {
+    name: 'Kemampuan Memaafkan (Forgivingness)',
+    high: 'Ia mudah memaafkan orang yang menyakitinya dan tidak menyimpan dendam. Ia percaya pada kebaikan orang lain dan memberi kesempatan kedua.',
+    mid: 'Ia mampu memaafkan meskipun membutuhkan waktu. Ia tidak dendam namun juga tidak melupakan perlakuan buruk dengan mudah.',
+    low: 'Ia cenderung sulit melupakan ketika merasa diperlakukan tidak adil. Ia menyimpan ingatan kuat tentang perlakuan buruk dan lambat dalam memaafkan.',
+  },
+  gent: {
+    name: 'Kelembutan (Gentleness)',
+    high: 'Ia sangat berhati-hati dalam memberikan penilaian terhadap orang lain, cenderung mencari sisi positif dan menghindari kritik tajam.',
+    mid: 'Ia mampu memberikan umpan balik yang seimbang — menghargai kelebihan orang lain namun juga jujur tentang kekurangan.',
+    low: 'Ia cenderung langsung dan kritis dalam menilai orang lain. Ia tidak segan menyampaikan pendapat yang tidak populer jika merasa benar.',
+  },
+  flex: {
+    name: 'Fleksibilitas (Flexibility)',
+    high: 'Ia sangat akomodatif dan bersedia berkompromi demi menjaga keharmonisan. Ia menyesuaikan diri dengan keinginan orang lain dengan mudah.',
+    mid: 'Ia cukup fleksibel dalam berkompromi namun tetap mempertahankan hal-hal yang dianggap penting baginya.',
+    low: 'Ia teguh pada pendiriannya dan tidak mudah berkompromi. Ia percaya bahwa ide dan pendekatan miliknya sering kali yang terbaik.',
+  },
+  pati: {
+    name: 'Kesabaran (Patience)',
+    high: 'Ia sangat sabar menghadapi provokasi dan jarang meledak secara emosional. Ia mampu menahan diri dalam situasi yang membuat frustrasi.',
+    mid: 'Ia umumnya sabar meskipun memiliki batas toleransi tertentu. Pada titik tertentu, ia akan menyuarakan ketidakpuasannya.',
+    low: 'Ia cenderung cepat marah dan mudah frustrasi. Ia tidak segan menunjukkan kekesalannya secara terbuka ketika merasa terprovokasi.',
+  },
+
+  // === C — Conscientiousness ===
+  orga: {
+    name: 'Organisasi (Organization)',
+    high: 'Ia sangat terorganisir — ruang kerja dan jadwalnya tertata rapi. Ia memiliki sistem yang jelas untuk mengelola tugas dan tanggung jawab.',
+    mid: 'Ia cukup teratur dalam mengelola pekerjaan, meskipun terkadang membiarkan beberapa hal tidak sempurna terorganisir.',
+    low: 'Ia cenderung kurang teratur dan mungkin terlihat berantakan. Ia bekerja dengan gaya yang lebih spontan dan tidak terlalu terikat pada sistem.',
+  },
+  dili: {
+    name: 'Ketekunan (Diligence)',
+    high: 'Ia adalah pekerja keras yang tekun dan berdedikasi. Ia menetapkan standar tinggi dan mendorong dirinya untuk selalu memberikan yang terbaik.',
+    mid: 'Ia menunjukkan etos kerja yang cukup baik — bekerja keras ketika diperlukan namun juga tahu kapan harus beristirahat.',
+    low: 'Ia cenderung melakukan pekerjaan seperlunya saja dan tidak terdorong untuk melampaui ekspektasi. Ia menikmati waktu luang dan keseimbangan hidup.',
+  },
+  perf: {
+    name: 'Perfeksionisme (Perfectionism)',
+    high: 'Ia sangat teliti dan memperhatikan detail terkecil. Ia memeriksa pekerjaannya berulang kali untuk memastikan tidak ada kesalahan.',
+    mid: 'Ia cukup teliti dalam pekerjaan penting namun bisa menerima bahwa tidak semua hal harus sempurna.',
+    low: 'Ia tidak terlalu khawatir tentang kesalahan kecil dan lebih fokus pada gambaran besar. Ia cenderung mentoleransi ketidaksempurnaan.',
+  },
+  prud: {
+    name: 'Kebijaksanaan (Prudence)',
+    high: 'Ia sangat berhati-hati dalam mengambil keputusan, mempertimbangkan semua konsekuensi sebelum bertindak, dan menghindari tindakan impulsif.',
+    mid: 'Ia cukup bijaksana dalam mengambil keputusan, menimbang risiko namun juga berani bertindak ketika dirasa tepat.',
+    low: 'Ia cenderung impulsif dan mengambil keputusan berdasarkan dorongan sesaat. Ia lebih memilih bertindak cepat daripada menganalisis terlalu lama.',
+  },
+
+  // === O — Openness to Experience ===
+  aesa: {
+    name: 'Apresiasi Estetik (Aesthetic Appreciation)',
+    high: 'Ia sangat menghargai keindahan dalam seni, alam, dan kehidupan sehari-hari. Ia terpesona oleh karya seni, musik, dan pengalaman estetik.',
+    mid: 'Ia dapat menghargai keindahan namun tidak menjadikannya fokus utama. Ia menikmati seni secara kasual.',
+    low: 'Ia kurang tertarik pada seni dan estetika. Ia lebih menaruh perhatian pada hal-hal praktis dan fungsional.',
+  },
+  inqu: {
+    name: 'Rasa Ingin Tahu (Inquisitiveness)',
+    high: 'Ia memiliki rasa ingin tahu intelektual yang besar. Ia haus akan pengetahuan baru dan menikmati eksplorasi gagasan dan konsep yang kompleks.',
+    mid: 'Ia memiliki rasa ingin tahu yang moderat — tertarik pada topik tertentu namun tidak selalu terdorong untuk menggali lebih dalam.',
+    low: 'Ia kurang berminat pada pembelajaran yang bersifat abstrak dan lebih memilih pengetahuan yang langsung aplikatif dalam kehidupan sehari-hari.',
+  },
+  crea: {
+    name: 'Kreativitas (Creativity)',
+    high: 'Ia memiliki imajinasi yang kaya dan sering menemukan solusi inovatif untuk masalah. Ia menikmati proses kreatif dan berpikir di luar kebiasaan.',
+    mid: 'Ia mampu berpikir kreatif ketika dibutuhkan, meskipun tidak selalu mencari pendekatan yang tidak konvensional.',
+    low: 'Ia lebih menyukai pendekatan yang sudah terbukti dan tidak terlalu tertarik untuk bereksperimen dengan ide-ide baru yang belum teruji.',
+  },
+  unco: {
+    name: 'Ketidakkonvensionalan (Unconventionality)',
+    high: 'Ia berpikir dengan cara yang unik dan tidak konvensional. Ia menantang norma sosial dan mencari kebenaran melalui perspektif yang tidak mainstream.',
+    mid: 'Ia terkadang mempertanyakan konvensi sosial namun secara umum masih mengikuti norma yang berlaku.',
+    low: 'Ia menghargai tradisi dan konvensi sosial. Ia percaya bahwa aturan dan norma yang ada memiliki tujuan penting dan layak dipertahankan.',
+  },
+
+  // === Altruism (Interstitial) ===
+  altr: {
+    name: 'Altruisme',
+    high: 'Ia memiliki kepedulian yang sangat besar terhadap kesejahteraan orang lain dan bersedia mengorbankan kepentingan pribadinya untuk membantu mereka yang membutuhkan.',
+    mid: 'Ia menunjukkan kepedulian yang wajar terhadap orang lain dan bersedia membantu dalam batas-batas yang wajar.',
+    low: 'Ia cenderung lebih fokus pada kepentingan pribadinya dan tidak terlalu terdorong untuk mengorbankan waktu atau sumber daya untuk orang lain.',
+  },
+};
 
 // =========================================
-// REKOMENDASI TEMPLATES
+// CROSS-DIMENSIONAL DYNAMICS
+// =========================================
+const crossDynamics = {
+  'H-high_A-low': 'Menariknya, meskipun ia menjunjung tinggi kejujuran, ia tidak segan bersikap kritis dan tegas dalam mengkonfrontasi ketidakadilan. Kombinasi ini menghasilkan sosok penegak kebenaran yang berani menyuarakan kebenaran.',
+  'H-low_X-high': 'Kepercayaan diri sosialnya yang tinggi dikombinasikan dengan ambisi material menciptakan sosok yang terampil dalam membangun jejaring untuk keuntungan pribadi maupun profesional.',
+  'E-high_A-high': 'Kepekaan emosionalnya yang tinggi dipadukan dengan sikap ramah menciptakan sosok yang sangat empatik — mampu merasakan dan merespons kebutuhan emosional orang lain secara mendalam.',
+  'E-low_C-high': 'Stabilitas emosional yang kuat dikombinasikan dengan disiplin tinggi menghasilkan sosok yang sangat efisien dan produktif dalam mengeksekusi tugas-tugas kompleks tanpa terpengaruh tekanan.',
+  'X-high_A-low': 'Energi sosialnya yang tinggi namun dengan sikap kritis menciptakan sosok yang dominan dalam interaksi — ia memimpin percakapan dan tidak ragu menantang ide-ide yang dianggap lemah.',
+  'X-low_C-high': 'Kecenderungannya untuk bekerja secara mandiri dipadukan dengan ketelitian tinggi menghasilkan spesialis yang fokus dan produktif — mampu menghasilkan karya berkualitas tanpa gangguan.',
+  'X-low_O-high': 'Meskipun cenderung introvert, ia memiliki dunia batin yang sangat kaya dan imajinatif. Ia menggunakan waktu menyendiri untuk eksplorasi intelektual dan kreativitas mendalam.',
+  'A-high_C-low': 'Keramahannya yang tinggi namun spontanitas dalam bekerja menciptakan sosok yang menyenangkan namun terkadang kurang konsisten dalam memenuhi komitmen — ia lebih mengutamakan hubungan daripada deadline.',
+  'A-low_C-high': 'Ketegasannya dalam berpendapat dipadukan dengan disiplin kerja yang tinggi menghasilkan sosok yang efektif dalam mengelola tim dan proyek — ia menuntut standar tinggi tanpa kompromi.',
+  'C-high_O-high': 'Kombinasi disiplin dengan kreativitas menghasilkan sosok inovator yang terstruktur — ia tidak hanya menghasilkan ide-ide brilliant, tetapi juga mampu mengeksekusinya dengan terencana dan terukur.',
+  'H-high_E-low': 'Kejujuran yang kuat dikombinasikan dengan ketenangan emosional menciptakan sosok yang berintegritas namun tegas — ia menyampaikan kebenaran tanpa drama emosional.',
+  'E-high_X-low': 'Sensitivitas emosional yang tinggi namun introvert menciptakan sosok yang mendalam — ia merasakan emosi secara intens dalam diam, sering kali menjadi pengamat yang tajam atas dinamika emosional di sekitarnya.',
+};
+
+// =========================================
+// REKOMENDASI PER PATTERN
 // =========================================
 const rekomendasi = {
   DD: ['Melatih kesabaran dan empati aktif saat berinteraksi dengan rekan kerja yang memiliki tempo kerja berbeda.', 'Mengembangkan kemampuan mendengarkan secara mendalam sebelum menyampaikan solusi.', 'Menyeimbangkan dorongan untuk hasil cepat dengan perhatian terhadap proses dan kualitas hubungan interpersonal.'],
@@ -90,37 +273,85 @@ const rekomendasi = {
 };
 
 // =========================================
-// MASTER: Generate Interpretation Locally
+// HELPER
 // =========================================
-export function generateLocalInterpretation(discPattern, hexacoFactorMeans) {
-  // 1. Determine DISC pattern key (e.g. "SC", "DI")
-  let patternKey = 'SC'; // default
+function getLevel(mean) {
+  if (mean >= 3.8) return 'high';
+  if (mean >= 2.5) return 'mid';
+  return 'low';
+}
+
+// =========================================
+// MASTER: Generate Comprehensive Interpretation
+// =========================================
+export function generateLocalInterpretation(discPattern, hexacoFactorMeans, hexacoFacetMeans) {
+  // 1. DISC pattern key
+  let patternKey = 'SC';
   if (discPattern) {
     const parts = discPattern.includes('-') ? discPattern.split('-') : [discPattern[0], discPattern[1]];
-    const primary = parts[0] || 'S';
-    const secondary = parts[1] || 'C';
-    patternKey = primary + secondary;
+    patternKey = (parts[0] || 'S') + (parts[1] || 'C');
   }
 
-  // 2. Get DISC interpretation
   const disc = DISC_PATTERNS[patternKey] || DISC_PATTERNS['SC'];
   const gayaKerja = disc.gayaKerja;
 
-  // 3. Build HEXACO character narrative
+  // 2. Build comprehensive karakter inti
   const fm = hexacoFactorMeans || {};
-  const hexParts = ['H', 'E', 'X', 'A', 'C', 'O'].map(f => {
+  const facets = hexacoFacetMeans || {};
+
+  // Dimension-level overview
+  let karakterInti = '';
+  const factors = ['H', 'E', 'X', 'A', 'C', 'O'];
+  factors.forEach(f => {
     const mean = fm[f] || 3;
     const level = getLevel(mean);
-    return hexacoTemplates[f][level];
+    karakterInti += dimTemplates[f][level] + ' ';
   });
-  const karakterInti = hexParts.join(' ');
 
-  // 4. Get recommendations
+  // Add facet-level detail paragraph
+  karakterInti += '\n\nSecara lebih spesifik, ';
+  const facetDetails = [];
+  const facetKeys = Object.keys(facetTemplates);
+  for (const fk of facetKeys) {
+    const val = facets[fk];
+    if (val !== undefined) {
+      const level = getLevel(val);
+      // Only mention notable facets (high or low, skip mid to keep it concise)
+      if (level !== 'mid') {
+        facetDetails.push(facetTemplates[fk][level].toLowerCase());
+      }
+    }
+  }
+  if (facetDetails.length > 0) {
+    // Pick most notable (up to 6 to keep it readable)
+    const notable = facetDetails.slice(0, 6);
+    karakterInti += notable.join(' Selain itu, ') + '.';
+  } else {
+    karakterInti += 'profil facet-facet kepribadiannya menunjukkan keseimbangan yang cukup baik di berbagai aspek kehidupan.';
+  }
+
+  // Add cross-dimensional dynamics
+  const dynamics = [];
+  for (const key in crossDynamics) {
+    const [dim1Part, dim2Part] = key.split('_');
+    const [d1, l1] = dim1Part.split('-');
+    const [d2, l2] = dim2Part.split('-');
+    const actual1 = getLevel(fm[d1] || 3);
+    const actual2 = getLevel(fm[d2] || 3);
+    if (actual1 === l1 && actual2 === l2) {
+      dynamics.push(crossDynamics[key]);
+    }
+  }
+  if (dynamics.length > 0) {
+    karakterInti += '\n\n' + dynamics.slice(0, 2).join(' ');
+  }
+
+  // 3. Recommendations
   const recs = rekomendasi[patternKey] || rekomendasi['SC'];
 
   return {
     gayaKerja,
-    karakterInti,
+    karakterInti: karakterInti.trim(),
     rekomendasi1: recs[0],
     rekomendasi2: recs[1],
     rekomendasi3: recs[2],
