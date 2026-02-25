@@ -3,6 +3,7 @@ import { useState, useEffect, use } from 'react';
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
 import { getDiscPatternName } from '@/utils/scoring';
+import { hexaco100Questions } from '@/data/hexaco';
 
 const PDFExport = dynamic(() => import('@/components/PDFExport'), { ssr: false });
 
@@ -95,7 +96,11 @@ export default function ReportDetailPage({ params }) {
     if (hexacoAnswers) {
       for (let i = 1; i <= 100; i++) {
         const h = hexacoAnswers[i];
-        csv += `HEXACO No. ${i},-,${h || '-'}\n`;
+        // Find if this question is reversed
+        const questionDef = hexaco100Questions.find(q => q.id === i);
+        const isRev = questionDef?.isReverse ? '*' : '';
+        
+        csv += `HEXACO No. ${i}${isRev},-,${h || '-'}\n`;
       }
     }
 
