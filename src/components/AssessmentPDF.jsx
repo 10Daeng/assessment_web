@@ -19,12 +19,18 @@ const styles = StyleSheet.create({
     fontSize: 10,
     textAlign: 'right',
     fontFamily: 'Helvetica-Bold',
-    marginBottom: 10
+    marginBottom: 5
   },
   lembaga: {
     fontSize: 14,
     fontFamily: 'Helvetica-Bold',
     marginBottom: 8
+  },
+  logo: {
+    width: 200,
+    height: 43,
+    alignSelf: 'center',
+    marginBottom: 5
   },
   address: {
     fontSize: 9,
@@ -223,6 +229,8 @@ export default function AssessmentPDF({ userData, discScores, hexacoScores, aiIn
         <View style={styles.header}>
           <Text style={styles.rahasia}>SANGAT RAHASIA</Text>
           <Text style={styles.lembaga}>Lembaga Konseling dan Psikoterapi Islam</Text>
+          {/* Add logo image from public directory */}
+          <Image src="/logo.png" style={styles.logo} />
           <Text style={styles.address}>Jalan Potre Koneng II No. 31, Kolor, Sumenep 69417 | www.lenterabatin.co.id</Text>
           <Text style={styles.mainTitle}>HASIL PEMETAAN PSIKOLOGIS</Text>
         </View>
@@ -370,6 +378,8 @@ export default function AssessmentPDF({ userData, discScores, hexacoScores, aiIn
         <View style={styles.header}>
           <Text style={styles.rahasia}>SANGAT RAHASIA</Text>
           <Text style={styles.lembaga}>Lembaga Konseling dan Psikoterapi Islam</Text>
+          {/* Add logo image from public directory */}
+          <Image src="/logo.png" style={styles.logo} />
           <Text style={styles.mainTitle}>DESKRIPSI KEPRIBADIAN</Text>
         </View>
 
