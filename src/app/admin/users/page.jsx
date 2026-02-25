@@ -52,7 +52,7 @@ export default function UsersPage() {
                 </tr>
               ) : (
                 subs.map((s) => {
-                  const validity = calculateValidityIndex(s.rawData);
+                  const validity = calculateValidityIndex(s.rawData, s);
                   return (
                     <tr key={s.id} className="hover:bg-slate-800/20 transition-colors">
                       <td className="px-5 py-4 w-56">
