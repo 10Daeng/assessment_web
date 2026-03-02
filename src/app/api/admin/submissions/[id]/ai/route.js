@@ -30,7 +30,8 @@ export async function POST(request, context) {
       sub.discScores?.pattern || 'Uncategorized',
       fm.H || 3, fm.E || 3, fm.X || 3, fm.A || 3, fm.C || 3, fm.O || 3,
       facetMeans,
-      sub.discScores
+      sub.discScores,
+      sub.userData || {}
     );
 
     // Save to database

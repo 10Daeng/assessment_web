@@ -209,8 +209,8 @@ export default function AssessmentPDF({ userData, discScores, hexacoScores, aiIn
             {(() => {
               const fullDesc = aiInsight?.deskripsi_kepribadian_terintegrasi || aiInsight?.deskripsi_kepribadian || aiInsight?.gayaKerja || '';
               if (!fullDesc) return 'Deskripsi kepribadian terpadu belum tersedia. Silakan generate interpretasi AI.';
-              const limit = 450;
-              return fullDesc.length > limit ? fullDesc.substring(0, limit) + '...' : fullDesc;
+              const limit = 800; // Cukup panjang untuk Page 1
+              return fullDesc.length > limit ? fullDesc.substring(0, limit) + '... (selengkapnya di halaman 3)' : fullDesc;
             })()}
           </Text>
         </View>

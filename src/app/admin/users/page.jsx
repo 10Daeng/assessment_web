@@ -22,6 +22,7 @@ export default function UsersPage() {
     nama: '', usia: '', instansi: '', pekerjaan: '', jabatan: ''
   });
   const [bulkGenState, setBulkGenState] = useState({ active: false, current: 0, total: 0 });
+  const [regenAiId, setRegenAiId] = useState(null);
 
   useEffect(() => {
     async function fetchData() {
@@ -264,10 +265,10 @@ export default function UsersPage() {
                         {editId === s.id ? (
                            <input type="text" className="w-full bg-slate-800 border-none text-white rounded px-2 py-1 text-sm mb-1" value={editFormData.nama} onChange={e => setEditFormData({...editFormData, nama: e.target.value})} placeholder="Nama" />
                         ) : (
-                           <div className="font-semibold text-white truncate">{s.userData?.nama}</div>
+                           <div className="font-semibold text-white truncate" title={s.userData?.nama}>{s.userData?.nama}</div>
                         )}
                       </td>
-                      <td className="px-5 py-4 text-slate-400 text-xs">
+                      <td className="px-5 py-4 text-slate-400 text-xs truncate max-w-[130px]" title={s.userData?.email || '-'}>
                         {s.userData?.email || '-'}
                       </td>
                       <td className="px-5 py-4 text-slate-400 text-xs truncate max-w-[100px]">
@@ -278,24 +279,21 @@ export default function UsersPage() {
                       </td>
                       <td className="px-5 py-4">
                        {editId === s.id ? (<input type="text" className="w-full bg-slate-800 border-none text-white rounded px-2 py-1 text-sm" value={editFormData.instansi} onChange={e => setEditFormData({...editFormData, instansi: e.target.value})} placeholder="Instansi" />) : (
-                        <span className="bg-purple-500/10 text-purple-400 font-medium px-2.5 py-1 rounded-md text-xs">
+                        <span className="bg-purple-500/10 text-purple-400 font-medium px-2.5 py-1 rounded-md text-xs inline-block max-w-[100px] truncate" title={s.userData?.instansi || '-'}>
                           {s.userData?.instansi || '-'}
                         </span>
                        )}
                       </td>
-                      <td className="px-5 py-4 text-slate-400 truncate max-w-[130px]">
+                      <td className="px-5 py-4 text-slate-400 truncate max-w-[100px]" title={s.userData?.pekerjaan || '-'}>
                         {editId === s.id ? (<input type="text" className="w-full bg-slate-800 border-none text-white rounded px-2 py-1 text-sm inline-block" value={editFormData.pekerjaan} onChange={e => setEditFormData({...editFormData, pekerjaan: e.target.value})} placeholder="Pekerjaan" />) : (s.userData?.pekerjaan || '-')}
                       </td>
-                      <td className="px-5 py-4 text-slate-400 truncate max-w-[130px]">
+                      <td className="px-5 py-4 text-slate-400 truncate max-w-[100px]" title={s.userData?.jabatan || '-'}>
                         {editId === s.id ? (<input type="text" className="w-full bg-slate-800 border-none text-white rounded px-2 py-1 text-sm inline-block" value={editFormData.jabatan} onChange={e => setEditFormData({...editFormData, jabatan: e.target.value})} placeholder="Jabatan" />) : (s.userData?.jabatan || '-')}
                       </td>
                       <td className="px-5 py-4">
                         <div className="flex items-center gap-2">
-                          <span className="text-sm font-bold" style={{ color: validity.overallColor }}>
+                          <span className="text-sm font-bold" style={{ color: validity.overallColor }} title={validity.overallLabel}>
                             {validity.overallScore}
-                          </span>
-                          <span className="text-xs font-medium uppercase tracking-wider" style={{ color: validity.overallColor }}>
-                            {validity.overallLabel}
                           </span>
                         </div>
                       </td>
@@ -314,12 +312,13 @@ export default function UsersPage() {
                                   triggerRefresh();
                                 } catch (_e) { alert('Gagal Simpan'); }
                               }}
-                              className="text-emerald-400 font-medium px-3 py-1.5 bg-emerald-500/10 hover:bg-emerald-500/20 rounded-lg text-xs"
+                              className="text-emerald-400 font-medium px-2 py-1.5 bg-emerald-500/10 hover:bg-emerald-500/20 rounded-lg text-lg"
+                              title="Simpan Perubahan"
                             >
-                              Simpan
+                              💾
                             </button>
-                            <button onClick={() => setEditId(null)} className="text-slate-400 font-medium px-3 py-1.5 bg-slate-500/10 hover:bg-slate-500/20 rounded-lg text-xs">
-                              Batal
+                            <button onClick={() => setEditId(null)} className="text-slate-400 font-medium px-2 py-1.5 bg-slate-500/10 hover:bg-slate-500/20 rounded-lg text-lg" title="Batal Edit">
+                              ✖️
                             </button>
                           </>
                         ) : (
@@ -335,16 +334,44 @@ export default function UsersPage() {
                                   jabatan: s.userData?.jabatan || ''
                                 });
                               }}
-                              className="text-amber-400 hover:text-amber-300 text-xs font-medium px-3 py-1.5 bg-amber-500/10 hover:bg-amber-500/20 rounded-lg transition-all"
+                              className="text-amber-400 hover:text-amber-300 text-lg font-medium px-2 py-1 bg-amber-500/10 hover:bg-amber-500/20 rounded-lg transition-all"
+                              title="Edit Data Klien"
                             >
-                              Edit
+                              ✏️
                             </button>
                             <Link
                               href={`/admin/reports/${s.id}`}
-                              className="text-blue-400 hover:text-blue-300 hover:underline text-xs font-medium px-3 py-1.5 bg-blue-500/10 hover:bg-blue-500/20 rounded-lg inline-block transition-all"
+                              className="text-blue-400 hover:text-blue-300 hover:underline text-lg font-medium px-2 py-1 bg-blue-500/10 hover:bg-blue-500/20 rounded-lg inline-block transition-all"
+                              title="Lihat Detail Laporan"
                             >
-                              Detail
+                              📄
                             </Link>
+
+                            <button
+                              onClick={async () => {
+                                setRegenAiId(s.id);
+                                try {
+                                  const r = await fetch(`/api/admin/submissions/${s.id}/ai`, { 
+                                      method: 'POST', 
+                                      headers: { 'Content-Type': 'application/json' },
+                                      body: JSON.stringify({ force: true })
+                                  });
+                                  const j = await r.json();
+                                  if (j.success) {
+                                      triggerRefresh();
+                                  } else {
+                                      alert('Gagal menghasilkan AI: ' + j.error);
+                                  }
+                                } catch (_e) { alert('Kesalahan jaringan'); }
+                                setRegenAiId(null);
+                              }}
+                              disabled={regenAiId === s.id}
+                              className="disabled:opacity-50 text-xl px-2 py-1 bg-purple-500/10 hover:bg-purple-500/20 rounded-lg inline-block transition-all flex items-center justify-center"
+                              title={s.aiInsight ? "Regenerate AI Ulang" : "Generate AI Baru"}
+                            >
+                              {regenAiId === s.id ? '⏳' : (s.aiInsight ? '🔄' : '✨')}
+                            </button>
+
                             <button
                               onClick={async () => {
                                 if (!confirm(`Hapus data ${s.userData?.nama}?`)) return;
@@ -353,9 +380,10 @@ export default function UsersPage() {
                                   if (res.ok) triggerRefresh();
                                 } catch (_e) { alert('Hapus Gagal'); }
                               }}
-                              className="text-red-400 hover:text-red-300 text-xs font-medium px-3 py-1.5 bg-red-500/10 hover:bg-red-500/20 rounded-lg inline-block transition-all"
+                              className="text-red-400 hover:text-red-300 text-lg font-medium px-2 py-1 bg-red-500/10 hover:bg-red-500/20 rounded-lg inline-block transition-all"
+                              title="Hapus Klien Secara Permanen"
                             >
-                              Delete
+                              🗑️
                             </button>
                           </>
                         )}

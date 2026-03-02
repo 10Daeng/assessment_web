@@ -212,23 +212,23 @@ export default function RekapPage() {
                       </div>
                     </td>
                     <td className="px-4 py-4 align-top text-slate-400 text-xs leading-relaxed">
-                       {Array.isArray(ai.kekuatan_utama) ? <ul className="list-disc pl-3">{ai.kekuatan_utama.map((k,i) => <li key={i} className="mb-1">{getFirstSentence(k)}</li>)}</ul> : (getFirstSentence(ai.kekuatan) || '-')}
+                       {ai.rekap_singkat?.kekuatan || (Array.isArray(ai.kekuatan_utama) ? <ul className="list-disc pl-3">{ai.kekuatan_utama.map((k,i) => <li key={i} className="mb-1">{getFirstSentence(k)}</li>)}</ul> : (getFirstSentence(ai.kekuatan) || '-'))}
                     </td>
                     <td className="px-4 py-4 align-top text-rose-400/80 text-xs leading-relaxed">
-                       {ai.tantangan_dan_faktor_penghambat ?
+                       {ai.rekap_singkat?.tantangan || (ai.tantangan_dan_faktor_penghambat ?
                          <div>
                            <div className="font-semibold mb-1">Komunikasi:</div>
                            <div className="mb-2">{getFirstSentence(ai.tantangan_dan_faktor_penghambat.komunikasi_dan_pola_kerja)}</div>
                            <div className="font-semibold mb-1">Internal:</div>
                            <div>{getFirstSentence(ai.tantangan_dan_faktor_penghambat.hambatan_karakter_internal)}</div>
                          </div>
-                       : (getFirstSentence(ai.tantangan) || '-')}
+                       : (getFirstSentence(ai.tantangan) || '-'))}
                     </td>
                     <td className="px-4 py-4 align-top text-blue-300/80 text-xs leading-relaxed">
-                       {Array.isArray(ai.saran_pengembangan_spesifik) ? <ul className="list-decimal pl-3">{ai.saran_pengembangan_spesifik.map((s,i) => <li key={i} className="mb-1">{getFirstSentence(s)}</li>)}</ul> : (getFirstSentence(ai.saran) || '-')}
+                       {ai.rekap_singkat?.saran || (Array.isArray(ai.saran_pengembangan_spesifik) ? <ul className="list-decimal pl-3">{ai.saran_pengembangan_spesifik.map((s,i) => <li key={i} className="mb-1">{getFirstSentence(s)}</li>)}</ul> : (getFirstSentence(ai.saran) || '-'))}
                     </td>
                     <td className="px-4 py-4 align-top text-teal-400/80 text-xs leading-relaxed">
-                      {Array.isArray(ai.peta_potensi_peran) ?
+                      {ai.rekap_singkat?.peran || (Array.isArray(ai.peta_potensi_peran) ?
                         <div>
                           {ai.peta_potensi_peran.map((p,i) => (
                              <div key={i} className="mb-1.5 flex flex-col">
@@ -236,7 +236,7 @@ export default function RekapPage() {
                              </div>
                           ))}
                         </div>
-                      : (getFirstSentence(ai.peran) || '-')}
+                      : (getFirstSentence(ai.peran) || '-'))}
                     </td>
                   </tr>
                 );

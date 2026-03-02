@@ -7,7 +7,7 @@ import { generateLocalAiInsight } from './localAiEngine';
  * FALLBACK: Local AI Engine → same schema, 100% offline
  * LEGACY: Gemini (if ZAI_API_KEY not set but GEMINI_API_KEY exists)
  */
-export async function generatePersonalityDescription(discPattern, hexacoMeanH, hexacoMeanE, hexacoMeanX, hexacoMeanA, hexacoMeanC, hexacoMeanO, hexacoFacetMeans, discScores) {
+export async function generatePersonalityDescription(discPattern, hexacoMeanH, hexacoMeanE, hexacoMeanX, hexacoMeanA, hexacoMeanC, hexacoMeanO, hexacoFacetMeans, discScores, userData = {}) {
   const factorMeans = { H: hexacoMeanH, E: hexacoMeanE, X: hexacoMeanX, A: hexacoMeanA, C: hexacoMeanC, O: hexacoMeanO };
 
   // Always prepare local insight (same schema as Claude)
@@ -46,6 +46,11 @@ export async function generatePersonalityDescription(discPattern, hexacoMeanH, h
     const prompt = `Anda adalah seorang Konsultan Psikologi Organisasi dan Pakar Manajemen SDM dengan pengalaman lebih dari 25 tahun. Anda memiliki pendekatan yang holistik, mendalam, dan mampu memadukan psikologi modern dengan analisis perilaku. Tugas Anda adalah menganalisis data psikometrik seseorang (DISC & HEXACO) untuk memberikan rekomendasi "Capability-Based Placement" (pemetaan potensi peran tanpa terpaku pada jabatan tertentu).
 
 ### DATA PROFIL:
+- Demografi & Pekerjaan:
+  • Usia: ${userData?.usia || 'Tidak disebutkan'} tahun
+  • Asal Instansi: ${userData?.instansi || 'Tidak disebutkan'}
+  • Pekerjaan: ${userData?.pekerjaan || 'Tidak disebutkan'}
+  • Jabatan: ${userData?.jabatan || 'Tidak disebutkan'}
 - Gaya Kerja (Pola DISC): ${discPattern}
   • Grafik 1 (Publik/Mask) : D=${discScores?.discMost?.D || 0}, I=${discScores?.discMost?.I || 0}, S=${discScores?.discMost?.S || 0}, C=${discScores?.discMost?.C || 0}
   • Grafik 2 (Pribadi/Core) : D=${discScores?.discLeast?.D || 0}, I=${discScores?.discLeast?.I || 0}, S=${discScores?.discLeast?.S || 0}, C=${discScores?.discLeast?.C || 0}
@@ -61,7 +66,7 @@ export async function generatePersonalityDescription(discPattern, hexacoMeanH, h
   ${JSON.stringify(hexacoFacetMeans)}
 
 ### ATURAN UTAMA (WAJIB DIIKUTI - ZERO JARGON & ZERO METRIC POLICY):
-1. INTEGRASI TOTAL: Gabungkan DISC dan HEXACO menjadi narasi utuh. Jangan pisahkan analisisnya.
+1. INTEGRASI TOTAL: Gabungkan DISC, HEXACO, serta latar belakang Pekerjaan, Usia, dan Jabatannya menjadi narasi yang relevan. Jangan pisahkan analisisnya.
 2. DILARANG KERAS MENGGUNAKAN BLACKLIST KATA BERIKUT: 
    "skor", "angka", "maksimal", "persentase", "tingkat", "level", "dimensi", "aspek", "facet", "grafik", "profil", "Altruisme", "Integritas", "Dominance", "Influence", "Steadiness", "Compliance", "Extraversion", "Agreeableness", "Conscientiousness", "Openness", "Honesty-Humility", "Emotionality".
 3. UBAH LABEL MENJADI DESKRIPSI PERILAKU: Jangan sebut nama sifatnya, tapi deskripsikan perilakunya.
@@ -72,13 +77,13 @@ export async function generatePersonalityDescription(discPattern, hexacoMeanH, h
 4. HINDARI KESAN TES ALAT UKUR: Tuliskan seakan-akan Anda adalah psikolog yang baru saja mengobservasi klien ini selama 1 tahun penuh, BUKAN sedang membaca hasil tes.
 5. REALISTIS & KLINIS: Hindari kata mutlak (selalu/tidak pernah). Gunakan "cenderung", "memiliki kecenderungan", "tampak", atau "biasanya".
 6. ANALISIS FRIKSI INTERNAL: Jika ada perbedaan tajam antara perilaku publik (Mask) dan karakter asli (Core), jadikan ini sebagai sumber kelelahan emosional atau "Faktor Penghambat".
-7. NO BULLET POINTS: Bagian \`deskripsi_kepribadian_terintegrasi\` HARUS berupa narasi mengalir/paragraf, bukan poin-poin.
-8. PERSPEKTIF HR: Fokuslah pada potensi dan kapabilitas, bukan hanya deskripsi statis.
+7. PANJANG NARASI: Bagian \`deskripsi_kepribadian_terintegrasi\` HARUS berupa narasi mengalir (bukan poin-poin/bullet), detail, utuh, minimum berisi 3 paragraf komprehensif, menghubungkan karakternya dengan tuntutan pekerjaannya.
+8. PERSPEKTIF HR: Fokuslah pada potensi dan kapabilitas sesuai jabatannya, bukan hanya deskripsi statis.
 
 ### OUTPUT JSON (Strict Format):
 {
   "arketipe_personal": "Julukan unik 2-4 kata yang mencerminkan esensi kepribadian & peran alaminya",
-  "deskripsi_kepribadian_terintegrasi": "Narasi utuh menggabungkan DISC & HEXACO. Elaborasi dinamika perilaku publik vs pribadi dan bagaimana hal itu membentuk karakternya sehari-hari. (150-250 kata)",
+  "deskripsi_kepribadian_terintegrasi": "Narasi utuh 3 paragraf menggabungkan DISC, HEXACO, jabatan/pekerjaan. Elaborasi dinamika perilaku.",
   "kekuatan_utama": [
     "Kekuatan 1: (Penjelasan singkat 1 kalimat terkait kombinasi karakter & perilakunya)",
     "Kekuatan 2: (Penjelasan)",
@@ -102,7 +107,13 @@ export async function generatePersonalityDescription(discPattern, hexacoMeanH, h
     "Langkah taktis dan konkret 1 untuk mengatasi faktor penghambat atau mematangkan karakternya.",
     "Langkah taktis 2...",
     "Langkah taktis 3..."
-  ]
+  ],
+  "rekap_singkat": {
+    "kekuatan": "Ringkasan 1 kalimat/peluru tentang kekuatan kuncinya.",
+    "tantangan": "Ringkasan 1 kalimat tentang masalah utamanya.",
+    "saran": "Ringkasan 1 kalimat taktis sarannya.",
+    "peran": "Ringkasan 1 kalimat peran idealnya."
+  }
 }`;
 
     const controller = new AbortController();
