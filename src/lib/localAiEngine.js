@@ -114,21 +114,17 @@ export function generateLocalAiInsight(discPattern, factorMeans, facetMeans, dis
   // === 5. BUILD DESKRIPSI KEPRIBADIAN TERINTEGRASI ===
   let deskripsi = '';
 
-  // Start with DISC personality
-  deskripsi += disc.gayaKerja.split('\n\n')[0]; // First paragraph of DISC
+  // First paragraph: DISC personality (paragraph 1 only)
+  const discFirstPara = disc.gayaKerja.split('\n\n')[0];
+  deskripsi += discFirstPara;
 
-  // Add HEXACO dimension overview
+  // Second paragraph: Combined HEXACO + cross insights (max 1 additional insight)
   if (hexAnalysis.dimensiOverview) {
-    deskripsi += '\n\n' + hexAnalysis.dimensiOverview;
-  }
-
-  // Add 3-graph dynamic
-  if (discAnalysisResult?.dinamikaAdaptasi) {
-    deskripsi += '\n\n' + discAnalysisResult.dinamikaAdaptasi;
-  }
-
-  // Add cross-dimension insights
-  if (hexAnalysis.crossInsights.length > 0) {
+    // Get first paragraph only of hexaco overview
+    const hexacoFirstPara = hexAnalysis.dimensiOverview.split('\n\n')[0];
+    deskripsi += '\n\n' + hexacoFirstPara;
+  } else if (hexAnalysis.crossInsights.length > 0) {
+    // Fallback to first cross insight
     deskripsi += '\n\n' + hexAnalysis.crossInsights[0];
   }
 

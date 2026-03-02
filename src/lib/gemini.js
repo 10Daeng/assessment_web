@@ -78,13 +78,13 @@ export async function generatePersonalityDescription(discPattern, hexacoMeanH, h
 4. HINDARI KESAN TES ALAT UKUR: Tuliskan seakan-akan Anda adalah psikolog yang baru saja mengobservasi klien ini selama 1 tahun penuh, BUKAN sedang membaca hasil tes.
 5. REALISTIS & KLINIS: Hindari kata mutlak (selalu/tidak pernah). Gunakan "cenderung", "memiliki kecenderungan", "tampak", atau "biasanya".
 6. ANALISIS FRIKSI INTERNAL: Jika ada perbedaan tajam antara perilaku publik (Mask) dan karakter asli (Core), jadikan ini sebagai sumber kelelahan emosional atau "Faktor Penghambat".
-7. PANJANG NARASI: Bagian \`deskripsi_kepribadian_terintegrasi\` HARUS berupa narasi mengalir (bukan poin-poin/bullet), detail, utuh, minimum berisi 3 paragraf komprehensif, menghubungkan karakternya dengan tuntutan pekerjaannya.
+7. PANJANG NARASI: Bagian \`deskripsi_kepribadian_terintegrasi\` HARUS berupa narasi mengalir (bukan poin-poin/bullet), detail, utuh, maksimal 2 paragraf (sekitar 10-15 kalimat), menghubungkan karakternya dengan tuntutan pekerjaannya.
 8. PERSPEKTIF HR: Fokuslah pada potensi dan kapabilitas sesuai jabatannya, bukan hanya deskripsi statis.
 
 ### OUTPUT JSON (Strict Format):
 {
   "arketipe_personal": "Julukan unik 2-4 kata yang mencerminkan esensi kepribadian & peran alaminya",
-  "deskripsi_kepribadian_terintegrasi": "Narasi utuh 3 paragraf menggabungkan DISC, HEXACO, jabatan/pekerjaan. Elaborasi dinamika perilaku.",
+  "deskripsi_kepribadian_terintegrasi": "Narasi maksimal 2 paragraf (sekitar 10-15 kalimat) menggabungkan DISC, HEXACO, jabatan/pekerjaan. Elaborasi dinamika perilaku.",
   "kekuatan_utama": [
     "Kekuatan 1: (Penjelasan singkat 1 kalimat terkait kombinasi karakter & perilakunya)",
     "Kekuatan 2: (Penjelasan)",
