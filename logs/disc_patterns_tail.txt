@@ -1,0 +1,80 @@
+
+Orang-orang Specialist memiliki pengetahuan mendalam di bidang spesialisasi mereka dan bangga dengan keahlian mereka. Mereka teliti dalam pekerjaan mereka dan dapat diandalkan untuk menghasilkan hasil yang berkualitas tinggi secara konsisten. Mereka adalah aset berharga dalam peran yang memerlukan presisi dan perhatian pada detail.
+
+Namun, preferensi mereka untuk stabilitas dan rutinitas terkadang dapat membuat mereka resisten terhadap perubahan. Mereka mungkin terlalu protektif terhadap cara mereka melakukan sesuatu dan lambat untuk mengadopsi metode baru. Specialist paling efektif ketika mereka belajar untuk lebih terbuka terhadap ide-ide baru dan ketika mereka bersedia untuk berbagi pengetahuan mereka dengan orang lain.'''
+    },
+    # Single dominant patterns
+    'DD': {
+        'name': 'The Results Driver',
+        'short_name': 'Driver',
+        'emotions': 'Menolak kasih sayang; menerima agresi',
+        'goal': 'Menang; mencapai hasil',
+        'judges_others_by': 'Hasil dan kemampuan untuk menyelesaikan sesuatu',
+        'influences_others_by': 'Kekuatan karakter; ketekunan',
+        'value_to_org': 'Mencapai hasil segera; menyebabkan tindakan',
+        'overuses': 'Ketidaksabaran; ketidakpekaan',
+        'under_pressure': 'Menjadi menuntut dan agresif',
+        'fears': 'Dimanfaatkan; tampak lemah',
+        'increase_effectiveness': 'Empati; kesabaran; kolaborasi',
+        'description': '''Individu Results Driver adalah orang yang sangat kompetitif yang fokus pada pencapaian tujuan dengan cepat. Mereka langsung, tegas, dan lebih suka mengendalikan situasi.
+
+Orang-orang Driver memiliki dorongan yang kuat untuk menang dan mencapai hasil. Mereka tidak takut untuk mengambil keputusan sulit dan bertindak cepat. Mereka menghargai efisiensi dan tidak suka membuang waktu. Mereka adalah pemimpin alami yang dapat menggerakkan tim menuju tujuan dengan kecepatan tinggi.
+
+Namun, fokus mereka yang intens pada hasil terkadang dapat membuat mereka tampak tidak sensitif atau tidak sabar dengan orang lain. Mereka mungkin mengabaikan kebutuhan emosional tim dan terlalu mendorong untuk hasil cepat. Driver paling efektif ketika mereka belajar untuk menyeimbangkan dorongan mereka untuk hasil dengan empati dan kesabaran terhadap orang lain.'''
+    },
+    'II': {
+        'name': 'The Promoter',
+        'short_name': 'Promoter',
+        'emotions': 'Menerima kasih sayang; menolak agresi',
+        'goal': 'Popularitas dan pengakuan sosial',
+        'judges_others_by': 'Antusiasme dan keterampilan sosial',
+        'influences_others_by': 'Optimisme, energi, dan keterampilan verbal',
+        'value_to_org': 'Memotivasi orang lain; menciptakan antusiasme',
+        'overuses': 'Antusiasme; impulsivitas',
+        'under_pressure': 'Menjadi tidak terorganisir dan terlalu banyak bicara',
+        'fears': 'Kehilangan persetujuan sosial; penolakan',
+        'increase_effectiveness': 'Tindak lanjut; perhatian pada detail; manajemen waktu',
+        'description': '''Individu Promoter adalah orang yang ramah dan antusias yang unggul dalam membangun hubungan. Mereka adalah networker alami yang membawa energi dan optimisme ke situasi apa pun.
+
+Orang-orang Promoter memiliki kemampuan luar biasa untuk menginspirasi dan memotivasi orang lain. Mereka menciptakan lingkungan yang positif dan menyenangkan di mana orang merasa bersemangat dan termotivasi. Mereka adalah komunikator yang baik yang dapat menyampaikan ide-ide dengan cara yang menarik dan persuasif.
+
+Namun, antusiasme mereka terkadang dapat membuat mereka kehilangan fokus pada detail dan tindak lanjut. Mereka mungkin terlalu optimis tentang apa yang dapat mereka capai dan kesulitan untuk memenuhi komitmen. Promoter paling efektif ketika mereka belajar untuk lebih disiplin dalam manajemen waktu dan tindak lanjut, sambil tetap mempertahankan energi dan antusiasme mereka.'''
+    },
+    'SS': {
+        'name': 'The Supporter',
+        'short_name': 'Supporter',
+        'emotions': 'Menolak agresi; menerima kasih sayang',
+        'goal': 'Mempertahankan stabilitas dan harmoni',
+        'judges_others_by': 'Loyalitas dan keandalan',
+        'influences_others_by': 'Konsistensi dan ketekunan yang sabar',
+        'value_to_org': 'Pemain tim yang dapat diandalkan; pengaruh yang menenangkan',
+        'overuses': 'Kerendahan hati; pendekatan tidak langsung',
+        'under_pressure': 'Menjadi keras kepala dan resisten terhadap perubahan',
+        'fears': 'Perubahan; kehilangan stabilitas',
+        'increase_effectiveness': 'Ketegasan; kesediaan untuk merangkul perubahan',
+        'description': '''Individu Supporter adalah orang yang sabar dan setia yang menghargai stabilitas dan harmoni. Mereka adalah pemain tim yang sangat baik yang memberikan dukungan yang konsisten dan dapat diandalkan kepada orang lain.
+
+Orang-orang Supporter menciptakan lingkungan yang stabil dan dapat diprediksi di mana orang merasa aman dan didukung. Mereka adalah pendengar yang baik dan dapat diandalkan untuk memberikan bantuan ketika dibutuhkan. Mereka loyal kepada tim dan organisasi mereka dan berkomitmen untuk kesuksesan jangka panjang.
+
+Namun, preferensi mereka untuk stabilitas terkadang dapat membuat mereka resisten terhadap perubahan yang diperlukan. Mereka mungkin terlalu pasif dalam menghadapi masalah dan kesulitan untuk mengambil inisiatif. Supporter paling efektif ketika mereka belajar untuk lebih tegas dalam menyuarakan pendapat mereka dan ketika mereka bersedia untuk merangkul perubahan yang konstruktif.'''
+    },
+    'CC': {
+        'name': 'The Analyst',
+        'short_name': 'Analyst',
+        'emotions': 'Menahan kasih sayang dan agresi',
+        'goal': 'Akurasi dan kebenaran',
+        'judges_others_by': 'Standar yang tepat dan kualitas pekerjaan',
+        'influences_others_by': 'Logika, data, dan pendekatan sistematis',
+        'value_to_org': 'Mendefinisikan, mengklarifikasi, dan mempertahankan standar kualitas',
+        'overuses': 'Analisis; perfeksionisme',
+        'under_pressure': 'Menjadi menarik diri dan terlalu kritis',
+        'fears': 'Kritik terhadap pekerjaan mereka; salah',
+        'increase_effectiveness': 'Ketegasan; fleksibilitas; kesediaan untuk mengambil risiko',
+        'description': '''Individu Analyst adalah perfeksionis yang berorientasi pada detail yang menghargai akurasi dan kualitas. Mereka mendekati masalah secara sistematis dan lebih suka bekerja dengan data dan fakta.
+
+Orang-orang Analyst memiliki kemampuan luar biasa untuk menganalisis informasi kompleks dan mengidentifikasi masalah potensial. Mereka teliti dalam pekerjaan mereka dan berkomitmen untuk menghasilkan hasil yang akurat dan berkualitas tinggi. Mereka adalah aset berharga dalam peran yang memerlukan pemikiran kritis dan perhatian pada detail.
+
+Namun, perfeksionisme mereka terkadang dapat memperlambat proses pengambilan keputusan. Mereka mungkin terlalu fokus pada detail dan kesulitan untuk melihat gambaran besar. Analyst paling efektif ketika mereka belajar untuk menyeimbangkan kebutuhan mereka untuk akurasi dengan kebutuhan untuk membuat keputusan tepat waktu, dan ketika mereka bersedia untuk mengambil risiko yang diperhitungkan.'''
+    }
+}
+

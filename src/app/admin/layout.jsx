@@ -9,6 +9,8 @@ const navItems = [
   { href: '/admin/disc', label: 'Hasil DISC', icon: '🎯' },
   { href: '/admin/hexaco', label: 'Hasil HEXACO', icon: '🧬' },
   { href: '/admin/reports', label: 'Laporan Lengkap', icon: '📄' },
+  { href: '/admin/rekap', label: 'Rekap Analisis', icon: '📋' },
+  { href: '/admin/profil-organisasi', label: 'Profil Organisasi', icon: '🏢' },
   { href: '/admin/duplicates', label: 'Data Ganda', icon: '⚠️' },
 ];
 

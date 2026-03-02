@@ -1,5 +1,6 @@
 import { Page, Text, View, Document, StyleSheet, Image } from '@react-pdf/renderer';
 import { getDiscPatternName } from '../utils/scoring';
+import { calculateValidityIndex } from '../utils/validityCheck';
 
 // ==========================================
 // COLORS
@@ -176,7 +177,7 @@ export default function AssessmentPDF({ userData, discScores, hexacoScores, aiIn
         <View style={{ textAlign: 'center', marginBottom: 10 }}>
           <Text style={styles.rahasia}>SANGAT RAHASIA</Text>
           <Text style={styles.lembaga}>Lembaga Konseling dan Psikoterapi Islam</Text>
-          <Image src="/logo.png" style={styles.logo} />
+          <Image src="/logo.png" style={styles.logo} alt="Logo" />
           <Text style={styles.address}>Jalan Potre Koneng II No. 31, Kolor, Sumenep 69417 | www.lenterabatin.co.id</Text>
         </View>
         <View style={styles.hr} />
@@ -207,9 +208,24 @@ export default function AssessmentPDF({ userData, discScores, hexacoScores, aiIn
           <Text style={{ fontSize: 9, color: c.grey, lineHeight: 1.5 }}>
             Pola Gaya Kerja: {getDiscPatternName(discScores?.pattern)} ({discScores?.pattern || '-'})
           </Text>
-          <Text style={{ fontSize: 9, color: c.grey, lineHeight: 1.5, marginTop: 3 }}>
-            Status: VALID & TERINTEGRASI
-          </Text>
+          
+          {(() => {
+            const validity = calculateValidityIndex(userData?.rawData || {}, { rawData: userData?.rawData, hexacoScores });
+            const isSuspicious = validity.overallScore !== '-' && validity.overallScore < 60;
+            
+            return (
+              <View style={{ marginTop: 8, padding: 8, borderRadius: 4, backgroundColor: isSuspicious ? '#fee2e2' : '#dcfce7', borderWidth: 1, borderColor: isSuspicious ? '#f87171' : '#86efac' }}>
+                <Text style={{ fontSize: 9, fontFamily: 'Helvetica-Bold', color: isSuspicious ? '#b91c1c' : '#166534', marginBottom: 2 }}>
+                  Status Validitas Pengerjaan: {validity.overallLabel} ({validity.overallScore}/100)
+                </Text>
+                <Text style={{ fontSize: 8, color: isSuspicious ? '#991b1b' : '#14532d', lineHeight: 1.3 }}>
+                  {isSuspicious 
+                    ? "Sistem Peringatan: Respondensi terindikasi tidak valid (terlalu cepat / asal-asalan / inkonsisten). Hasil interpretasi pada halaman selanjutnya mungkin TIDAK AKURAT dan tidak mencerminkan kondisi responden yang sebenarnya." 
+                    : "Pengerjaan tes memenuhi standar konsistensi dan durasi minimum. Hasil dapat diinterpretasikan."}
+                </Text>
+              </View>
+            );
+          })()}
         </View>
 
         <Text style={styles.pageNum}>Hal. 1</Text>
@@ -220,7 +236,7 @@ export default function AssessmentPDF({ userData, discScores, hexacoScores, aiIn
       {/* ============================================================ */}
       <Page size="A4" style={styles.page}>
         {/* Watermark */}
-        <Image src="/logo.png" style={styles.watermark} />
+        <Image src="/logo.png" style={styles.watermark} alt="Watermark" />
 
         {/* DISC Section — 3 columns */}
         <Text style={styles.sectionTitle}>Profil Gaya Kerja (DISC)</Text>
@@ -273,40 +289,58 @@ export default function AssessmentPDF({ userData, discScores, hexacoScores, aiIn
       {/* (Will wrap across pages automatically as needed)              */}
       {/* ============================================================ */}
       <Page size="A4" style={styles.page} wrap>
-        <Image src="/logo.png" style={styles.watermark} />
+        <Image src="/logo.png" style={styles.watermark} alt="Watermark" />
 
         <Text style={{ ...styles.mainTitle, fontSize: 13, marginBottom: 15 }}>DESKRIPSI KEPRIBADIAN</Text>
 
         <View style={{ marginBottom: 20 }}>
-          <Text style={styles.narrativeTitle}>1. Dinamika Gaya Kerja</Text>
+          <Text style={styles.narrativeTitle}>1. Gambaran Karakter & Gaya Komunikasi</Text>
           <Text style={styles.narrativeBody}>
-            {aiInsight?.gayaKerja || 'Deskripsi gaya kerja belum tersedia. Silakan generate interpretasi AI terlebih dahulu melalui panel admin.'}
+            {aiInsight?.deskripsi_kepribadian || aiInsight?.gayaKerja || 'Deskripsi kepribadian terpadu belum tersedia. Silakan generate interpretasi AI.'}
           </Text>
         </View>
 
-        <View style={{ marginBottom: 20 }}>
-          <Text style={styles.narrativeTitle}>2. Dinamika Karakter Inti</Text>
-          <Text style={styles.narrativeBody}>
-            {aiInsight?.karakterInti || 'Ringkasan profil karakter belum tersedia. Silakan generate interpretasi AI terlebih dahulu melalui panel admin.'}
-          </Text>
-        </View>
+        {aiInsight?.kekuatan_utama && (
+          <View style={{ marginBottom: 20 }}>
+            <Text style={styles.narrativeTitle}>2. Kekuatan Utama</Text>
+            {aiInsight.kekuatan_utama.map((k, i) => (
+              <Text key={i} style={styles.bulletItem}>• {k}</Text>
+            ))}
+          </View>
+        )}
+
+        {aiInsight?.analisis_lingkungan_ideal && (
+           <View style={{ marginBottom: 20 }}>
+            <Text style={styles.narrativeTitle}>{aiInsight?.kekuatan_utama ? '3' : '2'}. Analisis Lingkungan Ideal</Text>
+            <Text style={styles.narrativeBody}>
+              <Text style={{ fontFamily: 'Helvetica-Bold' }}>Ekosistem Kerja: </Text>
+              {aiInsight.analisis_lingkungan_ideal.ekosistem_kerja}
+            </Text>
+            <Text style={styles.narrativeBody}>
+              <Text style={{ fontFamily: 'Helvetica-Bold' }}>Kebutuhan Motivasi: </Text>
+              {aiInsight.analisis_lingkungan_ideal.kebutuhan_motivasi}
+            </Text>
+          </View>
+        )}
 
         <Text style={styles.pageNum} render={({ pageNumber }) => (`Hal. ${pageNumber}`)} fixed />
-      </Page>
 
         <View style={{ marginBottom: 20 }}>
-          <Text style={styles.narrativeTitle}>3. Rekomendasi Pengembangan Diri</Text>
+          <Text style={styles.narrativeTitle}>{aiInsight?.analisis_lingkungan_ideal ? '4' : '3'}. Tantangan & Rekomendasi</Text>
           <Text style={styles.narrativeBody}>
-            Berdasarkan keseluruhan profil asesmen, berikut adalah beberapa area yang dapat menjadi fokus pengembangan di masa mendatang:
+            <Text style={{ fontFamily: 'Helvetica-Bold' }}>Area Friksi / Hambatan: </Text>
+            {aiInsight?.tantangan_dan_faktor_penghambat?.komunikasi_dan_pola_kerja || 'Belum dianalisis'} 
+            {aiInsight?.tantangan_dan_faktor_penghambat?.hambatan_karakter_internal ? ` Terutama dalam konteks internal, ${aiInsight.tantangan_dan_faktor_penghambat.hambatan_karakter_internal}` : ''}
           </Text>
-          {aiInsight ? (
-            <>
-              <Text style={styles.bulletItem}>•  {aiInsight.rekomendasi1}</Text>
-              <Text style={styles.bulletItem}>•  {aiInsight.rekomendasi2}</Text>
-              <Text style={styles.bulletItem}>•  {aiInsight.rekomendasi3}</Text>
-            </>
-          ) : (
-            <Text style={styles.narrativeBody}>Rekomendasi belum tersedia. Silakan generate interpretasi AI terlebih dahulu melalui panel admin.</Text>
+          
+          <Text style={{ ...styles.narrativeBody, marginTop: 8 }}>
+            <Text style={{ fontFamily: 'Helvetica-Bold' }}>Saran Pengembangan Strategis: </Text>
+          </Text>
+          {(aiInsight?.saran_pengembangan_spesifik || []).map((k, i) => (
+             <Text key={i} style={styles.bulletItem}>• {k}</Text>
+          ))}
+          {!aiInsight?.saran_pengembangan_spesifik && (
+              <Text style={styles.narrativeBody}>Rekomendasi belum tersedia. Silakan generate interpretasi AI terlebih dahulu melalui panel admin.</Text>
           )}
         </View>
 
@@ -316,7 +350,7 @@ export default function AssessmentPDF({ userData, discScores, hexacoScores, aiIn
             Ingin Membedah Hasil Ini Lebih Dalam?
           </Text>
           <Text style={{ fontSize: 10, color: '#1e3a8a', lineHeight: 1.5, marginBottom: 8 }}>
-            Laporan ini hanya menunjukkan "Siapa" Anda. Melalui Sesi Konseling Premium, Psikolog Lentera Batin akan membedah "Mengapa" Anda merasakan kelelahan adaptasi, menemukan titik buta (blind spots) yang menghambat karir, serta menyusun strategi nyata untuk hubungan sosial dan asmara Anda.
+            Laporan ini hanya menunjukkan &ldquo;Siapa&rdquo; Anda. Melalui Sesi Konseling Premium, Psikolog Lentera Batin akan membedah &ldquo;Mengapa&rdquo; Anda merasakan kelelahan adaptasi, menemukan titik buta (blind spots) yang menghambat karir, serta menyusun strategi nyata untuk hubungan sosial dan asmara Anda.
           </Text>
           <Text style={{ fontSize: 10, fontFamily: 'Helvetica-Bold', color: '#2563eb' }}>
             Hubungi Admin via WhatsApp: 0851-1777-8798
@@ -331,10 +365,10 @@ export default function AssessmentPDF({ userData, discScores, hexacoScores, aiIn
         </View>
 
         {/* Signature */}
-        <View style={{ marginTop: 40, flexDirection: 'row', justifyContent: 'flex-end' }}>
+        <View style={{ marginTop: 40, flexDirection: 'row', justifyContent: 'flex-end', paddingBottom: 50 }}>
           <View style={{ width: '50%', alignItems: 'center' }}>
             <Text style={{ fontSize: 9, color: c.dark, marginBottom: 15 }}>Sumenep, {formatDate(submittedAt)}</Text>
-            <Image src="/logo.png" style={{ width: 120, height: 26, marginBottom: 8 }} />
+            <Image src="/logo.png" style={{ width: 120, height: 26, marginBottom: 8 }} alt="Logo" />
             <Text style={{ fontSize: 10, fontFamily: 'Helvetica-Bold', color: c.dark, marginBottom: 2 }}>Moh. Ilham, M.Si., CHA., C.Med.</Text>
             <Text style={{ fontSize: 8, color: c.grey }}>Assessor / Konselor</Text>
           </View>

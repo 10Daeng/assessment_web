@@ -72,6 +72,7 @@ const intraDimPatterns = {
     'unco-high_crea-low': 'Ia berpikir di luar norma dan menantang konvensi, namun tidak selalu menghasilkan solusi kreatif. Ia lebih sebagai kritikus sistem daripada inovator.',
     'inqu-high_aesa-low': 'Ia haus akan pengetahuan dan eksplorasi intelektual, namun kurang sensitif terhadap keindahan artistik. Rasa ingin tahunya berorientasi akademis dan ilmiah.',
   },
+};
 // =========================================
 // CROSS-DIMENSION DYNAMICS (Pure Behavioral)
 // =========================================
@@ -129,13 +130,22 @@ const archetypes = {
 // HELPERS
 // =========================================
 function getLevel(mean) {
-  if (mean >= 3.8) return 'high';
-  if (mean >= 2.5) return 'mid';
-  return 'low';
+  if (mean >= 4.2) return 'very_high';
+  if (mean >= 3.5) return 'high';
+  if (mean >= 2.8) return 'mid';
+  if (mean >= 2.0) return 'low';
+  return 'very_low';
 }
 
 function getPct(val) {
   return Math.min(Math.max(((val - 1) / 4) * 100, 0), 100);
+}
+
+// Normalize 5-level to 3-level for pattern matching against existing dictionaries
+function normalizeLevel(level) {
+  if (level === 'very_high') return 'high';
+  if (level === 'very_low') return 'low';
+  return level;
 }
 
 // =========================================
@@ -192,7 +202,8 @@ export function analyzeHexacoProfile(factorMeans, facetMeans) {
         let match = true;
         for (const p of parts) {
           const [facetKey, expectedLevel] = p.split('-');
-          if (facetLevels[facetKey] !== expectedLevel) { match = false; break; }
+          const actual = facetLevels[facetKey];
+          if (actual !== expectedLevel && normalizeLevel(actual) !== expectedLevel) { match = false; break; }
         }
         if (match) {
           intraInsights.push(intraDimPatterns[dimKey][patternKey]);
@@ -220,7 +231,9 @@ export function analyzeHexacoProfile(factorMeans, facetMeans) {
     const [part1, part2] = key.split('_');
     const [d1, l1] = part1.split('-');
     const [d2, l2] = part2.split('-');
-    if (getLevel(fm[d1] || 3) === l1 && getLevel(fm[d2] || 3) === l2) {
+    const lv1 = getLevel(fm[d1] || 3);
+    const lv2 = getLevel(fm[d2] || 3);
+    if ((lv1 === l1 || normalizeLevel(lv1) === l1) && (lv2 === l2 || normalizeLevel(lv2) === l2)) {
       crossInsights.push(crossDimDynamics[key]);
     }
   }
@@ -231,7 +244,9 @@ export function analyzeHexacoProfile(factorMeans, facetMeans) {
     const [part1, part2] = key.split('_');
     const [d1, l1] = part1.split('-');
     const [d2, l2] = part2.split('-');
-    if (getLevel(fm[d1] || 3) === l1 && getLevel(fm[d2] || 3) === l2) {
+    const lv1 = getLevel(fm[d1] || 3);
+    const lv2 = getLevel(fm[d2] || 3);
+    if ((lv1 === l1 || normalizeLevel(lv1) === l1) && (lv2 === l2 || normalizeLevel(lv2) === l2)) {
       archetype = archetypes[key];
       break; // Take first matching archetype
     }

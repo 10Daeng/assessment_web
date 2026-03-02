@@ -64,12 +64,19 @@ export function calculateDiscScores(answers) {
   });
 
   // Pattern detection (Based on Composite Graph 3 as primary)
-  const sorted = Object.entries(discComposite).sort((a,b) => b[1] - a[1]);
+  // Sort by score descending. Tie breaker preference mapped in offline code: D > I > S > C
+  const traitOrder = { 'D': 1, 'I': 2, 'S': 3, 'C': 4 };
+  const sorted = Object.entries(discComposite).sort((a,b) => {
+    if (b[1] !== a[1]) return b[1] - a[1];
+    return traitOrder[a[0]] - traitOrder[b[0]]; // Tie breaker
+  });
+
+  const fullPattern = sorted.map(s => s[0]).join('-'); // format: D-I-S-C
   const primary = sorted[0][0];
   const secondary = sorted[1][1] > 0 ? sorted[1][0] : '';
-  const pattern = secondary ? `${primary}${secondary}` : primary;
+  const pattern = secondary ? `${primary}${secondary}` : primary; // Legacy 2-letter pattern
 
-  return { discMost, discLeast, discComposite, pattern, primary };
+  return { discMost, discLeast, discComposite, pattern, primary, fullPattern };
 }
 
 export const DISC_PATTERNS_MAP = {

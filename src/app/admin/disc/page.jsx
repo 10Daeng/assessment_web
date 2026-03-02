@@ -1,30 +1,68 @@
 'use client';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import Link from 'next/link';
 import { getDiscPatternName } from '@/utils/scoring';
+
+function SortIcon({ sortBy, sortDir, field }) {
+  if (sortBy !== field) return <span className="text-slate-600 ml-1">↕</span>;
+  return <span className="text-blue-400 ml-1">{sortDir === 'asc' ? '↑' : '↓'}</span>;
+}
 
 export default function DiscResultsPage() {
   const [data, setData] = useState([]);
   const [search, setSearch] = useState('');
   const [loading, setLoading] = useState(true);
   const [filterPattern, setFilterPattern] = useState('');
+  const [sortBy, setSortBy] = useState('submittedAt');
+  const [sortDir, setSortDir] = useState('desc');
 
   useEffect(() => {
+    async function fetchData() {
+      setLoading(true);
+      try {
+        const res = await fetch(`/api/admin/submissions?search=${encodeURIComponent(search)}`);
+        const json = await res.json();
+        setData(json.data || []);
+      } catch (e) {
+        console.error("Failed to fetch DISC data:", e);
+      }
+      setLoading(false);
+    }
     fetchData();
   }, [search]);
 
-  async function fetchData() {
-    setLoading(true);
-    try {
-      const res = await fetch(`/api/admin/submissions?search=${encodeURIComponent(search)}`);
-      const json = await res.json();
-      setData(json.data || []);
-    } catch (e) { console.error(e); }
-    setLoading(false);
+  function toggleSort(field) {
+    if (sortBy === field) {
+      setSortDir(d => d === 'asc' ? 'desc' : 'asc');
+    } else {
+      setSortBy(field);
+      setSortDir('asc');
+    }
   }
 
   const patterns = [...new Set(data.map(d => d.discScores?.pattern).filter(Boolean))];
-  const filtered = filterPattern ? data.filter(d => d.discScores?.pattern === filterPattern) : data;
+
+  const sorted = useMemo(() => {
+    let list = filterPattern ? data.filter(d => d.discScores?.pattern === filterPattern) : [...data];
+    list.sort((a, b) => {
+      let va, vb;
+      switch (sortBy) {
+        case 'nama': va = a.userData?.nama || ''; vb = b.userData?.nama || ''; break;
+        case 'pattern': va = a.discScores?.pattern || ''; vb = b.discScores?.pattern || ''; break;
+        case 'D': va = a.discScores?.discComposite?.D || 0; vb = b.discScores?.discComposite?.D || 0; break;
+        case 'I': va = a.discScores?.discComposite?.I || 0; vb = b.discScores?.discComposite?.I || 0; break;
+        case 'S': va = a.discScores?.discComposite?.S || 0; vb = b.discScores?.discComposite?.S || 0; break;
+        case 'C': va = a.discScores?.discComposite?.C || 0; vb = b.discScores?.discComposite?.C || 0; break;
+        case 'submittedAt': va = a.submittedAt || ''; vb = b.submittedAt || ''; break;
+        default: return 0;
+      }
+      if (typeof va === 'string') { va = va.toLowerCase(); vb = vb.toLowerCase(); }
+      if (va < vb) return sortDir === 'asc' ? -1 : 1;
+      if (va > vb) return sortDir === 'asc' ? 1 : -1;
+      return 0;
+    });
+    return list;
+  }, [data, filterPattern, sortBy, sortDir]);
 
   return (
     <div className="space-y-6">
@@ -51,7 +89,7 @@ export default function DiscResultsPage() {
       <div className="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden">
         {loading ? (
           <div className="p-12 text-center"><div className="w-8 h-8 border-2 border-slate-700 border-t-blue-500 rounded-full animate-spin mx-auto"></div></div>
-        ) : filtered.length === 0 ? (
+        ) : sorted.length === 0 ? (
           <div className="p-12 text-center text-slate-500">Tidak ada data ditemukan.</div>
         ) : (
           <div className="overflow-x-auto">
@@ -59,23 +97,33 @@ export default function DiscResultsPage() {
               <thead>
                 <tr className="text-slate-400 text-xs uppercase tracking-wider border-b border-slate-800">
                   <th className="text-left px-4 py-3">ID</th>
-                  <th className="text-left px-4 py-3">Nama</th>
-                  <th className="text-center px-4 py-3">Pola</th>
-                  <th className="text-center px-4 py-3" colSpan={4}>
-                    <div className="flex justify-center gap-4">
-                      <span className="text-red-400">D</span>
-                      <span className="text-yellow-400">I</span>
-                      <span className="text-green-400">S</span>
-                      <span className="text-blue-400">C</span>
-                    </div>
+                  <th className="text-left px-4 py-3 cursor-pointer hover:text-white" onClick={() => toggleSort('nama')}>
+                    Nama <SortIcon sortBy={sortBy} sortDir={sortDir} field="nama" />
+                  </th>
+                  <th className="text-center px-4 py-3 cursor-pointer hover:text-white" onClick={() => toggleSort('pattern')}>
+                    Pola <SortIcon sortBy={sortBy} sortDir={sortDir} field="pattern" />
+                  </th>
+                  <th className="text-center px-2 py-3 cursor-pointer hover:text-white" onClick={() => toggleSort('D')}>
+                    <span className="text-red-400">D</span> <SortIcon sortBy={sortBy} sortDir={sortDir} field="D" />
+                  </th>
+                  <th className="text-center px-2 py-3 cursor-pointer hover:text-white" onClick={() => toggleSort('I')}>
+                    <span className="text-yellow-400">I</span> <SortIcon sortBy={sortBy} sortDir={sortDir} field="I" />
+                  </th>
+                  <th className="text-center px-2 py-3 cursor-pointer hover:text-white" onClick={() => toggleSort('S')}>
+                    <span className="text-green-400">S</span> <SortIcon sortBy={sortBy} sortDir={sortDir} field="S" />
+                  </th>
+                  <th className="text-center px-2 py-3 cursor-pointer hover:text-white" onClick={() => toggleSort('C')}>
+                    <span className="text-blue-400">C</span> <SortIcon sortBy={sortBy} sortDir={sortDir} field="C" />
                   </th>
                   <th className="text-center px-4 py-3">Grafik</th>
-                  <th className="text-left px-4 py-3">Tanggal</th>
+                  <th className="text-left px-4 py-3 cursor-pointer hover:text-white" onClick={() => toggleSort('submittedAt')}>
+                    Tanggal <SortIcon sortBy={sortBy} sortDir={sortDir} field="submittedAt" />
+                  </th>
                   <th className="text-right px-6 py-3">Aksi</th>
                 </tr>
               </thead>
               <tbody>
-                {filtered.map(sub => {
+                {sorted.map(sub => {
                   const comp = sub.discScores?.discComposite || { D: 0, I: 0, S: 0, C: 0 };
                   const most = sub.discScores?.discMost || { D: 0, I: 0, S: 0, C: 0 };
                   return (
@@ -138,7 +186,7 @@ export default function DiscResultsPage() {
           </div>
         )}
         <div className="px-6 py-3 border-t border-slate-800 text-xs text-slate-500">
-          Menampilkan {filtered.length} dari {data.length} data
+          Menampilkan {sorted.length} dari {data.length} data
         </div>
       </div>
     </div>

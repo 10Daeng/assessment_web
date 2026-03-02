@@ -57,7 +57,7 @@ export default function Home() {
       const payloadUserData = { ...userData, durasi: durasiText };
 
       // 3. Transmit to remote Database
-      await fetch('/api/submit', {
+      const response = await fetch('/api/submit', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -71,7 +71,13 @@ export default function Home() {
         })
       });
       
+      const resData = await response.json();
       setIsProcessing(false);
+      
+      // Trigger AI generation asynchronously without blocking the user
+      if (resData?.data?.id) {
+        fetch(`/api/admin/submissions/${resData.data.id}/ai`, { method: 'POST' }).catch(() => {});
+      }
       
     } catch (e) {
       console.error(e);

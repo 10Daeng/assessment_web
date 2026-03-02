@@ -11,7 +11,7 @@
  */
 
 const DIMS = ['D', 'I', 'S', 'C'];
-const DIM_NAMES = { D: 'Dominance', I: 'Influence', S: 'Steadiness', C: 'Compliance' };
+const _DIM_NAMES = { D: 'Dominance', I: 'Influence', S: 'Steadiness', C: 'Compliance' };
 const DIM_NAMES_ID = { D: 'Ketegasan', I: 'Pengaruh', S: 'Kestabilan', C: 'Kepatuhan' };
 
 // =========================================

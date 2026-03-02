@@ -1,5 +1,5 @@
 'use client';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import Link from 'next/link';
 
 const hexacoLabels = {
@@ -11,24 +11,34 @@ const hexacoLabels = {
   O: { name: 'Openness', color: 'teal' },
 };
 
+function SortIcon({ sortBy, sortDir, field }) {
+  if (sortBy !== field) return <span className="text-slate-600 ml-1">↕</span>;
+  return <span className="text-blue-400 ml-1">{sortDir === 'asc' ? '↑' : '↓'}</span>;
+}
+
 export default function HexacoResultsPage() {
   const [data, setData] = useState([]);
   const [search, setSearch] = useState('');
   const [loading, setLoading] = useState(true);
   const [filterDimension, setFilterDimension] = useState('');
   const [filterLevel, setFilterLevel] = useState('');
+  const [sortBy, setSortBy] = useState('submittedAt');
+  const [sortDir, setSortDir] = useState('desc');
 
-  useEffect(() => { fetchData(); }, [search]);
-
-  async function fetchData() {
-    setLoading(true);
-    try {
-      const res = await fetch(`/api/admin/submissions?search=${encodeURIComponent(search)}`);
-      const json = await res.json();
-      setData(json.data || []);
-    } catch (e) { console.error(e); }
-    setLoading(false);
-  }
+  useEffect(() => {
+    async function fetchData() {
+      setLoading(true);
+      try {
+        const res = await fetch(`/api/admin/submissions?search=${encodeURIComponent(search)}`);
+        const json = await res.json();
+        setData(json.data || []);
+      } catch (e) {
+        console.error("Failed to fetch data:", e);
+      }
+      setLoading(false);
+    }
+    fetchData();
+  }, [search]);
 
   function getLevel(mean) {
     if (mean >= 4) return { label: 'Tinggi', cls: 'text-emerald-400 bg-emerald-500/20' };
@@ -36,20 +46,49 @@ export default function HexacoResultsPage() {
     return { label: 'Rendah', cls: 'text-amber-400 bg-amber-500/20' };
   }
 
-  let filtered = data;
-  if (filterDimension) {
-    filtered = filtered.filter(d => {
-      const mean = d.hexacoScores?.factorMeans?.[filterDimension];
-      return mean !== undefined;
-    });
-    if (filterLevel) {
-      filtered = filtered.filter(d => {
-        const mean = d.hexacoScores?.factorMeans?.[filterDimension] || 0;
-        const level = getLevel(mean).label;
-        return level === filterLevel;
-      });
+  function toggleSort(field) {
+    if (sortBy === field) {
+      setSortDir(d => d === 'asc' ? 'desc' : 'asc');
+    } else {
+      setSortBy(field);
+      setSortDir('asc');
     }
   }
+
+  const sorted = useMemo(() => {
+    let list = [...data];
+    if (filterDimension) {
+      list = list.filter(d => d.hexacoScores?.factorMeans?.[filterDimension] !== undefined);
+      if (filterLevel) {
+        list = list.filter(d => {
+          const mean = d.hexacoScores?.factorMeans?.[filterDimension] || 0;
+          const lvl = mean >= 4 ? 'Tinggi' : mean >= 2.5 ? 'Sedang' : 'Rendah';
+          return lvl === filterLevel;
+        });
+      }
+    }
+    list.sort((a, b) => {
+      let va, vb;
+      switch (sortBy) {
+        case 'nama': va = a.userData?.nama || ''; vb = b.userData?.nama || ''; break;
+        case 'H': case 'E': case 'X': case 'A': case 'C': case 'O':
+          va = a.hexacoScores?.factorMeans?.[sortBy] || 0;
+          vb = b.hexacoScores?.factorMeans?.[sortBy] || 0;
+          break;
+        case 'ALT':
+          va = a.hexacoScores?.facetMeans?.altr || 0;
+          vb = b.hexacoScores?.facetMeans?.altr || 0;
+          break;
+        case 'submittedAt': va = a.submittedAt || ''; vb = b.submittedAt || ''; break;
+        default: return 0;
+      }
+      if (typeof va === 'string') { va = va.toLowerCase(); vb = vb.toLowerCase(); }
+      if (va < vb) return sortDir === 'asc' ? -1 : 1;
+      if (va > vb) return sortDir === 'asc' ? 1 : -1;
+      return 0;
+    });
+    return list;
+  }, [data, filterDimension, filterLevel, sortBy, sortDir]);
 
   return (
     <div className="space-y-6">
@@ -90,7 +129,7 @@ export default function HexacoResultsPage() {
       <div className="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden">
         {loading ? (
           <div className="p-12 text-center"><div className="w-8 h-8 border-2 border-slate-700 border-t-blue-500 rounded-full animate-spin mx-auto"></div></div>
-        ) : filtered.length === 0 ? (
+        ) : sorted.length === 0 ? (
           <div className="p-12 text-center text-slate-500">Tidak ada data ditemukan.</div>
         ) : (
           <div className="overflow-x-auto">
@@ -98,17 +137,25 @@ export default function HexacoResultsPage() {
               <thead>
                 <tr className="text-slate-400 text-xs uppercase tracking-wider border-b border-slate-800">
                   <th className="text-left px-4 py-3">ID</th>
-                  <th className="text-left px-4 py-3">Nama</th>
-                  {Object.entries(hexacoLabels).map(([k, v]) => (
-                    <th key={k} className="text-center px-3 py-3">{k}</th>
+                  <th className="text-left px-4 py-3 cursor-pointer hover:text-white" onClick={() => toggleSort('nama')}>
+                    Nama <SortIcon sortBy={sortBy} sortDir={sortDir} field="nama" />
+                  </th>
+                  {Object.entries(hexacoLabels).map(([k]) => (
+                    <th key={k} className="text-center px-3 py-3 cursor-pointer hover:text-white" onClick={() => toggleSort(k)}>
+                      {k} <SortIcon sortBy={sortBy} sortDir={sortDir} field={k} />
+                    </th>
                   ))}
-                  <th className="text-center px-3 py-3">ALT</th>
-                  <th className="text-left px-4 py-3">Tanggal</th>
+                  <th className="text-center px-3 py-3 cursor-pointer hover:text-white" onClick={() => toggleSort('ALT')}>
+                    ALT <SortIcon sortBy={sortBy} sortDir={sortDir} field="ALT" />
+                  </th>
+                  <th className="text-left px-4 py-3 cursor-pointer hover:text-white" onClick={() => toggleSort('submittedAt')}>
+                    Tanggal <SortIcon sortBy={sortBy} sortDir={sortDir} field="submittedAt" />
+                  </th>
                   <th className="text-right px-6 py-3">Aksi</th>
                 </tr>
               </thead>
               <tbody>
-                {filtered.map(sub => {
+                {sorted.map(sub => {
                   const fm = sub.hexacoScores?.factorMeans || {};
                   const facetM = sub.hexacoScores?.facetMeans || {};
                   return (
@@ -151,7 +198,7 @@ export default function HexacoResultsPage() {
           </div>
         )}
         <div className="px-6 py-3 border-t border-slate-800 text-xs text-slate-500">
-          Menampilkan {filtered.length} dari {data.length} data
+          Menampilkan {sorted.length} dari {data.length} data
         </div>
       </div>
     </div>

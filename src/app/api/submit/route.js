@@ -1,6 +1,5 @@
 import { NextResponse } from 'next/server';
-import { addSubmission, updateSubmissionAiInsight } from '@/lib/dataStore';
-import { generatePersonalityDescription } from '@/lib/gemini';
+import { addSubmission } from '@/lib/dataStore';
 
 export async function POST(request) {
   try {
@@ -20,21 +19,10 @@ export async function POST(request) {
       }).catch(err => console.error("Webhook Error:", err));
     }
 
-    // Auto-generate AI interpretation synchronously right away
-    try {
-      const fm = data.hexacoScores?.factorMeans || {};
-      const facetMeans = data.hexacoScores?.facetMeans || {};
-      const insight = await generatePersonalityDescription(
-        data.discScores?.pattern || 'Uncategorized',
-        fm.H || 3, fm.E || 3, fm.X || 3, fm.A || 3, fm.C || 3, fm.O || 3,
-        facetMeans,
-        data.discScores
-      );
-      await updateSubmissionAiInsight(record.id, insight);
-    } catch (aiErr) {
-      console.error("Auto AI Generation failed:", aiErr);
-      // We don't block the request if AI fails, user can manually retry on admin panel
-    }
+    // We removed synchronous AI generation here to prevent Vercel 10s timeout errors. 
+    // The client page.jsx now securely triggers the AI generation in a separate lightweight POST request 
+    // immediately after this submit request succeeds.
+
 
     return NextResponse.json({ 
       success: true, 

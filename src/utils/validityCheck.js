@@ -274,63 +274,142 @@ function fallbackInconsistency(factorMeans) {
 }
 
 // ==================================================
+// 5. DISC UNDIFFERENTIATED CHECK
+// ==================================================
+function checkDiscUndifferentiated(discComposite) {
+  if (!discComposite) return { score: -1, label: 'Tidak tersedia', detail: 'Skor DISC tidak tersedia', mode: 'none' };
+  
+  const values = [discComposite.D, discComposite.I, discComposite.S, discComposite.C];
+  if (values.some(v => typeof v !== 'number')) {
+    return { score: -1, label: 'Tidak valid', detail: 'Format skor DISC salah', mode: 'none' };
+  }
+
+  const max = Math.max(...values);
+  const min = Math.min(...values);
+  const spread = max - min; // Composite spread usually goes from -24 to +24, max spread is ~48.
+
+  let score;
+  if (spread < 5) score = 20;       // Sangat datar/kepompong
+  else if (spread < 10) score = 50;  // Cukup datar
+  else if (spread < 15) score = 75;  // Agak datar
+  else score = 100;                  // Terdiferensiasi dengan baik
+
+  const label = score >= 85 ? 'Jelas/Terdiferensiasi' : score >= 60 ? 'Cukup Jelas' : score >= 30 ? 'Datar (Undifferentiated)' : 'Sangat Datar';
+  return {
+    score, label, mode: 'disc',
+    detail: `Rentang nilai antara skor tertinggi dan terendah: ${spread} poin`
+  };
+}
+
+// ==================================================
+// 6. DISC OVER-SHIFT CHECK
+// ==================================================
+function checkDiscOverShift(discMost, discLeast) {
+  if (!discMost || !discLeast) return { score: -1, label: 'Tidak tersedia', detail: 'Skor DISC tidak tersedia', mode: 'none' };
+  
+  const keys = ['D', 'I', 'S', 'C'];
+  if (keys.some(k => typeof discMost[k] !== 'number' || typeof discLeast[k] !== 'number')) {
+    return { score: -1, label: 'Tidak valid', detail: 'Format skor DISC salah', mode: 'none' };
+  }
+
+  // Calculate absolute shift between Graph 1 (Public/Most) and Graph 2 (Private/Least)
+  // In scoring, usually Least is inverted. But we can just measure the difference in raw choices.
+  // Actually, standard Most is 0-24. Least is 0-24. 
+  // Let's just calculate total absolute difference between Most and Least patterns.
+  let totalShift = 0;
+  for (const k of keys) {
+    totalShift += Math.abs(discMost[k] - discLeast[k]);
+  }
+  
+  // Total Shift max potential is ~ 48.
+  let score;
+  if (totalShift > 35) score = 20;      // Sangat berbeda (Over-shift parah)
+  else if (totalShift > 25) score = 50; // Peralihan ekstrim
+  else if (totalShift > 15) score = 80; // Peralihan wajar
+  else score = 100;                     // Sangat konsisten antara public dan private
+
+  const label = score >= 85 ? 'Konsisten' : score >= 60 ? 'Peralihan Wajar' : score >= 30 ? 'Over-Shift' : 'Over-Shift Ekstrim';
+  return {
+    score, label, mode: 'disc',
+    detail: `Total deviasi pola antara ranah publik (Mask) dan pribadi (Core): ${totalShift} poin`
+  };
+}
+
+
+// ==================================================
 // MASTER FUNCTION
 // ==================================================
 export function calculateValidityIndex(rawData, submissionData) {
   const durasiText = rawData?.userData?.durasi;
   const hexacoAnswers = rawData?.answers?.hexaco;
-  // Try rawData first, then fall back to submission-level hexacoScores
   const facetMeans = rawData?.hexacoScores?.facetMeans || submissionData?.hexacoScores?.facetMeans;
   const factorMeans = rawData?.hexacoScores?.factorMeans || submissionData?.hexacoScores?.factorMeans;
+  
+  const discMost = rawData?.discScores?.discMost || submissionData?.discScores?.discMost;
+  const discLeast = rawData?.discScores?.discLeast || submissionData?.discScores?.discLeast;
+  const discComposite = rawData?.discScores?.discComposite || submissionData?.discScores?.discComposite;
 
+  // HEXACO Metrics
   const duration = checkDuration(durasiText);
   const straightLining = checkStraightLining(hexacoAnswers, facetMeans);
   const extreme = checkExtremeResponding(hexacoAnswers, facetMeans);
   const inconsistency = checkInconsistency(hexacoAnswers, factorMeans);
 
-  // Collect valid scores (skip -1 = not available)
-  const indicators = [
+  // DISC Metrics
+  const discUndiff = checkDiscUndifferentiated(discComposite);
+  const discOverShift = checkDiscOverShift(discMost, discLeast);
+
+  // Calculate HEXACO overall
+  const hexacoIndicators = [
     { data: duration, weight: 0.20 },
     { data: straightLining, weight: 0.30 },
     { data: extreme, weight: 0.20 },
     { data: inconsistency, weight: 0.30 },
   ];
+  let hexacoScore = calculateGroupScore(hexacoIndicators);
 
-  const available = indicators.filter(i => i.data.score >= 0);
+  // Calculate DISC overall
+  const discIndicators = [
+    { data: duration, weight: 0.20 }, // Duration is shared valid metric for both
+    { data: discUndiff, weight: 0.40 },
+    { data: discOverShift, weight: 0.40 },
+  ];
+  let discScore = calculateGroupScore(discIndicators);
 
-  let overallScore;
-  if (available.length === 0) {
-    overallScore = -1; // No data at all
-  } else {
-    // Redistribute weights among available indicators
-    const totalWeight = available.reduce((s, i) => s + i.weight, 0);
-    overallScore = Math.round(
-      available.reduce((s, i) => s + (i.data.score * (i.weight / totalWeight)), 0)
-    );
-  }
+  const getLabelColor = (sc) => {
+    if (sc < 0) return { label: 'BELUM ADA DATA', color: '#6b7280' };
+    if (sc >= 85) return { label: 'VALID', color: '#22c55e' };
+    if (sc >= 70) return { label: 'CUKUP VALID', color: '#eab308' };
+    if (sc >= 50) return { label: 'MERAGUKAN', color: '#f97316' };
+    return { label: 'TIDAK VALID', color: '#ef4444' };
+  };
 
-  let overallLabel, overallColor;
-  if (overallScore < 0) {
-    overallLabel = 'DATA BELUM TERSEDIA';
-    overallColor = '#6b7280'; // grey
-  } else if (overallScore >= 85) {
-    overallLabel = 'VALID';
-    overallColor = '#22c55e';
-  } else if (overallScore >= 70) {
-    overallLabel = 'CUKUP VALID';
-    overallColor = '#eab308';
-  } else if (overallScore >= 50) {
-    overallLabel = 'MERAGUKAN';
-    overallColor = '#f97316';
-  } else {
-    overallLabel = 'TIDAK VALID';
-    overallColor = '#ef4444';
-  }
+  const hexacoObj = { score: hexacoScore, ...getLabelColor(hexacoScore) };
+  const discObj = { score: discScore, ...getLabelColor(discScore) };
+
+  // For backward compatibility (legacy views), we use Hexaco as the primary fallback, but return both.
+  const overallMainScore = hexacoScore < 0 ? discScore : (discScore < 0 ? hexacoScore : Math.round((hexacoScore + discScore) / 2));
+  const mainObj = getLabelColor(overallMainScore);
 
   return {
-    overallScore: overallScore < 0 ? '-' : overallScore,
-    overallLabel,
-    overallColor,
-    indicators: { duration, straightLining, extreme, inconsistency }
+    ...mainObj, // overallLabel, overallColor
+    overallScore: overallMainScore < 0 ? '-' : overallMainScore,
+    hexaco: hexacoObj,
+    disc: discObj,
+    indicators: { 
+      duration, 
+      straightLining, 
+      extreme, 
+      inconsistency,
+      discUndifferentiated: discUndiff,
+      discOverShift: discOverShift
+    }
   };
+}
+
+function calculateGroupScore(indicatorArray) {
+  const available = indicatorArray.filter(i => i.data.score >= 0);
+  if (available.length === 0) return -1;
+  const totalWeight = available.reduce((s, i) => s + i.weight, 0);
+  return Math.round(available.reduce((s, i) => s + (i.data.score * (i.weight / totalWeight)), 0));
 }

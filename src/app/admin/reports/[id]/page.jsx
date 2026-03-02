@@ -168,6 +168,25 @@ export default function ReportDetailPage({ params }) {
         </div>
       </div>
 
+      {/* VALIDITY ALERT */}
+      {(() => {
+        const validity = calculateValidityIndex(sub.rawData, sub);
+        if (validity.overallScore < 60) {
+          return (
+            <div className="bg-red-500/10 border border-red-500/50 rounded-2xl p-6 flex flex-col items-center justify-center text-center">
+              <span className="text-4xl mb-3">⚠️</span>
+              <h3 className="text-red-400 font-bold text-lg mb-1">Peringatan: Asesmen Meragukan / Tidak Valid!</h3>
+              <p className="text-red-300 text-sm max-w-2xl">
+                Tingkat validitas pengerjaan tes ini berada di angka <b>{validity.overallScore}/100</b> ({validity.overallLabel}). 
+                Sistem mendeteksi bahwa responden mungkin mengisi secara asal-asalan, durasi terlalu cepat, atau terdapat inkonsistensi yang tinggi.
+                Interpretasi AI di bawah ini mungkin <b>tidak akurat</b>. Disarankan untuk meminta klien melakukan tes ulang.
+              </p>
+            </div>
+          );
+        }
+        return null;
+      })()}
+
       {/* Identity Card */}
       <div className="bg-slate-900 border border-slate-800 rounded-2xl p-6">
         <div className="grid grid-cols-2 md:grid-cols-3 gap-6">
@@ -374,7 +393,7 @@ export default function ReportDetailPage({ params }) {
                     btn.disabled = false;
                     btn.innerHTML = 'Hasilkan Ulang Interpretasi Otomatis';
                   }
-                } catch (e) {
+                } catch (_e) {
                   alert('Terjadi kesalahan jaringan.');
                   btn.disabled = false;
                   btn.innerHTML = 'Hasilkan Ulang Interpretasi Otomatis';
@@ -389,22 +408,67 @@ export default function ReportDetailPage({ params }) {
         ) : (
           <div className="space-y-6">
             <div className="bg-slate-800/30 rounded-xl p-5 border border-slate-700/50">
-              <h4 className="text-blue-400 font-medium text-sm mb-3">Dinamika Gaya Kerja</h4>
-              <p className="text-slate-300 text-sm leading-relaxed whitespace-pre-line">{sub.aiInsight.gayaKerja}</p>
+              <h4 className="text-yellow-400 font-medium text-sm mb-3">Arketipe Personal</h4>
+              <p className="text-slate-300 text-sm font-semibold whitespace-pre-line">{sub.aiInsight.arketipe_personal || sub.aiInsight.arketipe}</p>
             </div>
             
             <div className="bg-slate-800/30 rounded-xl p-5 border border-slate-700/50">
-              <h4 className="text-purple-400 font-medium text-sm mb-3">Dinamika Karakter Inti</h4>
-              <p className="text-slate-300 text-sm leading-relaxed whitespace-pre-line">{sub.aiInsight.karakterInti}</p>
+              <h4 className="text-blue-400 font-medium text-sm mb-3">Deskripsi Kepribadian Terintegrasi</h4>
+              <p className="text-slate-300 text-sm leading-relaxed whitespace-pre-line">{sub.aiInsight.deskripsi_kepribadian_terintegrasi || sub.aiInsight.deskripsi_kepribadian}</p>
             </div>
             
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="bg-slate-800/30 rounded-xl p-5 border border-slate-700/50">
+                <h4 className="text-emerald-400 font-medium text-sm mb-3">Kekuatan Utama</h4>
+                <ul className="text-slate-300 text-sm leading-relaxed space-y-2 list-disc ml-4">
+                  {(sub.aiInsight.kekuatan_utama || []).map((k, i) => <li key={i}>{k}</li>)}
+                </ul>
+              </div>
+
+              <div className="bg-slate-800/30 rounded-xl p-5 border border-slate-700/50">
+                <h4 className="text-rose-400 font-medium text-sm mb-3">Analisis Lingkungan Ideal</h4>
+                <p className="text-slate-300 text-sm leading-relaxed whitespace-pre-line mb-4">
+                  <span className="font-bold text-white">Ekosistem Kerja:</span> {sub.aiInsight.analisis_lingkungan_ideal?.ekosistem_kerja}
+                </p>
+                <p className="text-slate-300 text-sm leading-relaxed whitespace-pre-line">
+                  <span className="font-bold text-white">Bahan Bakar Psikologis:</span> {sub.aiInsight.analisis_lingkungan_ideal?.kebutuhan_motivasi}
+                </p>
+              </div>
+            </div>
+
             <div className="bg-slate-800/30 rounded-xl p-5 border border-slate-700/50">
-              <h4 className="text-emerald-400 font-medium text-sm mb-3">Rekomendasi Pengembangan</h4>
-              <ul className="space-y-2 text-slate-300 text-sm leading-relaxed list-disc list-inside">
-                <li>{sub.aiInsight.rekomendasi1}</li>
-                <li>{sub.aiInsight.rekomendasi2}</li>
-                <li>{sub.aiInsight.rekomendasi3}</li>
-              </ul>
+              <h4 className="text-purple-400 font-medium text-sm mb-4">Tantangan & Faktor Penghambat</h4>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="bg-slate-800/50 p-4 rounded-lg">
+                   <h5 className="text-slate-200 font-medium text-xs mb-2">Komunikasi & Pola Kerja</h5>
+                   <p className="text-slate-300 text-sm">{sub.aiInsight.tantangan_dan_faktor_penghambat?.komunikasi_dan_pola_kerja}</p>
+                </div>
+                <div className="bg-slate-800/50 p-4 rounded-lg">
+                   <h5 className="text-slate-200 font-medium text-xs mb-2">Hambatan Karakter Internal</h5>
+                   <p className="text-slate-300 text-sm">{sub.aiInsight.tantangan_dan_faktor_penghambat?.hambatan_karakter_internal}</p>
+                </div>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="bg-slate-800/30 rounded-xl p-5 border border-slate-700/50">
+                <h4 className="text-amber-400 font-medium text-sm mb-3">Peran Potensial dalam Tim</h4>
+                <div className="space-y-4">
+                  {(sub.aiInsight.peran_potensial_dalam_tim || []).map((p, i) => (
+                    <div key={i} className="bg-slate-800/50 p-3 rounded-lg border-l-2 border-amber-500/50">
+                      <p className="text-white font-semibold text-sm mb-1">{p.peran}</p>
+                      <p className="text-slate-400 text-xs leading-relaxed">{p.alasan}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div className="bg-slate-800/30 rounded-xl p-5 border border-slate-700/50">
+                <h4 className="text-teal-400 font-medium text-sm mb-3">Saran Pengembangan Spesifik</h4>
+                <ul className="text-slate-300 text-sm leading-relaxed space-y-3 list-decimal ml-4">
+                  {(sub.aiInsight.saran_pengembangan_spesifik || []).map((k, i) => <li key={i}>{k}</li>)}
+                </ul>
+              </div>
             </div>
 
             {/* Regenerate Button */}
@@ -427,7 +491,7 @@ export default function ReportDetailPage({ params }) {
                     } else {
                       alert('Gagal: ' + j.error);
                     }
-                  } catch (e) {
+                  } catch (_e) {
                     alert('Kesalahan jaringan.');
                   }
                   btn.disabled = false;

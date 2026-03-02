@@ -83,12 +83,11 @@ export default function HexacoTest({ onComplete }) {
                     const isSelected = answers[q.id] === val;
                     // Color mapping based on scale (1=rose, 3=slate, 5=emerald)
                     let colorClass = "border-slate-300 hover:border-emerald-400";
-                    let bgClass = "bg-white";
                     
                     if (isSelected) {
-                      if (val <= 2) { colorClass = "border-rose-500 bg-rose-50"; bgClass = "bg-rose-500"; }
-                      else if (val === 3) { colorClass = "border-blue-500 bg-blue-50"; bgClass = "bg-blue-500"; }
-                      else { colorClass = "border-emerald-500 bg-emerald-50"; bgClass = "bg-emerald-500"; }
+                      if (val <= 2) { colorClass = "border-rose-500 bg-rose-50"; }
+                      else if (val === 3) { colorClass = "border-blue-500 bg-blue-50"; }
+                      else { colorClass = "border-emerald-500 bg-emerald-50"; }
                     }
 
                     return (

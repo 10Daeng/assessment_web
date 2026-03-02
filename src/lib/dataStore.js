@@ -44,7 +44,7 @@ export async function addSubmission(data) {
   return result[0];
 }
 
-export async function getAllSubmissions({ search, sortBy, sortDir } = {}) {
+export async function getAllSubmissions({ search, sortBy: _sortBy, sortDir: _sortDir } = {}) {
   const sql = getSQL();
 
   let query;
@@ -108,6 +108,16 @@ export async function updateSubmissionAiInsight(id, aiInsightData) {
     UPDATE "Submission"
     SET "aiInsight" = ${JSON.stringify(aiInsightData)}
     WHERE id = ${id}
+    RETURNING id
+  `;
+  return result.length > 0;
+}
+
+export async function deleteSubmission(id) {
+  const sql = getSQL();
+  const result = await sql`
+    DELETE FROM "Submission" 
+    WHERE id = ${id} 
     RETURNING id
   `;
   return result.length > 0;
