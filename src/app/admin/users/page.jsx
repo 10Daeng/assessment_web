@@ -90,10 +90,12 @@ export default function UsersPage() {
       let va, vb;
       switch (sortBy) {
         case 'nama': va = a.userData?.nama || ''; vb = b.userData?.nama || ''; break;
+        case 'email': va = a.userData?.email || ''; vb = b.userData?.email || ''; break;
+        case 'submit': va = a.submittedAt || ''; vb = b.submittedAt || ''; break;
         case 'usia': va = a.userData?.usia || 0; vb = b.userData?.usia || 0; break;
         case 'instansi': va = a.userData?.instansi || ''; vb = b.userData?.instansi || ''; break;
         case 'pekerjaan': va = a.userData?.pekerjaan || ''; vb = b.userData?.pekerjaan || ''; break;
-        case 'durasi': va = a.rawData?.userData?.durasi || ''; vb = b.rawData?.userData?.durasi || ''; break;
+        case 'jabatan': va = a.userData?.jabatan || ''; vb = b.userData?.jabatan || ''; break;
         case 'validity':
           va = calculateValidityIndex(a.rawData, a).overallScore || 0;
           vb = calculateValidityIndex(b.rawData, b).overallScore || 0;
@@ -158,7 +160,13 @@ export default function UsersPage() {
             <thead className="text-xs uppercase bg-slate-800/50 text-slate-400 border-b border-slate-700/50">
               <tr>
                 <th className="px-5 py-4 font-semibold tracking-wider cursor-pointer hover:text-white" onClick={() => toggleSort('nama')}>
-                  Nama & Kontak <SortIcon sortBy={sortBy} sortDir={sortDir} field="nama" />
+                  Nama <SortIcon sortBy={sortBy} sortDir={sortDir} field="nama" />
+                </th>
+                <th className="px-5 py-4 font-semibold tracking-wider cursor-pointer hover:text-white" onClick={() => toggleSort('email')}>
+                  Email / NIK <SortIcon sortBy={sortBy} sortDir={sortDir} field="email" />
+                </th>
+                <th className="px-5 py-4 font-semibold tracking-wider cursor-pointer hover:text-white" onClick={() => toggleSort('submit')}>
+                  Tgl Submit <SortIcon sortBy={sortBy} sortDir={sortDir} field="submit" />
                 </th>
                 <th className="px-5 py-4 font-semibold tracking-wider cursor-pointer hover:text-white" onClick={() => toggleSort('usia')}>
                   Usia <SortIcon sortBy={sortBy} sortDir={sortDir} field="usia" />
@@ -169,8 +177,8 @@ export default function UsersPage() {
                 <th className="px-5 py-4 font-semibold tracking-wider cursor-pointer hover:text-white" onClick={() => toggleSort('pekerjaan')}>
                   Pekerjaan <SortIcon sortBy={sortBy} sortDir={sortDir} field="pekerjaan" />
                 </th>
-                <th className="px-5 py-4 font-semibold tracking-wider cursor-pointer hover:text-white" onClick={() => toggleSort('durasi')}>
-                  Durasi <SortIcon sortBy={sortBy} sortDir={sortDir} field="durasi" />
+                <th className="px-5 py-4 font-semibold tracking-wider cursor-pointer hover:text-white" onClick={() => toggleSort('jabatan')}>
+                  Jabatan <SortIcon sortBy={sortBy} sortDir={sortDir} field="jabatan" />
                 </th>
                 <th className="px-5 py-4 font-semibold tracking-wider cursor-pointer hover:text-white" onClick={() => toggleSort('validity')}>
                   Validitas <SortIcon sortBy={sortBy} sortDir={sortDir} field="validity" />
@@ -192,18 +200,18 @@ export default function UsersPage() {
                   const validity = calculateValidityIndex(s.rawData, s);
                   return (
                     <tr key={s.id} className="hover:bg-slate-800/20 transition-colors">
-                      <td className="px-5 py-4 w-56">
+                      <td className="px-5 py-4 max-w-[150px]">
                         {editId === s.id ? (
-                          <>
                            <input type="text" className="w-full bg-slate-800 border-none text-white rounded px-2 py-1 text-sm mb-1" value={editFormData.nama} onChange={e => setEditFormData({...editFormData, nama: e.target.value})} placeholder="Nama" />
-                           <div className="text-xs text-slate-500 truncate">{s.userData?.email}</div>
-                          </>
                         ) : (
-                          <>
-                           <div className="font-semibold text-white mb-1 truncate">{s.userData?.nama}</div>
-                           <div className="text-xs text-slate-500 truncate">{s.userData?.email}</div>
-                          </>
+                           <div className="font-semibold text-white truncate">{s.userData?.nama}</div>
                         )}
+                      </td>
+                      <td className="px-5 py-4 text-slate-400 text-xs">
+                        {s.userData?.email || '-'}
+                      </td>
+                      <td className="px-5 py-4 text-slate-400 text-xs truncate max-w-[100px]">
+                        {s.submittedAt ? new Date(s.submittedAt).toLocaleDateString('id-ID', {day: '2-digit', month: 'short', year: 'numeric'}) : '-'}
                       </td>
                       <td className="px-5 py-4 text-slate-400">
                         {editId === s.id ? (<input type="number" className="w-16 bg-slate-800 border-none text-white rounded px-2 py-1 text-sm inline-block" value={editFormData.usia} onChange={e => setEditFormData({...editFormData, usia: e.target.value})} placeholder="Usia" />) : (s.userData?.usia ? `${s.userData.usia} thn` : '-')}
@@ -218,18 +226,15 @@ export default function UsersPage() {
                       <td className="px-5 py-4 text-slate-400 truncate max-w-[130px]">
                         {editId === s.id ? (<input type="text" className="w-full bg-slate-800 border-none text-white rounded px-2 py-1 text-sm inline-block" value={editFormData.pekerjaan} onChange={e => setEditFormData({...editFormData, pekerjaan: e.target.value})} placeholder="Pekerjaan" />) : (s.userData?.pekerjaan || '-')}
                       </td>
-                      <td className="px-5 py-4 text-amber-400/80 font-mono text-xs">
-                        {s.rawData?.userData?.durasi || '-'}
+                      <td className="px-5 py-4 text-slate-400 truncate max-w-[130px]">
+                        {editId === s.id ? (<input type="text" className="w-full bg-slate-800 border-none text-white rounded px-2 py-1 text-sm inline-block" value={editFormData.jabatan} onChange={e => setEditFormData({...editFormData, jabatan: e.target.value})} placeholder="Jabatan" />) : (s.userData?.jabatan || '-')}
                       </td>
                       <td className="px-5 py-4">
                         <div className="flex items-center gap-2">
-                          <div className="w-16 h-2 bg-slate-700 rounded-full overflow-hidden">
-                            <div className="h-full rounded-full" style={{ width: `${validity.overallScore}%`, backgroundColor: validity.overallColor }}></div>
-                          </div>
-                          <span className="text-xs font-bold" style={{ color: validity.overallColor }}>
+                          <span className="text-sm font-bold" style={{ color: validity.overallColor }}>
                             {validity.overallScore}
                           </span>
-                          <span className="text-[10px] font-medium px-1.5 py-0.5 rounded" style={{ backgroundColor: validity.overallColor + '20', color: validity.overallColor }}>
+                          <span className="text-xs font-medium uppercase tracking-wider" style={{ color: validity.overallColor }}>
                             {validity.overallLabel}
                           </span>
                         </div>

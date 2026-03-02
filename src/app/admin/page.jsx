@@ -1,7 +1,6 @@
 'use client';
 import { useState, useEffect, useMemo } from 'react';
 import Link from 'next/link';
-import { getDiscPatternName } from '@/utils/scoring';
 import { calculateValidityIndex } from '@/utils/validityCheck';
 
 export default function AdminDashboard() {
@@ -149,7 +148,7 @@ export default function AdminDashboard() {
                   <th className="text-left px-4 py-3">ID</th>
                   <th className="text-left px-4 py-3">Nama</th>
                   <th className="text-left px-4 py-3">Email</th>
-                  <th className="text-left px-6 py-3">Pola DISC</th>
+                  <th className="text-left px-6 py-3">Validitas</th>
                   <th className="text-left px-6 py-3">Tanggal</th>
                   <th className="text-right px-6 py-3">Aksi</th>
                 </tr>
@@ -174,9 +173,14 @@ export default function AdminDashboard() {
                       </td>
                       <td className="px-4 py-4 text-slate-400">{sub.userData?.email || '-'}</td>
                       <td className="px-6 py-4">
-                        <span className="bg-blue-500/20 text-blue-400 font-bold px-3 py-1 rounded-full text-xs">
-                          {getDiscPatternName(sub.discScores?.pattern)} ({sub.discScores?.pattern || '-'})
-                        </span>
+                        <div className="flex items-center gap-2">
+                          <span className="text-sm font-bold" style={{ color: validity.overallColor }}>
+                            {validity.overallScore}
+                          </span>
+                          <span className="text-xs font-medium uppercase tracking-wider" style={{ color: validity.overallColor }}>
+                            {validity.overallLabel}
+                          </span>
+                        </div>
                       </td>
                       <td className="px-6 py-4 text-slate-500 text-xs">
                         {sub.submittedAt ? new Date(sub.submittedAt).toLocaleString('id-ID', { timeZone: 'Asia/Jakarta', dateStyle: 'medium', timeStyle: 'short' }) + ' WIB' : '-'}

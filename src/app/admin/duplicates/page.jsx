@@ -6,18 +6,56 @@ import { getDiscPatternName } from '@/utils/scoring';
 export default function DuplicatesPage() {
   const [duplicates, setDuplicates] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [refreshKey, setRefreshKey] = useState(0);
+
+  const [editId, setEditId] = useState(null);
+  const [editFormData, setEditFormData] = useState({ nama: '', email: '' });
 
   useEffect(() => {
     fetch('/api/admin/submissions?type=duplicates')
       .then(r => r.json())
       .then(json => { setDuplicates(json.data || []); setLoading(false); })
       .catch(() => setLoading(false));
-  }, []);
+  }, [refreshKey]);
+
+  const triggerRefresh = () => setRefreshKey(k => k + 1);
+
+  const startEdit = (s) => {
+    setEditId(s.id);
+    setEditFormData({
+      nama: s.userData?.nama || '',
+      email: s.userData?.email || ''
+    });
+  };
+
+  const saveEdit = async (id) => {
+    try {
+      await fetch(`/api/admin/submissions/${id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ mode: 'user_data', ...editFormData })
+      });
+      setEditId(null);
+      triggerRefresh();
+    } catch (_e) {
+      alert('Gagal menyimpan perubahan');
+    }
+  };
+
+  const handleDelete = async (id) => {
+    if (!confirm('Apakah Yakin Ingin Menghapus Data Ini? Data Hancur Permanen!')) return;
+    try {
+      await fetch(`/api/admin/submissions/${id}`, { method: 'DELETE' });
+      triggerRefresh();
+    } catch (_e) {
+      alert('Gagal menghapus submisi');
+    }
+  };
 
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-[50vh]">
-        <div className="w-10 h-10 border-4 border-slate-700 border-t-blue-500 rounded-full animate-spin"></div>
+        <div className="w-10 h-10 border-4 border-slate-700 border-t-amber-500 rounded-full animate-spin"></div>
       </div>
     );
   }
@@ -60,6 +98,8 @@ export default function DuplicatesPage() {
                   <thead>
                     <tr className="text-slate-400 text-xs uppercase tracking-wider border-b border-slate-800">
                       <th className="text-left px-6 py-3">ID</th>
+                      <th className="text-left px-4 py-3">Nama</th>
+                      <th className="text-left px-4 py-3">Email/NIK</th>
                       <th className="text-left px-4 py-3">Pola DISC</th>
                       <th className="text-left px-4 py-3">Tanggal Submisi</th>
                       <th className="text-right px-6 py-3">Aksi</th>
@@ -68,7 +108,21 @@ export default function DuplicatesPage() {
                   <tbody>
                     {dup.submissions.map(s => (
                       <tr key={s.id} className="border-b border-slate-800/50 hover:bg-slate-800/30 transition-colors">
-                        <td className="px-6 py-3 text-slate-400 font-mono text-xs">{s.id}</td>
+                        <td className="px-6 py-3 text-slate-400 font-mono text-xs">{s.id.substring(0,8)}</td>
+                        <td className="px-4 py-3">
+                          {editId === s.id ? (
+                            <input type="text" className="w-full bg-slate-800 border-none text-white rounded px-2 py-1 text-sm" value={editFormData.nama} onChange={e => setEditFormData({...editFormData, nama: e.target.value})} placeholder="Nama" />
+                          ) : (
+                            <span className="text-white font-medium">{s.userData?.nama || '-'}</span>
+                          )}
+                        </td>
+                        <td className="px-4 py-3">
+                          {editId === s.id ? (
+                            <input type="text" className="w-full bg-slate-800 border-none text-white rounded px-2 py-1 text-sm" value={editFormData.email} onChange={e => setEditFormData({...editFormData, email: e.target.value})} placeholder="Email/NIK" />
+                          ) : (
+                            <span className="text-slate-400 text-xs">{s.userData?.email || '-'}</span>
+                          )}
+                        </td>
                         <td className="px-4 py-3">
                           <span className="bg-blue-500/20 text-blue-400 font-bold px-2.5 py-0.5 rounded-full text-xs">
                             {getDiscPatternName(s.discScores?.pattern)} ({s.discScores?.pattern || '-'})
@@ -77,10 +131,21 @@ export default function DuplicatesPage() {
                         <td className="px-4 py-3 text-slate-500 text-xs">
                           {s.submittedAt ? new Date(s.submittedAt).toLocaleString('id-ID', { timeZone: 'Asia/Jakarta', dateStyle: 'medium', timeStyle: 'short' }) + ' WIB' : '-'}
                         </td>
-                        <td className="px-6 py-3 text-right">
-                          <Link href={`/admin/reports/${s.id}`} className="text-blue-400 hover:text-blue-300 text-xs hover:underline">
-                            Lihat →
-                          </Link>
+                        <td className="px-6 py-3 text-right flex gap-3 justify-end items-center">
+                          {editId === s.id ? (
+                            <>
+                              <button onClick={() => saveEdit(s.id)} className="text-emerald-400 hover:text-emerald-300 font-medium text-xs">Simpan</button>
+                              <button onClick={() => setEditId(null)} className="text-slate-400 hover:text-slate-300 font-medium text-xs">Batal</button>
+                            </>
+                          ) : (
+                            <>
+                              <button onClick={() => startEdit(s)} className="text-amber-400 hover:text-amber-300 font-medium text-xs">Edit</button>
+                              <button onClick={() => handleDelete(s.id)} className="text-red-400 hover:text-red-300 font-medium text-xs">Hapus</button>
+                              <Link href={`/admin/reports/${s.id}`} className="text-blue-400 hover:text-blue-300 font-medium text-xs">
+                                Lihat →
+                              </Link>
+                            </>
+                          )}
                         </td>
                       </tr>
                     ))}
