@@ -329,7 +329,7 @@ export default function UsersPage() {
                       <td className="px-5 py-4">
                         <div className="flex items-center gap-2">
                           <span className="text-sm font-bold" style={{ color: validity.overallColor }} title={validity.overallLabel}>
-                            {validity.overallScore}
+                            {validity.overallScore} - {validity.overallLabel}
                           </span>
                         </div>
                       </td>
