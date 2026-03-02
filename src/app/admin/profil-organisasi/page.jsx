@@ -74,7 +74,7 @@ export default function ProfilOrganisasiPage() {
     const jabatanSet = new Set(filtered.map(d => d.userData?.jabatan).filter(Boolean));
     const validScores = filtered.map(d => {
       const v = calculateValidityIndex(d.rawData, d);
-      return typeof v.overallScore === 'number' ? v.overallScore : null;
+      return typeof v.overallScore === 'number' && v.overallScore > 0 ? v.overallScore : null;
     }).filter(v => v !== null);
     const avgValidity = validScores.length > 0 ? (validScores.reduce((a, b) => a + b, 0) / validScores.length).toFixed(1) : '-';
     const latestDate = filtered.reduce((max, d) => {
