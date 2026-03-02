@@ -8,7 +8,13 @@ function SortIcon({ sortBy, sortDir, field }) {
   return <span className="text-blue-400 ml-1">{sortDir === 'asc' ? '↑' : '↓'}</span>;
 }
 
-export default function RekapDataPage() {
+const getFirstSentence = (str) => {
+  if (!str) return '';
+  const match = str.match(/[^.!?]+[.!?]*/);
+  return match ? match[0].trim() : str.trim();
+};
+
+export default function RekapPage() {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
@@ -174,10 +180,10 @@ export default function RekapDataPage() {
                 <th className="text-left px-4 py-4 whitespace-nowrap cursor-pointer hover:text-white" onClick={() => toggleSort('arketipe')}>
                   Arketipe <SortIcon sortBy={sortBy} sortDir={sortDir} field="arketipe" />
                 </th>
-                <th className="text-left px-4 py-4 min-w-[300px]">Deskripsi Kepribadian Terintegrasi</th>
-                <th className="text-left px-4 py-4 min-w-[200px]">Kekuatan Utama</th>
+                <th className="text-left px-4 py-4 min-w-[450px]">Deskripsi Kepribadian Terintegrasi</th>
+                <th className="text-left px-4 py-4 min-w-[250px]">Kekuatan Utama</th>
                 <th className="text-left px-4 py-4 min-w-[200px]">Tantangan Utama</th>
-                <th className="text-left px-4 py-4 min-w-[200px]">Saran Pengembangan</th>
+                <th className="text-left px-4 py-4 min-w-[250px]">Saran Pengembangan</th>
                 <th className="text-left px-4 py-4 min-w-[200px]">Peran Potensial (Tim)</th>
               </tr>
             </thead>
@@ -198,39 +204,39 @@ export default function RekapDataPage() {
                     <td className="px-4 py-4 align-top">
                       <span className="text-yellow-400 font-semibold">{ai.arketipe_personal || ai.arketipe || '-'}</span>
                     </td>
-                    <td className="px-4 py-4 align-top text-slate-300 text-xs leading-relaxed">
-                      <div className="line-clamp-4" title={ai.deskripsi_kepribadian_terintegrasi || ai.deskripsi_kepribadian || ai.karakterInti}>
+                    <td className="px-4 py-4 align-top text-slate-300 text-[13px] leading-relaxed">
+                      <div className="whitespace-pre-wrap">
                         {ai.deskripsi_kepribadian_terintegrasi || ai.deskripsi_kepribadian || ai.karakterInti || (
                            <span className="text-slate-600 italic">Analisis AI belum digenerate</span>
                         )}
                       </div>
                     </td>
                     <td className="px-4 py-4 align-top text-slate-400 text-xs leading-relaxed">
-                       {Array.isArray(ai.kekuatan_utama) ? <ul className="list-disc pl-3">{ai.kekuatan_utama.map((k,i) => <li key={i} className="line-clamp-2">{k}</li>)}</ul> : (ai.kekuatan || '-')}
+                       {Array.isArray(ai.kekuatan_utama) ? <ul className="list-disc pl-3">{ai.kekuatan_utama.map((k,i) => <li key={i} className="mb-1">{getFirstSentence(k)}</li>)}</ul> : (getFirstSentence(ai.kekuatan) || '-')}
                     </td>
                     <td className="px-4 py-4 align-top text-rose-400/80 text-xs leading-relaxed">
                        {ai.tantangan_dan_faktor_penghambat ?
                          <div>
                            <div className="font-semibold mb-1">Komunikasi:</div>
-                           <div className="line-clamp-2 mb-2">{ai.tantangan_dan_faktor_penghambat.komunikasi_dan_pola_kerja}</div>
+                           <div className="mb-2">{getFirstSentence(ai.tantangan_dan_faktor_penghambat.komunikasi_dan_pola_kerja)}</div>
                            <div className="font-semibold mb-1">Internal:</div>
-                           <div className="line-clamp-2">{ai.tantangan_dan_faktor_penghambat.hambatan_karakter_internal}</div>
+                           <div>{getFirstSentence(ai.tantangan_dan_faktor_penghambat.hambatan_karakter_internal)}</div>
                          </div>
-                       : (ai.tantangan || '-')}
+                       : (getFirstSentence(ai.tantangan) || '-')}
                     </td>
                     <td className="px-4 py-4 align-top text-blue-300/80 text-xs leading-relaxed">
-                       {Array.isArray(ai.saran_pengembangan_spesifik) ? <ul className="list-decimal pl-3">{ai.saran_pengembangan_spesifik.map((s,i) => <li key={i} className="line-clamp-2">{s}</li>)}</ul> : (ai.saran || '-')}
+                       {Array.isArray(ai.saran_pengembangan_spesifik) ? <ul className="list-decimal pl-3">{ai.saran_pengembangan_spesifik.map((s,i) => <li key={i} className="mb-1">{getFirstSentence(s)}</li>)}</ul> : (getFirstSentence(ai.saran) || '-')}
                     </td>
                     <td className="px-4 py-4 align-top text-teal-400/80 text-xs leading-relaxed">
                       {Array.isArray(ai.peta_potensi_peran) ?
                         <div>
                           {ai.peta_potensi_peran.map((p,i) => (
-                             <div key={i} className="mb-2">
-                               <span className="font-bold text-teal-300">[{p.tipe_arketipe}]</span> <span className="line-clamp-2">{p.alasan}</span>
+                             <div key={i} className="mb-1.5 flex flex-col">
+                               <span className="font-bold text-teal-300">[{p.tipe_arketipe}]</span> <span>{getFirstSentence(p.alasan)}</span>
                              </div>
                           ))}
                         </div>
-                      : (ai.peran || '-')}
+                      : (getFirstSentence(ai.peran) || '-')}
                     </td>
                   </tr>
                 );
