@@ -392,7 +392,8 @@ export function calculateValidityIndex(rawData, submissionData) {
   const mainObj = getLabelColor(overallMainScore);
 
   return {
-    ...mainObj, // overallLabel, overallColor
+    overallLabel: mainObj.label,
+    overallColor: mainObj.color,
     overallScore: overallMainScore < 0 ? '-' : overallMainScore,
     hexaco: hexacoObj,
     disc: discObj,
