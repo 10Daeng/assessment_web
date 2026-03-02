@@ -43,11 +43,11 @@ export default function PersonalInfo({ onSubmit }) {
           <div className="grid grid-cols-3 gap-4">
             <div className="col-span-2">
               <label className="block text-sm font-semibold text-slate-700 mb-2" htmlFor="email">Email</label>
-              <input 
-                type="text" 
-                name="email" 
+              <input
+                type="email"
+                name="email"
                 id="email"
-                required 
+                required
                 value={formData.email}
                 onChange={handleChange}
                 placeholder="e.g. user@example.com"

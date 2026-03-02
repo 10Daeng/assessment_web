@@ -1,5 +1,6 @@
 import { generateLocalInterpretation } from './interpretationDict';
 import { generateLocalAiInsight } from './localAiEngine';
+import { logger } from '../utils/logger';
 
 /**
  * Generate personality description.
@@ -30,7 +31,7 @@ export async function generatePersonalityDescription(discPattern, hexacoMeanH, h
   const geminiKey = process.env.GEMINI_API_KEY;
 
   if (!zaiKey && !geminiKey) {
-    console.log("[AI] No API Keys found (Z.AI or Gemini), using local AI engine.");
+    logger.log("[AI] No API Keys found (Z.AI or Gemini), using local AI engine.");
     // Merge: local insight (Claude schema) + legacy fields for PDF
     return {
       ...localInsight,
@@ -122,7 +123,7 @@ export async function generatePersonalityDescription(discPattern, hexacoMeanH, h
     let cleanText = '';
 
     if (zaiKey) {
-      console.log("[AI] Attempting Z.AI (Claude Sonnet) enhancement...");
+      logger.log("[AI] Attempting Z.AI (Claude Sonnet) enhancement...");
       const zaiUrl = 'https://api.z.ai/api/anthropic/v1/messages';
       
       const response = await fetch(zaiUrl, {
@@ -149,7 +150,7 @@ export async function generatePersonalityDescription(discPattern, hexacoMeanH, h
       cleanText = text.replace(/```json/gi, '').replace(/```/g, '').trim();
 
     } else {
-      console.log("[AI] Attempting Gemini enhancement...");
+      logger.log("[AI] Attempting Gemini enhancement...");
       const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${geminiKey}`;
       
       const response = await fetch(geminiUrl, {
@@ -172,7 +173,7 @@ export async function generatePersonalityDescription(discPattern, hexacoMeanH, h
     }
 
     const aiResult = JSON.parse(cleanText);
-    console.log("[AI] API enhancement succeeded.");
+    logger.log("[AI] API enhancement succeeded.");
     
     // Normalize: ensure peta_potensi_peran exists (some prompts return peran_potensial_dalam_tim)
     if (!aiResult.peta_potensi_peran && aiResult.peran_potensial_dalam_tim) {
@@ -195,7 +196,7 @@ export async function generatePersonalityDescription(discPattern, hexacoMeanH, h
       _source: 'z.ai',
     };
   } catch (err) {
-    console.warn("[AI] API failed, using local AI engine:", err.message);
+    logger.warn("[AI] API failed, using local AI engine:", err.message);
     // Fallback: local AI insight (same Claude schema) + legacy PDF fields
     return {
       ...localInsight,

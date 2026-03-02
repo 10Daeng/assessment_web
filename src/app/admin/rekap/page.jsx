@@ -2,6 +2,7 @@
 import { useState, useEffect, useMemo } from 'react';
 import Link from 'next/link';
 import * as XLSX from 'xlsx';
+import { logger } from '@/utils/logger';
 
 function SortIcon({ sortBy, sortDir, field }) {
   if (sortBy !== field) return <span className="text-slate-600 ml-1">↕</span>;
@@ -29,7 +30,7 @@ export default function RekapPage() {
         const json = await res.json();
         setData(json.data || []);
       } catch (e) {
-        console.error(e);
+        logger.error(e);
       }
       setLoading(false);
     }

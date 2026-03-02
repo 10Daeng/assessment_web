@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { neon } from '@neondatabase/serverless';
+import { logger } from '@/utils/logger';
 
 function getSQL() {
   return neon(process.env.DATABASE_URL);
@@ -102,7 +103,7 @@ Gaya Bahasa:
 
     return NextResponse.json({ success: true, reply });
   } catch(e) {
-    console.error("Chat API Error:", e);
+    logger.error("Chat API Error:", e);
     return NextResponse.json({ success: false, error: e.message }, { status: 500 });
   }
 }

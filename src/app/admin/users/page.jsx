@@ -2,6 +2,7 @@
 import { useState, useEffect, useMemo } from 'react';
 import Link from 'next/link';
 import { calculateValidityIndex } from '@/utils/validityCheck';
+import { logger } from '@/utils/logger';
 
 function SortIcon({ sortBy, sortDir, field }) {
   if (sortBy !== field) return <span className="text-slate-600 ml-1">↕</span>;
@@ -34,7 +35,7 @@ export default function UsersPage() {
           setSubs(data.data || []);
         }
       } catch (e) {
-        console.error('Fetch error:', e);
+        logger.error('Fetch error:', e);
       }
       setLoading(false);
     }
@@ -97,7 +98,7 @@ export default function UsersPage() {
         const json = await res.json();
         if (json.success) successCount++;
       } catch (e) {
-        console.error('Failed to generate for', targets[i].id, e);
+        logger.error('Failed to generate for', targets[i].id, e);
       }
       setBulkGenState(prev => ({ ...prev, current: i + 1 }));
     }

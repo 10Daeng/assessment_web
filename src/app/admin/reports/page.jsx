@@ -3,6 +3,7 @@ import { useState, useEffect, useMemo } from 'react';
 import Link from 'next/link';
 import dynamic from 'next/dynamic';
 import { getDiscPatternName } from '@/utils/scoring';
+import { logger } from '@/utils/logger';
 
 const BatchExportPDF = dynamic(() => import('@/components/BatchExportPDF'), { ssr: false });
 
@@ -27,7 +28,7 @@ export default function ReportsPage() {
         const json = await res.json();
         setData(json.data || []);
       } catch (e) {
-        console.error("Failed to fetch data:", e);
+        logger.error("Failed to fetch data:", e);
       }
       setLoading(false);
     }

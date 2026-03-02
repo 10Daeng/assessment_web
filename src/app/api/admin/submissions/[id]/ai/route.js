@@ -1,13 +1,14 @@
 import { NextResponse } from 'next/server';
 import { getSubmissionById, updateSubmissionAiInsight } from '@/lib/dataStore';
 import { generatePersonalityDescription } from '@/lib/gemini';
+import { logger } from '@/utils/logger';
 
 export async function POST(request, context) {
   try {
     const params = await context.params;
     const { id } = params;
     const sub = await getSubmissionById(id);
-    
+
     if (!sub) {
       return NextResponse.json({ success: false, error: 'Submission not found' }, { status: 404 });
     }
@@ -40,7 +41,7 @@ export async function POST(request, context) {
     return NextResponse.json({ success: true, aiInsight: insight, cached: false });
 
   } catch (error) {
-    console.error("AI Generation Error: ", error);
+    logger.error("AI Generation Error: ", error);
     return NextResponse.json({ success: false, error: error.message }, { status: 500 });
   }
 }

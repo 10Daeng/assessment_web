@@ -2,6 +2,7 @@
 import { useState, useEffect, useMemo } from 'react';
 import Link from 'next/link';
 import { calculateValidityIndex } from '@/utils/validityCheck';
+import { logger } from '@/utils/logger';
 
 export default function AdminDashboard() {
   const [allData, setAllData] = useState([]);
@@ -22,7 +23,7 @@ export default function AdminDashboard() {
         setAllData(subData.data || []);
         setDupCount((dupData.data || []).length);
       } catch (e) {
-        console.error(e);
+        logger.error(e);
       }
       setLoading(false);
     }

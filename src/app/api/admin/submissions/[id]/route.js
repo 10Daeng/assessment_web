@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { getSubmissionById } from '@/lib/dataStore';
+import { logger } from '@/utils/logger';
 
 export async function GET(request, { params }) {
   try {
@@ -15,7 +16,7 @@ export async function GET(request, { params }) {
 
     return NextResponse.json({ success: true, data: submission });
   } catch (error) {
-    console.error("Error fetching submission:", error);
+    logger.error("Error fetching submission:", error);
     return NextResponse.json(
       { success: false, error: 'Failed to fetch submission' },
       { status: 500 }
@@ -28,14 +29,14 @@ export async function DELETE(request, { params }) {
     const { id } = await params;
     const { deleteSubmission } = await import('@/lib/dataStore');
     const success = await deleteSubmission(id);
-    
+
     if (!success) {
       return NextResponse.json({ success: false, error: 'Failed to delete or not found' }, { status: 404 });
     }
 
     return NextResponse.json({ success: true, message: 'Deleted successfully' });
   } catch (error) {
-    console.error("Error deleting submission:", error);
+    logger.error("Error deleting submission:", error);
     return NextResponse.json({ success: false, error: 'Failed to delete' }, { status: 500 });
   }
 }
@@ -64,7 +65,7 @@ export async function PUT(request, { params }) {
 
     return NextResponse.json({ success: true, message: 'Updated successfully' });
   } catch (error) {
-    console.error("Error updating submission:", error);
+    logger.error("Error updating submission:", error);
     return NextResponse.json({ success: false, error: 'Failed to update' }, { status: 500 });
   }
 }

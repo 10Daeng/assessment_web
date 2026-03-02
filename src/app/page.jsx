@@ -8,6 +8,7 @@ import PersonalInfo from '@/components/PersonalInfo';
 import DiscTest from '@/components/DiscTest';
 import HexacoTest from '@/components/HexacoTest';
 import { calculateDiscScores, calculateHexacoScores } from '@/utils/scoring';
+import { logger } from '@/utils/logger';
 
 export default function Home() {
   const [step, setStep] = useState(0); 
@@ -78,9 +79,9 @@ export default function Home() {
       if (resData?.data?.id) {
         fetch(`/api/admin/submissions/${resData.data.id}/ai`, { method: 'POST' }).catch(() => {});
       }
-      
+
     } catch (e) {
-      console.error(e);
+      logger.error(e);
       setIsProcessing(false);
     }
   };

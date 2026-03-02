@@ -2,6 +2,7 @@
 import { useState, useEffect, useMemo } from 'react';
 import Link from 'next/link';
 import { getDiscPatternName } from '@/utils/scoring';
+import { logger } from '@/utils/logger';
 
 function SortIcon({ sortBy, sortDir, field }) {
   if (sortBy !== field) return <span className="text-slate-600 ml-1">↕</span>;
@@ -24,7 +25,7 @@ export default function DiscResultsPage() {
         const json = await res.json();
         setData(json.data || []);
       } catch (e) {
-        console.error("Failed to fetch DISC data:", e);
+        logger.error("Failed to fetch DISC data:", e);
       }
       setLoading(false);
     }

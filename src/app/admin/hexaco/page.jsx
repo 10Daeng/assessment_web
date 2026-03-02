@@ -1,6 +1,7 @@
 'use client';
 import { useState, useEffect, useMemo } from 'react';
 import Link from 'next/link';
+import { logger } from '@/utils/logger';
 
 const hexacoLabels = {
   H: { name: 'Honesty-Humility', color: 'purple' },
@@ -33,7 +34,7 @@ export default function HexacoResultsPage() {
         const json = await res.json();
         setData(json.data || []);
       } catch (e) {
-        console.error("Failed to fetch data:", e);
+        logger.error("Failed to fetch data:", e);
       }
       setLoading(false);
     }

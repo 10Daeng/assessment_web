@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { addSubmission } from '@/lib/dataStore';
+import { logger } from '@/utils/logger';
 
 export async function POST(request) {
   try {
@@ -16,7 +17,7 @@ export async function POST(request) {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(data),
-      }).catch(err => console.error("Webhook Error:", err));
+      }).catch(err => logger.error("Webhook Error:", err));
     }
 
     // We removed synchronous AI generation here to prevent Vercel 10s timeout errors. 
@@ -30,7 +31,7 @@ export async function POST(request) {
       data: { id: record.id }
     });
   } catch (error) {
-    console.error("Error saving assessment result:", error);
+    logger.error("Error saving assessment result:", error);
     return NextResponse.json(
       { success: false, error: 'Failed to process assessment data' },
       { status: 500 }

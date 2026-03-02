@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { createToken, validateCredentials } from '@/lib/auth';
+import { logger } from '@/utils/logger';
 
 export async function POST(request) {
   try {
@@ -25,7 +26,7 @@ export async function POST(request) {
 
     return response;
   } catch (error) {
-    console.error('Login error:', error);
+    logger.error('Login error:', error);
     return NextResponse.json(
       { success: false, error: 'Terjadi kesalahan server' },
       { status: 500 }

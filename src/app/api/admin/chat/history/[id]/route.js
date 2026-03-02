@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { neon } from '@neondatabase/serverless';
+import { logger } from '@/utils/logger';
 
 function getSQL() {
   return neon(process.env.DATABASE_URL);
@@ -10,13 +11,13 @@ export async function GET(request, context) {
   try {
     const params = await context.params;
     const { id } = params;
-    
+
     if (!id) return NextResponse.json({ success: false, error: 'Missing ID' }, { status: 400 });
 
     const sql = getSQL();
     const chat = await sql`
       SELECT id, title, "selectedTarget", messages, "createdAt", "updatedAt"
-      FROM "ChatHistory" 
+      FROM "ChatHistory"
       WHERE id = ${id}
     `;
 
@@ -26,7 +27,7 @@ export async function GET(request, context) {
 
     return NextResponse.json({ success: true, data: chat[0] });
   } catch(e) {
-    console.error("GET DB ChatHistory Error:", e);
+    logger.error("GET DB ChatHistory Error:", e);
     return NextResponse.json({ success: false, error: e.message }, { status: 500 });
   }
 }
@@ -45,11 +46,11 @@ export async function PUT(request, context) {
       if (body.messages !== undefined && body.selectedTarget !== undefined) {
          // Full update
          result = await sql`
-           UPDATE "ChatHistory" 
-           SET 
-             title = ${body.title}, 
-             "selectedTarget" = ${body.selectedTarget}, 
-             messages = ${JSON.stringify(body.messages)}, 
+           UPDATE "ChatHistory"
+           SET
+             title = ${body.title},
+             "selectedTarget" = ${body.selectedTarget},
+             messages = ${JSON.stringify(body.messages)},
              "updatedAt" = NOW()
            WHERE id = ${id}
            RETURNING id, title, "selectedTarget", messages, "createdAt", "updatedAt"
@@ -57,7 +58,7 @@ export async function PUT(request, context) {
       } else {
          // Title rename only
          result = await sql`
-           UPDATE "ChatHistory" 
+           UPDATE "ChatHistory"
            SET title = ${body.title}, "updatedAt" = NOW()
            WHERE id = ${id}
            RETURNING id, title, "selectedTarget", messages, "createdAt", "updatedAt"
@@ -66,7 +67,7 @@ export async function PUT(request, context) {
     } else if (body.messages !== undefined) {
       // Message update only
       result = await sql`
-        UPDATE "ChatHistory" 
+        UPDATE "ChatHistory"
         SET messages = ${JSON.stringify(body.messages)}, "updatedAt" = NOW()
         WHERE id = ${id}
         RETURNING id, title, "selectedTarget", messages, "createdAt", "updatedAt"
@@ -79,7 +80,7 @@ export async function PUT(request, context) {
 
     return NextResponse.json({ success: true, data: result[0] });
   } catch(e) {
-    console.error("PUT DB ChatHistory Error:", e);
+    logger.error("PUT DB ChatHistory Error:", e);
     return NextResponse.json({ success: false, error: e.message }, { status: 500 });
   }
 }
@@ -89,7 +90,7 @@ export async function DELETE(request, context) {
   try {
     const params = await context.params;
     const { id } = params;
-    
+
     if (!id) return NextResponse.json({ success: false, error: 'Missing ID' }, { status: 400 });
 
     const sql = getSQL();
@@ -97,7 +98,7 @@ export async function DELETE(request, context) {
 
     return NextResponse.json({ success: true });
   } catch(e) {
-    console.error("DELETE DB ChatHistory Error:", e);
+    logger.error("DELETE DB ChatHistory Error:", e);
     return NextResponse.json({ success: false, error: e.message }, { status: 500 });
   }
 }

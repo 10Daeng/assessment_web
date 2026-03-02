@@ -1,5 +1,6 @@
 'use client';
 import { useState, useEffect, useRef, useMemo } from 'react';
+import { logger } from '@/utils/logger';
 
 export default function ChatPage() {
   const [subs, setSubs] = useState([]);
@@ -25,12 +26,12 @@ export default function ChatPage() {
   }, [messages, isLoading]);
 
   const fetchHistories = () => {
-    fetch('/api/admin/chat/history').then(r => r.json()).then(d => { if (d.success) setHistories(d.data || []); }).catch(console.error);
+    fetch('/api/admin/chat/history').then(r => r.json()).then(d => { if (d.success) setHistories(d.data || []); }).catch(logger.error);
   };
 
   useEffect(() => {
     // Load clients
-    fetch('/api/admin/submissions').then(r => r.json()).then(d => { if (d.success) setSubs(d.data || []); }).catch(console.error);
+    fetch('/api/admin/submissions').then(r => r.json()).then(d => { if (d.success) setSubs(d.data || []); }).catch(logger.error);
     // Load histories
     fetchHistories();
   }, []);
@@ -50,7 +51,7 @@ export default function ChatPage() {
        if (json.success && json.data.messages) {
          setMessages(json.data.messages);
        }
-    } catch(e) { console.error(e); }
+    } catch(e) { logger.error(e); }
   };
 
   const updateChatMessages = async (id, msgs, target) => {
@@ -60,7 +61,7 @@ export default function ChatPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ messages: msgs, selectedTarget: target })
       });
-    } catch(e) { console.error(e); }
+    } catch(e) { logger.error(e); }
   };
 
   const renameChat = async (id) => {
@@ -73,7 +74,7 @@ export default function ChatPage() {
       });
       setHistories(prev => prev.map(h => h.id === id ? { ...h, title: editTitleVal } : h));
       setEditingTitleId(null);
-    } catch(e) { console.error(e); }
+    } catch(e) { logger.error(e); }
   };
 
   const deleteChat = async (id, e) => {
@@ -83,7 +84,7 @@ export default function ChatPage() {
       await fetch(`/api/admin/chat/history/${id}`, { method: 'DELETE' });
       setHistories(prev => prev.filter(h => h.id !== id));
       if (currentChatId === id) startNewChat();
-    } catch(_err) { console.error(_err); }
+    } catch(_err) { logger.error(_err); }
   };
 
   const handleSend = async (e) => {
@@ -113,7 +114,7 @@ export default function ChatPage() {
            setCurrentChatId(activeChatId);
            setHistories([d.data, ...histories]);
         }
-      } catch(err) { console.error(err); }
+      } catch(err) { logger.error(err); }
     } else {
       await updateChatMessages(activeChatId, newMsgs, selectedTarget);
     }

@@ -3,6 +3,7 @@ import { useState, useEffect, useMemo } from 'react';
 import * as XLSX from 'xlsx';
 import { calculateValidityIndex } from '@/utils/validityCheck';
 import { getDiscPatternName } from '@/utils/scoring';
+import { logger } from '@/utils/logger';
 
 const HEXACO_LABELS = {
   H: 'Integritas',
@@ -51,7 +52,7 @@ export default function ProfilOrganisasiPage() {
         const json = await res.json();
         setData(json.data || []);
       } catch (e) {
-        console.error('Failed to load:', e);
+        logger.error('Failed to load:', e);
       }
       setLoading(false);
     }

@@ -5,6 +5,7 @@ import { pdf } from '@react-pdf/renderer';
 import JSZip from 'jszip';
 import { saveAs } from 'file-saver';
 import AssessmentPDF from './AssessmentPDF';
+import { logger } from '@/utils/logger';
 
 export default function BatchExportPDF({ data }) {
   const [isExporting, setIsExporting] = useState(false);
@@ -51,7 +52,7 @@ export default function BatchExportPDF({ data }) {
       saveAs(zipContent, `Export_Profil_LB_${new Date().toISOString().slice(0,10)}.zip`);
       
     } catch (e) {
-      console.error("Batch Export Error: ", e);
+      logger.error("Batch Export Error: ", e);
       alert("Terjadi kesalahan saat mengekspor: " + e.message);
     } finally {
       setIsExporting(false);

@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { getAllSubmissions, detectDuplicates } from '@/lib/dataStore';
+import { logger } from '@/utils/logger';
 
 export async function GET(request) {
   try {
@@ -16,13 +17,13 @@ export async function GET(request) {
 
     const submissions = await getAllSubmissions({ search, sortBy, sortDir });
 
-    return NextResponse.json({ 
-      success: true, 
+    return NextResponse.json({
+      success: true,
       data: submissions,
       total: submissions.length
     });
   } catch (error) {
-    console.error("Error fetching submissions:", error);
+    logger.error("Error fetching submissions:", error);
     return NextResponse.json(
       { success: false, error: 'Failed to fetch data' },
       { status: 500 }
