@@ -16,7 +16,8 @@ export async function generatePersonalityDescription(discPattern, hexacoMeanH, h
     discPattern,
     factorMeans,
     hexacoFacetMeans || {},
-    discScores || null
+    discScores || null,
+    userData || {}
   );
 
   // Also prepare legacy local interpretation (for PDF gayaKerja/karakterInti)

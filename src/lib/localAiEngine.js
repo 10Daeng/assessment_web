@@ -74,7 +74,7 @@ function getHexacoRoles(factorMeans) {
 // MASTER: Generate Local AI Insight
 // =========================================
 // Output schema IDENTICAL to Claude/z.ai
-export function generateLocalAiInsight(discPattern, factorMeans, facetMeans, discScores) {
+export function generateLocalAiInsight(discPattern, factorMeans, facetMeans, discScores, userData = {}) {
   const fm = factorMeans || {};
   const fac = facetMeans || {};
 
@@ -114,18 +114,26 @@ export function generateLocalAiInsight(discPattern, factorMeans, facetMeans, dis
   // === 5. BUILD DESKRIPSI KEPRIBADIAN TERINTEGRASI ===
   let deskripsi = '';
 
-  // First paragraph: DISC personality (paragraph 1 only)
+  // First paragraph: DISC personality (paragraph 1 only) + context
   const discFirstPara = disc.gayaKerja.split('\n\n')[0];
-  deskripsi += discFirstPara;
 
-  // Second paragraph: Combined HEXACO + cross insights (max 1 additional insight)
+  // Add demographic context (organization, job, position)
+  const demographicContext = [];
+  if (userData?.instansi) demographicContext.push(`di ${userData.instansi}`);
+  if (userData?.pekerjaan) demographicContext.push(`sebagai ${userData.pekerjaan}`);
+  if (userData?.jabatan) demographicContext.push(`dalam posisi ${userData.jabatan}`);
+
+  deskripsi += discFirstPara;
+  if (demographicContext.length > 0) {
+    deskripsi += ' Dalam peran ' + demographicContext.join(' ') + ', ';
+  } else {
+    deskripsi += ' Dalam konteks kerjanya, ';
+  }
+
+  // Second paragraph: HEXACO analysis tailored to role
   if (hexAnalysis.dimensiOverview) {
-    // Get first paragraph only of hexaco overview
     const hexacoFirstPara = hexAnalysis.dimensiOverview.split('\n\n')[0];
-    deskripsi += '\n\n' + hexacoFirstPara;
-  } else if (hexAnalysis.crossInsights.length > 0) {
-    // Fallback to first cross insight
-    deskripsi += '\n\n' + hexAnalysis.crossInsights[0];
+    deskripsi += hexacoFirstPara;
   }
 
   // === 6. BUILD KEKUATAN UTAMA ===
