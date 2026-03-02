@@ -65,20 +65,35 @@ export default function UsersPage() {
     }
   }
 
-  async function handleBulkGenerate() {
-    const targets = sorted.filter(s => !s.aiInsight);
-    if (targets.length === 0) {
-      alert('Semua rekaman pada daftar ini sudah memiliki Hasil Interpretasi AI.');
-      return;
+  async function handleBulkGenerate(mode = 'missing') {
+    let targets = [];
+    if (mode === 'missing') {
+      targets = sorted.filter(s => !s.aiInsight);
+      if (targets.length === 0) {
+        alert('Semua rekaman pada daftar ini sudah memiliki Hasil Interpretasi AI.');
+        return;
+      }
+      if (!confirm(`Terdapat ${targets.length} klien tanpa AI Insight. Mulai generate massal secara otomatis? Proses ini memakan waktu (±10 detik per klien).`)) return;
+    } else {
+      targets = sorted;
+      if (targets.length === 0) {
+        alert('Tidak ada data klien untuk diproses.');
+        return;
+      }
+      if (!confirm(`PERINGATAN! Anda akan MENGHASILKAN ULANG (Regenerate) AI Insight untuk SEMUA ${targets.length} klien di daftar ini. Proses ini akan menimpa data lama dan memakan waktu sangat lama (±10-15 detik per klien). Lanjutkan?`)) return;
     }
-    if (!confirm(`Terdapat ${targets.length} klien tanpa AI Insight. Mulai generate massal secara otomatis? Proses ini berjalan satu per satu dan memakan waktu (±10 detik per klien).`)) return;
     
     setBulkGenState({ active: true, current: 0, total: targets.length });
     let successCount = 0;
     
     for (let i = 0; i < targets.length; i++) {
       try {
-        const res = await fetch(`/api/admin/submissions/${targets[i].id}/ai`, { method: 'POST' });
+        const bodyMsg = mode === 'all' ? JSON.stringify({ force: true }) : undefined;
+        const res = await fetch(`/api/admin/submissions/${targets[i].id}/ai`, { 
+          method: 'POST',
+          headers: bodyMsg ? { 'Content-Type': 'application/json' } : undefined,
+          body: bodyMsg 
+        });
         const json = await res.json();
         if (json.success) successCount++;
       } catch (e) {
@@ -148,14 +163,35 @@ export default function UsersPage() {
           <h2 className="text-2xl font-bold text-white tracking-tight">Daftar Klien & Identitas</h2>
           <p className="text-slate-400 text-sm mt-1">Laporan demografis lengkap seluruh pengguna beserta indeks validitas</p>
         </div>
-        <div className="flex gap-2">
-          <button
-            onClick={handleBulkGenerate}
-            disabled={bulkGenState.active}
-            className="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-xl text-sm transition-all disabled:opacity-50 flex items-center gap-2 shadow-lg"
-          >
-            {bulkGenState.active ? 'Sedang Memproses...' : '✨ Hasilkan AI Massal'}
-          </button>
+        <div className="flex flex-wrap gap-2">
+          {/* Dropdown for AI Generation */}
+          <div className="relative group inline-block">
+            <button
+              disabled={bulkGenState.active}
+              className="bg-purple-600 hover:bg-purple-700 text-white font-medium py-2 px-4 rounded-xl text-sm transition-all disabled:opacity-50 flex items-center gap-2 shadow-lg"
+            >
+              {bulkGenState.active ? 'Sedang Memproses...' : '✨ Hasilkan AI Massal ▾'}
+            </button>
+            {!bulkGenState.active && (
+              <div className="absolute right-0 mt-2 w-56 bg-slate-800 border border-slate-700 rounded-xl shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-10 focus-within:opacity-100 focus-within:visible">
+                <button
+                  onClick={() => handleBulkGenerate('missing')}
+                  className="w-full text-left px-4 py-3 text-sm text-slate-300 hover:bg-slate-700 hover:text-white rounded-t-xl transition-colors border-b border-slate-700"
+                >
+                  <span className="block font-medium">✨ Generate yang Kosong</span>
+                  <span className="block text-xs text-slate-500 mt-0.5">Hanya klien tanpa interpretasi</span>
+                </button>
+                <button
+                  onClick={() => handleBulkGenerate('all')}
+                  className="w-full text-left px-4 py-3 text-sm text-rose-300 hover:bg-rose-900/40 hover:text-rose-200 transition-colors rounded-b-xl"
+                >
+                  <span className="block font-medium">🔄 Regenerate Semua</span>
+                  <span className="block text-xs text-rose-400/60 mt-0.5">Timpa paksa seluruh daftar</span>
+                </button>
+              </div>
+            )}
+          </div>
+
           <button
             onClick={handleSync}
             disabled={syncing || bulkGenState.active}
