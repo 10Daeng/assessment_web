@@ -16,9 +16,19 @@ export async function POST(request) {
     
     // Build context depending on if a client is selected
     if (selectedClientId && selectedClientId !== 'all') {
-       const client = subs.find(s => s.id === selectedClientId);
-       if (client) {
-         contextData = `Konteks Klien Spesifik:\n- Nama: ${client.nama}\n- Email: ${client.email}\n- Instansi: ${client.instansi}\n- Jabatan: ${client.jabatan}\n- Pola DISC: ${client.discPattern}\n- AI Insight: ${JSON.stringify(client.aiInsight)}\n\n(Tugas: Jawab pertanyaan admin yang berfokus pada klien ini)`;
+       if (selectedClientId.startsWith('org:')) {
+           const orgs = selectedClientId.replace('org:', '').split('|').filter(Boolean);
+           const filteredSubs = subs.filter(s => orgs.includes(s.instansi));
+           contextData = `Konteks Kelompok Instansi (${orgs.join(', ')}):\nJumlah Total Klien: ${filteredSubs.length}\nDaftar Ringkas:\n`;
+           filteredSubs.forEach(s => {
+              contextData += `- ${s.nama} (${s.jabatan} di ${s.instansi}). Arketipe AI: ${s.aiInsight?.arketipe_personal || 'Belum dianalisis'}\n`;
+           });
+           contextData += `\n(Tugas: Jawab pertanyaan admin mengenai kelompok/instansi spesifik di atas)`;
+       } else {
+           const client = subs.find(s => s.id === selectedClientId);
+           if (client) {
+             contextData = `Konteks Klien Spesifik:\n- Nama: ${client.nama}\n- Email: ${client.email}\n- Instansi: ${client.instansi}\n- Jabatan: ${client.jabatan}\n- Pola DISC: ${client.discPattern}\n- AI Insight: ${JSON.stringify(client.aiInsight)}\n\n(Tugas: Jawab pertanyaan admin yang berfokus pada klien ini)`;
+           }
        }
     } else {
        // Org context

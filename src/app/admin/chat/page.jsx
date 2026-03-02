@@ -1,5 +1,5 @@
 'use client';
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useMemo } from 'react';
 
 export default function ChatPage() {
   const [subs, setSubs] = useState([]);
@@ -14,6 +14,9 @@ export default function ChatPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [editingTitleId, setEditingTitleId] = useState(null);
   const [editTitleVal, setEditTitleVal] = useState('');
+  const [isTargetMenuOpen, setIsTargetMenuOpen] = useState(false);
+  
+  const instansiList = useMemo(() => Array.from(new Set(subs.map(s => s.userData?.instansi).filter(Boolean))), [subs]);
   
   const endRef = useRef(null);
 
@@ -211,19 +214,87 @@ export default function ChatPage() {
 
           <div className="flex items-center gap-3">
             <label className="text-xs text-slate-500 uppercase tracking-widest font-medium hidden lg:block">Bahas Tema:</label>
-            <select
-              value={selectedTarget}
-              onChange={e => setSelectedTarget(e.target.value)}
-              disabled={isLoading}
-              className="bg-slate-800 border-none text-white text-sm focus:ring-2 focus:ring-blue-500 rounded-xl px-4 py-2.5 outline-none max-w-[150px] lg:max-w-[200px]"
-            >
-              <option value="all">🏢 Semua Klien</option>
-              <optgroup label="Personal Klien:">
-                {subs.map(s => (
-                  <option key={s.id} value={s.id}>👤 {s.userData?.nama || 'Tanpa Nama'}</option>
-                ))}
-              </optgroup>
-            </select>
+            <div className="relative">
+              <button
+                type="button"
+                className="bg-slate-800 border border-slate-700 text-white text-sm focus:ring-2 focus:ring-blue-500 rounded-xl px-4 py-2.5 outline-none w-full min-w-[150px] lg:min-w-[200px] text-left flex justify-between items-center z-10"
+                onClick={() => setIsTargetMenuOpen(!isTargetMenuOpen)}
+                disabled={isLoading}
+              >
+                <span className="truncate pr-2">
+                  {selectedTarget === 'all' ? '🏢 Semua Klien' : 
+                   selectedTarget.startsWith('org:') ? `🏢 ${selectedTarget.replace('org:', '').split('|').length} Instansi Terpilih` :
+                   `👤 ${subs.find(s => s.id === selectedTarget)?.userData?.nama || 'Tanpa Nama'}`}
+                </span>
+                <span className="text-xs">▾</span>
+              </button>
+              
+              {isTargetMenuOpen && (
+                <>
+                  <div className="fixed inset-0 z-10" onClick={() => setIsTargetMenuOpen(false)}></div>
+                  <div className="absolute right-0 mt-2 w-72 max-h-[50vh] flex flex-col bg-slate-800 border border-slate-700 rounded-xl shadow-2xl z-20">
+                    <div className="p-3 border-b border-slate-700 shrink-0">
+                      <label className="flex items-center gap-2 text-sm cursor-pointer group">
+                        <input 
+                          type="radio" 
+                          name="theme_target" 
+                          checked={selectedTarget === 'all'}
+                          onChange={() => { setSelectedTarget('all'); setIsTargetMenuOpen(false); }}
+                          className="w-4 h-4 text-blue-600 bg-slate-900 border-slate-700 focus:ring-blue-600 focus:ring-1"
+                        />
+                        <span className="text-white font-medium group-hover:text-blue-400 transition-colors">🏢 Semua Klien / Organisasi</span>
+                      </label>
+                    </div>
+                    
+                    <div className="flex-1 overflow-y-auto custom-scrollbar">
+                      {instansiList.length > 0 && (
+                        <div className="p-3 border-b border-slate-700">
+                          <div className="text-xs text-slate-400 font-semibold mb-2 uppercase tracking-wide">Filter Instansi Spesifik:</div>
+                          <div className="space-y-2">
+                            {instansiList.map(inst => {
+                              const isOrgChecked = selectedTarget.startsWith('org:') && selectedTarget.replace('org:', '').split('|').includes(inst);
+                              return (
+                                <label key={inst} className="flex items-start gap-2 text-sm cursor-pointer group">
+                                  <input 
+                                    type="checkbox"
+                                    checked={isOrgChecked}
+                                    onChange={(e) => {
+                                       let current = selectedTarget.startsWith('org:') ? selectedTarget.replace('org:', '').split('|').filter(Boolean) : [];
+                                       if (e.target.checked) current.push(inst);
+                                       else current = current.filter(x => x !== inst);
+                                       
+                                       if (current.length === 0) setSelectedTarget('all');
+                                       else setSelectedTarget('org:' + current.join('|'));
+                                    }}
+                                    className="mt-0.5 w-4 h-4 text-blue-600 bg-slate-900 border-slate-700 rounded focus:ring-blue-600 focus:ring-1"
+                                  />
+                                  <span className="text-slate-300 group-hover:text-white transition-colors">{inst}</span>
+                                </label>
+                              );
+                            })}
+                          </div>
+                        </div>
+                      )}
+
+                      <div className="p-3">
+                        <div className="text-xs text-slate-400 font-semibold mb-2 uppercase tracking-wide">Personal Klien:</div>
+                        <div className="space-y-1">
+                          {subs.map(s => (
+                            <button
+                              key={s.id}
+                              className={`w-full text-left px-2 py-1.5 rounded text-sm transition-colors ${selectedTarget === s.id ? 'bg-blue-600/20 text-blue-400 font-medium' : 'text-slate-300 hover:bg-slate-700 hover:text-white'}`}
+                              onClick={() => { setSelectedTarget(s.id); setIsTargetMenuOpen(false); }}
+                            >
+                              👤 {s.userData?.nama || 'Tanpa Nama'}
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </>
+              )}
+            </div>
           </div>
         </div>
 
