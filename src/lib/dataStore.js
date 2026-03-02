@@ -115,6 +115,15 @@ export async function updateSubmissionAiInsight(id, aiInsightData) {
 
 export async function deleteSubmission(id) {
   const sql = getSQL();
+  
+  // Archiving the data into DeletedSubmission before deleting
+  await sql`
+    INSERT INTO "DeletedSubmission"
+    SELECT * FROM "Submission" WHERE id = ${id}
+    ON CONFLICT (id) DO NOTHING
+  `;
+
+  // Original deletion
   const result = await sql`
     DELETE FROM "Submission" 
     WHERE id = ${id} 
