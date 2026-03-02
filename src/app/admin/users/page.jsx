@@ -21,6 +21,7 @@ export default function UsersPage() {
   const [editFormData, setEditFormData] = useState({
     nama: '', usia: '', instansi: '', pekerjaan: '', jabatan: ''
   });
+  const [bulkGenState, setBulkGenState] = useState({ active: false, current: 0, total: 0 });
 
   useEffect(() => {
     async function fetchData() {
@@ -61,6 +62,35 @@ export default function UsersPage() {
       setSortBy(field);
       setSortDir('asc');
     }
+  }
+
+  async function handleBulkGenerate() {
+    const targets = sorted.filter(s => !s.aiInsight);
+    if (targets.length === 0) {
+      alert('Semua rekaman pada daftar ini sudah memiliki Hasil Interpretasi AI.');
+      return;
+    }
+    if (!confirm(`Terdapat ${targets.length} klien tanpa AI Insight. Mulai generate massal secara otomatis? Proses ini berjalan satu per satu dan memakan waktu (±10 detik per klien).`)) return;
+    
+    setBulkGenState({ active: true, current: 0, total: targets.length });
+    let successCount = 0;
+    
+    for (let i = 0; i < targets.length; i++) {
+      try {
+        const res = await fetch(`/api/admin/submissions/${targets[i].id}/ai`, { method: 'POST' });
+        const json = await res.json();
+        if (json.success) successCount++;
+      } catch (e) {
+        console.error('Failed to generate for', targets[i].id, e);
+      }
+      setBulkGenState(prev => ({ ...prev, current: i + 1 }));
+    }
+    
+    setTimeout(() => {
+      setBulkGenState({ active: false, current: 0, total: 0 });
+      triggerRefresh();
+      alert(`Proses generate massal selesai! Berhasil: ${successCount} dari ${targets.length}`);
+    }, 1000);
   }
 
   const sorted = useMemo(() => {
@@ -117,18 +147,48 @@ export default function UsersPage() {
           <h2 className="text-2xl font-bold text-white tracking-tight">Daftar Klien & Identitas</h2>
           <p className="text-slate-400 text-sm mt-1">Laporan demografis lengkap seluruh pengguna beserta indeks validitas</p>
         </div>
-        <button
-          onClick={handleSync}
-          disabled={syncing}
-          className="bg-slate-800 hover:bg-slate-700 text-white font-medium py-2 px-4 rounded-xl text-sm transition-all border border-slate-700 disabled:opacity-50 flex items-center gap-2"
-        >
-          {syncing ? (
-            <><div className="w-4 h-4 border-2 border-slate-400 border-t-white rounded-full animate-spin"></div> Menyinkronkan...</>
-          ) : (
-            <>🔄 Sinkronisasi Data</>
-          )}
-        </button>
+        <div className="flex gap-2">
+          <button
+            onClick={handleBulkGenerate}
+            disabled={bulkGenState.active}
+            className="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-xl text-sm transition-all disabled:opacity-50 flex items-center gap-2 shadow-lg"
+          >
+            {bulkGenState.active ? 'Sedang Memproses...' : '✨ Hasilkan AI Massal'}
+          </button>
+          <button
+            onClick={handleSync}
+            disabled={syncing || bulkGenState.active}
+            className="bg-slate-800 hover:bg-slate-700 text-white font-medium py-2 px-4 rounded-xl text-sm transition-all border border-slate-700 disabled:opacity-50 flex items-center gap-2"
+          >
+            {syncing ? (
+              <><div className="w-4 h-4 border-2 border-slate-400 border-t-white rounded-full animate-spin"></div> Menyinkronkan...</>
+            ) : (
+              <>🔄 Sinkronisasi Data</>
+            )}
+          </button>
+        </div>
       </div>
+
+      {/* Bulk Generate Progress Bar */}
+      {bulkGenState.active && (
+        <div className="bg-blue-900/30 border border-blue-500/30 p-4 rounded-xl flex items-center gap-4">
+          <div className="w-8 h-8 rounded-full border-2 border-blue-400 border-t-transparent animate-spin shrink-0"></div>
+          <div className="flex-1">
+            <div className="flex justify-between text-xs text-blue-300 font-medium mb-1.5">
+              <span>Memproses Interpretasi Otomatis (AI) untuk Klien...</span>
+              <span>{Math.round((bulkGenState.current / bulkGenState.total) * 100)}% ({bulkGenState.current}/{bulkGenState.total})</span>
+            </div>
+            <div className="h-2 w-full bg-slate-800 rounded-full overflow-hidden">
+              <div 
+                className="h-full bg-blue-500 rounded-full transition-all duration-300 relative"
+                style={{ width: `${(bulkGenState.current / bulkGenState.total) * 100}%` }}
+              >
+                <div className="absolute inset-0 bg-white/20 animate-pulse"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Search */}
       <div className="flex flex-col md:flex-row gap-3">
@@ -189,11 +249,11 @@ export default function UsersPage() {
             <tbody className="divide-y divide-slate-800/50">
               {loading ? (
                 <tr>
-                  <td colSpan="7" className="px-6 py-12 text-center text-slate-500">Memuat data...</td>
+                  <td colSpan="9" className="px-6 py-12 text-center text-slate-500">Memuat data...</td>
                 </tr>
               ) : sorted.length === 0 ? (
                 <tr>
-                  <td colSpan="7" className="px-6 py-12 text-center text-slate-500">Belum ada data klien.</td>
+                  <td colSpan="9" className="px-6 py-12 text-center text-slate-500">Belum ada data klien.</td>
                 </tr>
               ) : (
                 sorted.map((s) => {

@@ -365,45 +365,50 @@ export default function ReportDetailPage({ params }) {
 
       {/* AI Insight Section */}
       <div className="bg-slate-900 border border-slate-800 rounded-2xl p-6 space-y-4">
-        <h2 className="text-lg font-bold text-white flex items-center gap-2">
-          <span className="text-2xl">✨</span> Interpretasi Otomatis (Sistem)
-        </h2>
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <h2 className="text-lg font-bold text-white flex items-center gap-2">
+            <span className="text-2xl">✨</span> Interpretasi Otomatis (Sistem)
+          </h2>
+          <button 
+            onClick={async () => {
+              const btn = document.getElementById('btn-gen-ai');
+              const ogText = btn.innerHTML;
+              btn.disabled = true;
+              btn.innerHTML = 'Sedang Memproses... (mungkin 10-15 detik)';
+              try {
+                const r = await fetch(`/api/admin/submissions/${id}/ai`, { method: 'POST' });
+                const j = await r.json();
+                if (j.success) {
+                  setSub(prev => ({ ...prev, aiInsight: j.aiInsight }));
+                  btn.innerHTML = 'Berhasil Diperbarui ✅';
+                  setTimeout(() => { if(btn) btn.innerHTML = ogText; btn.disabled = false; }, 3000);
+                } else {
+                  alert('Gagal menghasilkan interpretasi: ' + j.error);
+                  btn.disabled = false;
+                  btn.innerHTML = ogText;
+                }
+              } catch (_e) {
+                alert('Terjadi kesalahan jaringan.');
+                btn.disabled = false;
+                btn.innerHTML = ogText;
+              }
+            }}
+            id="btn-gen-ai"
+            className="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg text-xs transition-all flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            Hasilkan Ulang Interpretasi
+          </button>
+        </div>
         
         {!sub.aiInsight ? (
           <div className="bg-slate-800/50 rounded-xl p-8 py-12 flex flex-col items-center justify-center text-center">
             <div className="w-16 h-16 bg-blue-500/10 rounded-full flex items-center justify-center mb-4">
               <span className="text-3xl">🧩</span>
             </div>
-            <h3 className="text-white font-medium mb-2">Interpretasi Sedang Diproses/Belum Selesai</h3>
+            <h3 className="text-white font-medium mb-2">Interpretasi Belum Tersedia</h3>
             <p className="text-slate-400 text-sm max-w-md mx-auto mb-6">
-              Sistem AI mungkin belum selesai menghasilkan interpertasi natural untuk laporan ini. Anda dapat mencoba klik tombol di bawah untuk men-generate/memaksa ulang secara manual.
+              Sistem AI belum menghasilkan interpretasi untuk laporan ini. Silakan klik tombol "Hasilkan Ulang Interpretasi" di atas.
             </p>
-            <button 
-              onClick={async () => {
-                const btn = document.getElementById('btn-gen-ai');
-                btn.disabled = true;
-                btn.innerHTML = 'Sedang Memproses... (mungkin butuh 10-15 detik)';
-                try {
-                  const r = await fetch(`/api/admin/submissions/${id}/ai`, { method: 'POST' });
-                  const j = await r.json();
-                  if (j.success) {
-                    setSub(prev => ({ ...prev, aiInsight: j.aiInsight }));
-                  } else {
-                    alert('Gagal menghasilkan interpretasi: ' + j.error);
-                    btn.disabled = false;
-                    btn.innerHTML = 'Hasilkan Ulang Interpretasi Otomatis';
-                  }
-                } catch (_e) {
-                  alert('Terjadi kesalahan jaringan.');
-                  btn.disabled = false;
-                  btn.innerHTML = 'Hasilkan Ulang Interpretasi Otomatis';
-                }
-              }}
-              id="btn-gen-ai"
-              className="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2.5 px-6 rounded-xl text-sm transition-all flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              Hasilkan Ulang Interpretasi Otomatis
-            </button>
           </div>
         ) : (
           <div className="space-y-6">

@@ -61,9 +61,9 @@ const styles = StyleSheet.create({
   barFill: { height: '100%', position: 'absolute', left: 0, top: 0 },
 
   // Narrative
-  narrativeTitle: { fontSize: 12, fontFamily: 'Helvetica-Bold', color: c.dark, marginBottom: 8, borderBottomWidth: 1, borderBottomColor: c.primary, paddingBottom: 4 },
-  narrativeBody: { fontSize: 10, lineHeight: 1.7, color: '#333333', marginBottom: 10, textAlign: 'justify' },
-  bulletItem: { fontSize: 10, lineHeight: 1.6, color: '#333333', marginBottom: 5, paddingLeft: 10 },
+  narrativeTitle: { fontSize: 13, fontFamily: 'Helvetica-Bold', color: c.dark, marginBottom: 8, borderBottomWidth: 1, borderBottomColor: c.primary, paddingBottom: 5 },
+  narrativeBody: { fontSize: 10.5, lineHeight: 1.6, color: '#222222', marginBottom: 12, textAlign: 'justify' },
+  bulletItem: { fontSize: 10.5, lineHeight: 1.5, color: '#333333', marginBottom: 6, paddingLeft: 10 },
 
   // Footer
   footer: { position: 'absolute', bottom: 25, left: 40, right: 40, fontSize: 7.5, color: 'grey', textAlign: 'center' },
@@ -202,30 +202,17 @@ export default function AssessmentPDF({ userData, discScores, hexacoScores, aiIn
           ))}
         </View>
 
-        {/* Summary box */}
+        {/* Summary box / Abstract */}
         <View style={{ marginTop: 25, padding: 15, backgroundColor: c.light, borderRadius: 4 }}>
-          <Text style={{ fontSize: 10, fontFamily: 'Helvetica-Bold', marginBottom: 6, color: c.dark }}>Ringkasan Hasil Asesmen</Text>
-          <Text style={{ fontSize: 9, color: c.grey, lineHeight: 1.5 }}>
-            Pola Gaya Kerja: {getDiscPatternName(discScores?.pattern)} ({discScores?.pattern || '-'})
+          <Text style={{ fontSize: 10, fontFamily: 'Helvetica-Bold', marginBottom: 6, color: c.primary }}>Abstrak Eksekutif</Text>
+          <Text style={{ fontSize: 9.5, color: c.dark, lineHeight: 1.6, textAlign: 'justify' }}>
+            {(() => {
+              const fullDesc = aiInsight?.deskripsi_kepribadian_terintegrasi || aiInsight?.deskripsi_kepribadian || aiInsight?.gayaKerja || '';
+              if (!fullDesc) return 'Deskripsi kepribadian terpadu belum tersedia. Silakan generate interpretasi AI.';
+              const limit = 450;
+              return fullDesc.length > limit ? fullDesc.substring(0, limit) + '...' : fullDesc;
+            })()}
           </Text>
-          
-          {(() => {
-            const validity = calculateValidityIndex(userData?.rawData || {}, { rawData: userData?.rawData, hexacoScores });
-            const isSuspicious = validity.overallScore !== '-' && validity.overallScore < 60;
-            
-            return (
-              <View style={{ marginTop: 8, padding: 8, borderRadius: 4, backgroundColor: isSuspicious ? '#fee2e2' : '#dcfce7', borderWidth: 1, borderColor: isSuspicious ? '#f87171' : '#86efac' }}>
-                <Text style={{ fontSize: 9, fontFamily: 'Helvetica-Bold', color: isSuspicious ? '#b91c1c' : '#166534', marginBottom: 2 }}>
-                  Status Validitas Pengerjaan: {validity.overallLabel} ({validity.overallScore}/100)
-                </Text>
-                <Text style={{ fontSize: 8, color: isSuspicious ? '#991b1b' : '#14532d', lineHeight: 1.3 }}>
-                  {isSuspicious 
-                    ? "Sistem Peringatan: Respondensi terindikasi tidak valid (terlalu cepat / asal-asalan / inkonsisten). Hasil interpretasi pada halaman selanjutnya mungkin TIDAK AKURAT dan tidak mencerminkan kondisi responden yang sebenarnya." 
-                    : "Pengerjaan tes memenuhi standar konsistensi dan durasi minimum. Hasil dapat diinterpretasikan."}
-                </Text>
-              </View>
-            );
-          })()}
         </View>
 
         <Text style={styles.pageNum}>Hal. 1</Text>
@@ -276,6 +263,24 @@ export default function AssessmentPDF({ userData, discScores, hexacoScores, aiIn
           </View>
         </View>
 
+        {/* Status Validitas - dipindahkan ke Halaman 2 */}
+        {(() => {
+          const validity = calculateValidityIndex(userData?.rawData || {}, { rawData: userData?.rawData, hexacoScores });
+          const isSuspicious = validity.overallScore !== '-' && validity.overallScore < 60;
+          return (
+            <View style={{ marginTop: 15, padding: 10, borderRadius: 4, backgroundColor: isSuspicious ? '#fee2e2' : '#dcfce7', borderWidth: 1, borderColor: isSuspicious ? '#f87171' : '#86efac' }}>
+              <Text style={{ fontSize: 10, fontFamily: 'Helvetica-Bold', color: isSuspicious ? '#b91c1c' : '#166534', marginBottom: 3 }}>
+                Status Validitas Pengerjaan: {validity.overallLabel} ({validity.overallScore}/100)
+              </Text>
+              <Text style={{ fontSize: 9, color: isSuspicious ? '#991b1b' : '#14532d', lineHeight: 1.4, textAlign: 'justify' }}>
+                {isSuspicious 
+                  ? "Sistem Peringatan: Respondensi terindikasi tidak valid (terlalu cepat / asal-asalan / inkonsisten). Hasil interpretasi di bawah ini mungkin TIDAK AKURAT dan tidak mencerminkan kondisi klien yang sebenarnya." 
+                  : "Pengerjaan tes memenuhi standar konsistensi dan durasi minimum. Hasil dapat diinterpretasikan dengan keyakinan yang memadai."}
+              </Text>
+            </View>
+          );
+        })()}
+
         {/* Disclaimer — only on page 2 */}
         <Text style={styles.disclaimer}>
           *Laporan ini disusun berdasarkan hasil asesmen mandiri (self-report). Akurasi hasil sangat bergantung pada keterbukaan dan kejujuran dalam menjawab. Profil kepribadian bersifat dinamis dan dapat berkembang seiring waktu serta pengalaman hidup.
@@ -294,9 +299,9 @@ export default function AssessmentPDF({ userData, discScores, hexacoScores, aiIn
         <Text style={{ ...styles.mainTitle, fontSize: 13, marginBottom: 15 }}>DESKRIPSI KEPRIBADIAN</Text>
 
         <View style={{ marginBottom: 20 }}>
-          <Text style={styles.narrativeTitle}>1. Gambaran Karakter & Gaya Komunikasi</Text>
+          <Text style={styles.narrativeTitle}>1. Deskripsi Kepribadian Terintegrasi</Text>
           <Text style={styles.narrativeBody}>
-            {aiInsight?.deskripsi_kepribadian || aiInsight?.gayaKerja || 'Deskripsi kepribadian terpadu belum tersedia. Silakan generate interpretasi AI.'}
+            {aiInsight?.deskripsi_kepribadian_terintegrasi || aiInsight?.deskripsi_kepribadian || aiInsight?.gayaKerja || 'Deskripsi kepribadian terpadu belum tersedia. Silakan generate interpretasi AI.'}
           </Text>
         </View>
 
@@ -344,19 +349,6 @@ export default function AssessmentPDF({ userData, discScores, hexacoScores, aiIn
           )}
         </View>
 
-        {/* Premium Upsell Box */}
-        <View style={{ marginTop: 25, padding: 15, borderRadius: 8, borderWidth: 1, borderColor: '#3b82f6', backgroundColor: '#eff6ff' }}>
-          <Text style={{ fontSize: 11, fontFamily: 'Helvetica-Bold', color: '#1e40af', marginBottom: 6 }}>
-            Ingin Membedah Hasil Ini Lebih Dalam?
-          </Text>
-          <Text style={{ fontSize: 10, color: '#1e3a8a', lineHeight: 1.5, marginBottom: 8 }}>
-            Laporan ini hanya menunjukkan &ldquo;Siapa&rdquo; Anda. Melalui Sesi Konseling Premium, Psikolog Lentera Batin akan membedah &ldquo;Mengapa&rdquo; Anda merasakan kelelahan adaptasi, menemukan titik buta (blind spots) yang menghambat karir, serta menyusun strategi nyata untuk hubungan sosial dan asmara Anda.
-          </Text>
-          <Text style={{ fontSize: 10, fontFamily: 'Helvetica-Bold', color: '#2563eb' }}>
-            Hubungi Admin via WhatsApp: 0851-1777-8798
-          </Text>
-        </View>
-
         {/* Closing */}
         <View style={{ marginTop: 30, padding: 18, backgroundColor: c.light, borderRadius: 4 }}>
           <Text style={{ fontSize: 9, color: c.grey, lineHeight: 1.5, textAlign: 'center', fontStyle: 'italic' }}>
@@ -365,13 +357,26 @@ export default function AssessmentPDF({ userData, discScores, hexacoScores, aiIn
         </View>
 
         {/* Signature */}
-        <View style={{ marginTop: 40, flexDirection: 'row', justifyContent: 'flex-end', paddingBottom: 50 }}>
+        <View style={{ marginTop: 40, flexDirection: 'row', justifyContent: 'flex-end', paddingBottom: 25 }}>
           <View style={{ width: '50%', alignItems: 'center' }}>
             <Text style={{ fontSize: 9, color: c.dark, marginBottom: 15 }}>Sumenep, {formatDate(submittedAt)}</Text>
             <Image src="/logo.png" style={{ width: 120, height: 26, marginBottom: 8 }} alt="Logo" />
             <Text style={{ fontSize: 10, fontFamily: 'Helvetica-Bold', color: c.dark, marginBottom: 2 }}>Moh. Ilham, M.Si., CHA., C.Med.</Text>
             <Text style={{ fontSize: 8, color: c.grey }}>Assessor / Konselor</Text>
           </View>
+        </View>
+
+        {/* Premium Upsell Box - Last element */}
+        <View style={{ marginTop: 15, padding: 15, borderRadius: 8, borderWidth: 1, borderColor: '#3b82f6', backgroundColor: '#eff6ff' }}>
+          <Text style={{ fontSize: 11, fontFamily: 'Helvetica-Bold', color: '#1e40af', marginBottom: 6 }}>
+            Ingin Membedah Hasil Ini Lebih Dalam?
+          </Text>
+          <Text style={{ fontSize: 10, color: '#1e3a8a', lineHeight: 1.5, marginBottom: 8, textAlign: 'justify' }}>
+            Laporan ini hanya menunjukkan &ldquo;Siapa&rdquo; Anda. Melalui Sesi Konseling Premium, Psikolog Lentera Batin akan membedah &ldquo;Mengapa&rdquo; Anda merasakan kelelahan adaptasi, menemukan titik buta (blind spots) yang menghambat karir, serta menyusun strategi nyata untuk hubungan sosial dan asmara Anda.
+          </Text>
+          <Text style={{ fontSize: 10, fontFamily: 'Helvetica-Bold', color: '#2563eb' }}>
+            Hubungi Admin via WhatsApp: 0851-1777-8798
+          </Text>
         </View>
       </Page>
     </Document>
