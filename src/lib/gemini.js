@@ -41,8 +41,8 @@ export async function generatePersonalityDescription(discPattern, hexacoMeanH, h
     discPattern, factorMeans, hexacoFacetMeans || {}, discScores || null
   );
 
-  const zaiKey = process.env.ZAI_API_KEY;
-  const geminiKey = process.env.GEMINI_API_KEY;
+  const zaiKey = (process.env.ZAI_API_KEY || '').trim();
+  const geminiKey = (process.env.GEMINI_API_KEY || '').trim();
 
   if (!zaiKey && !geminiKey) {
     logger.log("[AI] No API Keys, using local engine.");
