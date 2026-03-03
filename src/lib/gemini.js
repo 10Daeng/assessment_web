@@ -89,7 +89,7 @@ ${facetStr}
 4. deskripsi_kepribadian_terintegrasi HARUS 3-4 paragraf (300-400 kata). WAJIB narasi mengalir, TANPA bullet points.
 5. Gunakan "cenderung", "tampak", "berpotensi". Jika ada gap Publik vs Pribadi, analisis sebagai sumber kelelahan emosional.
 
-### OUTPUT (Raw JSON saja, tanpa markdown):
+### OUTPUT WAJIB PERSIS SEPERTI STRUKTUR JSON INI (JANGAN UBAH ATAU TAMBAH KEY APAPUN):
 {
   "arketipe_personal": "Julukan unik 2-4 kata",
   "deskripsi_kepribadian_terintegrasi": "3-4 paragraf narasi (300-400 kata)",
@@ -139,26 +139,25 @@ ${facetStr}
         // === FALLBACK: Z.AI (GLM proxy) ===
         if (zaiKey) {
           logger.log("[AI] FALLBACK: Z.AI (GLM)...");
-          const res = await fetch('https://api.z.ai/api/paas/v4/chat/completions', {
+          const res = await fetch('https://api.z.ai/api/anthropic/v1/messages', {
             method: 'POST',
             headers: {
               'Authorization': `Bearer ${zaiKey}`,
               'Content-Type': 'application/json',
+              'anthropic-version': '2023-06-01'
             },
             signal: controller.signal,
             body: JSON.stringify({
-              model: 'glm-4-flash',
-              messages: [
-                { role: 'system', content: 'Output JSON murni dalam bahasa Indonesia. Langsung mulai dengan {' },
-                { role: 'user', content: prompt }
-              ],
+              model: 'claude-3-5-sonnet-20241022',
+              system: 'Output JSON murni dalam bahasa Indonesia. Langsung mulai dengan {',
+              messages: [{ role: 'user', content: prompt }],
               max_tokens: 3000,
               temperature: 0.7
             })
           });
           if (!res.ok) throw new Error(`Z.AI HTTP ${res.status}`);
           const data = await res.json();
-          cleanText = data.choices?.[0]?.message?.content || '';
+          cleanText = data.content?.[0]?.text || '';
           source = 'z.ai';
         } else {
           throw geminiErr; // No Z.AI fallback either → go to local
@@ -167,26 +166,25 @@ ${facetStr}
     } else if (zaiKey) {
       // No Gemini, use Z.AI directly
       logger.log("[AI] Z.AI (GLM) direct...");
-      const res = await fetch('https://api.z.ai/api/paas/v4/chat/completions', {
+      const res = await fetch('https://api.z.ai/api/anthropic/v1/messages', {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${zaiKey}`,
           'Content-Type': 'application/json',
+          'anthropic-version': '2023-06-01'
         },
         signal: controller.signal,
         body: JSON.stringify({
-          model: 'glm-4-flash',
-          messages: [
-            { role: 'system', content: 'Output JSON murni dalam bahasa Indonesia. Langsung mulai dengan {' },
-            { role: 'user', content: prompt }
-          ],
+          model: 'claude-3-5-sonnet-20241022',
+          system: 'Output JSON murni dalam bahasa Indonesia. Langsung mulai dengan {',
+          messages: [{ role: 'user', content: prompt }],
           max_tokens: 3000,
           temperature: 0.7
         })
       });
       if (!res.ok) throw new Error(`Z.AI HTTP ${res.status}`);
       const data = await res.json();
-      cleanText = data.choices?.[0]?.message?.content || '';
+      cleanText = data.content?.[0]?.text || '';
       source = 'z.ai';
     }
 
