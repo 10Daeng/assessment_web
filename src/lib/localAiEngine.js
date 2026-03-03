@@ -247,41 +247,83 @@ export function generateLocalAiInsight(discPattern, factorMeans, facetMeans, dis
   ekosistem_kerja = `Individu ini akan berkembang optimal di ${ecoMap[top1] || 'lingkungan profesional yang mendukung'}. Ia juga membutuhkan ${ecoMap[top2] || 'sistem kerja yang terstruktur'}.`;
   kebutuhan_motivasi = `Bahan bakar psikologis utamanya adalah ${motivMap[top1] || 'pencapaian'}. Ia juga termotivasi ketika ${motivMap[top2] || 'mendapat dukungan dari tim'}.`;
 
-  // === BUILD RINGKASAN KEPRIBADIAN (3-5 poin pendek) ===
+  // === BUILD RINGKASAN KEPRIBADIAN (3-5 poin pendek dengan variasi) ===
   const ringkasan_poin = [];
 
-  // Poin 1: Gaya kerja DISC singkat
-  const discKeywords = disc.gayaKerja.toLowerCase().includes('memimpin') ? 'Pemimpin' :
-                        disc.gayaKerja.toLowerCase().includes('analitis') ? 'Analitis' :
-                        disc.gayaKerja.toLowerCase().includes('konsisten') ? 'Konsisten' :
-                        disc.gayaKerja.toLowerCase().includes('stabil') ? 'Stabil' :
-                        disc.gayaKerja.toLowerCase().includes('sosial') ? 'Sosial' : 'Adaptif';
-  ringkasan_poin.push(`${discKeywords} dan hasil-orientasi`);
+  // Gunakan variasi struktur kalimat berdasarkan DISC pattern
+  const patternVariants = {
+    'D': [
+      '• Menonjol ketegasan dan orientasi hasil',
+      '• Pemimpin dengan kecenderungan mengambil keputusan cepat',
+      '• Tipe orang yang langsung pada tujuan dan target',
+    ],
+    'I': [
+      '• Memiliki kemampuan mempengaruhi dan meyakinkan orang lain',
+      '• Ekstrovert dengan energi sosial yang kuat',
+      '• Komunikatif dan pandai membangun hubungan',
+    ],
+    'S': [
+      '• Dikenal stabil, sabar, dan dapat diandalkan',
+      '• Pendukung tim yang menjamin keharmonisan',
+      '• Cenderung menghindari konflik dan menjaga stabilitas',
+    ],
+    'C': [
+      '• Analitis dengan perhatian tinggi terhadap detail',
+      '• Terstruktur dan sistematis dalam bekerja',
+      '• Berhati-hati pada kualitas dan akurasi hasil',
+    ],
+    'default': [
+      '• Gaya kerja yang adaptif dan fleksibel',
+      '• Mampu menyesuaikan diri dengan berbagai situasi',
+      '• Pendekat yang seimbang dalam interaksi',
+    ],
+  };
 
-  // Poin 2: HEXACO strength singkat
-  if (hexAnalysis.kelebihan && hexAnalysis.kelebihan.length > 0) {
-    const firstStrength = hexAnalysis.kelebihan[0];
-    const shortStrength = firstStrength.substring(0, 50).split('.')[0] + '.';
-    ringkasan_poin.push(shortStrength);
+  // Ambil 1-2 poin dari variasi DISC
+  const discVariant = patternVariants[patternKey] || patternVariants['default'];
+  const randomIndices = [0, 1, 2].sort(() => Math.random() - 0.5).slice(0, 2);
+  ringkasan_poin.push(...randomIndices.map(i => discVariant[i] || discVariant[0]));
+
+  // Poin tambahan dari HEXACO dengan variasi struktur
+  const hexacoStrengths = [];
+  if (fm.C >= 3.5) hexacoStrengths.push('Terdisiplin tinggi');
+  if (fm.X >= 3.5) hexacoStrengths.push('Energi sosial yang melimpah');
+  if (fm.H >= 3.5) hexacoStrengths.push('Jujur dan memiliki integritas');
+  if (fm.A >= 3.5) hexacoStrengths.push('Patien dan kooperatif');
+  if (fm.O >= 3.5) hexacoStrengths.push('Kreatif dan inovatif');
+  if (fm.C >= 3.5 && fm.X >= 2.5) hexacoStrengths.push('Bekerja dengan semangat tim');
+
+  // Variasi struktur untuk HEXACO
+  const hexacoVariants = [
+    hexacoStrengths.map(s => `• ${s}`),
+    hexacoStrengths.map(s => `• Menunjukkan ${s.toLowerCase()}`),
+  ];
+  const hexacoVariant = hexacoVariants[Math.floor(Math.random() * hexacoVariants.length)];
+  ringkasan_poin.push(...hexacoVariant.slice(0, 1));
+
+  // Poin tantangan dengan variasi
+  const challengeVariants = [
+    '• Perlu berhati pada gaya komunikasi yang lebih fleksibel',
+    '• Kadang terlalu fokus pada detail sehingga melihat gambaran luas',
+    '• Perlu belajar menyeimbangkan kebutuhan pribadi dan tim',
+    '• Cenderung mengambil keputusan terlalu cepat',
+    '• Perlu mengelola emosi dalam situasi tertekan',
+  ];
+
+  // Pilih tantangan berdasarkan skor HEXACO rendah
+  if (fm.E <= 2.5) {
+    ringkasan_poin.push('• Perlu dukungan emosional dalam situasi tekan');
+  } else if (fm.A <= 2.5) {
+    ringkasan_poin.push('• Perlu menumbuhkan empati dan fleksibilitas');
+  } else if (fm.O <= 2.5) {
+    ringkasan_poin.push('• Perlu lebih terbuka terhadap ide dan cara kerja baru');
+  } else {
+    // Random dari variants
+    ringkasan_poin.push(challengeVariants[Math.floor(Math.random() * challengeVariants.length)]);
   }
 
-  // Poin 3: Work style based on HEXACO
-  const workStyle = [];
-  if (fm.C >= 3.5) workStyle.push('Terdisiplin');
-  if (fm.X >= 3.5) workStyle.push('Ekstrovert');
-  if (fm.E <= 2.5) workStyle.push('Tangguh tekanan');
-  if (fm.O >= 3.5) workStyle.push('Kreatif');
-  if (workStyle.length > 0) {
-    ringkasan_poin.push(workStyle.join(', '));
-  }
-
-  // Poin 4: Key challenge if any
-  if (hexAnalysis.tantangan && hexAnalysis.tantangan.length > 0) {
-    const shortChallenge = hexAnalysis.tantangan[0].substring(0, 40).split(',')[0] + '.';
-    ringkasan_poin.push(shortChallenge);
-  }
-
-  const ringkasan_kepribadian = ringkasan_poin.slice(0, 5).join(' • ');
+  // Batasi 3-5 poin
+  const ringkasan_kepribadian = ringkasan_poin.slice(0, 5).join(' ');
 
   // === RETURN: Same schema as Claude/z.ai ===
   return {
