@@ -15,6 +15,13 @@ const getFirstSentence = (str) => {
   return match ? match[0].trim() : str.trim();
 };
 
+// Same deskripsi as full report, but displayed with proper line breaks
+const getDeskripsiLaporan = (ai) => {
+  return ai?.deskripsi_kepribadian_terintegrasi || ai?.deskripsi_kepribadian || ai?.karakterInti || (
+    <span className="text-slate-600 italic">Analisis AI belum digenerate</span>
+  );
+};
+
 export default function RekapPage() {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
