@@ -18,6 +18,11 @@ export default function DuplicatesPage() {
       .catch(() => setLoading(false));
   }, [refreshKey]);
 
+  // Calculate max duplicate count
+  const maxDuplicateCount = Math.max(...duplicates.map(d => d.count || 0), 0);
+  const totalDuplicates = duplicates.reduce((sum, d) => sum + (d.count || 0), 0);
+  const uniquePersons = duplicates.length;
+
   const triggerRefresh = () => setRefreshKey(k => k + 1);
 
   const startEdit = (s) => {
@@ -68,9 +73,26 @@ export default function DuplicatesPage() {
         <div>
           <h3 className="text-amber-400 font-semibold mb-1">Deteksi Data Ganda</h3>
           <p className="text-amber-300/70 text-sm">
-            Sistem mendeteksi berdasarkan kesamaan <strong>Nama</strong> dan <strong>Email/NIK</strong>. 
+            Sistem mendeteksi berdasarkan kesamaan <strong>Nama</strong> dan <strong>Email/NIK</strong>.
             Data dengan kedua field identik dianggap kemungkinan duplikat.
           </p>
+          <div className="mt-3 grid grid-cols-3 gap-3">
+            <div className="bg-slate-800/50 rounded-lg p-3">
+              <p className="text-amber-200 text-xs uppercase tracking-wider mb-1">Total Orang Duplikat</p>
+              <p className="text-white font-bold text-2xl">{uniquePersons}</p>
+            </div>
+            <div className="bg-slate-800/50 rounded-lg p-3">
+              <p className="text-amber-200 text-xs uppercase tracking-wider mb-1">Maks. Submisi / Orang</p>
+              <p className="text-white font-bold text-2xl">
+                {maxDuplicateCount}x
+                <span className="text-sm font-normal text-slate-400">/orang</span>
+              </p>
+            </div>
+            <div className="bg-slate-800/50 rounded-lg p-3">
+              <p className="text-amber-200 text-xs uppercase tracking-wider mb-1">Total Submisi Duplikat</p>
+              <p className="text-white font-bold text-2xl">{totalDuplicates}</p>
+            </div>
+          </div>
         </div>
       </div>
 
