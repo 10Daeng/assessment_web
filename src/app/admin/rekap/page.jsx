@@ -53,6 +53,20 @@ export default function RekapPage() {
     }
   }
 
+  const getValidityColor = (score) => {
+    if (score === '-') return 'text-slate-500';
+    if (score >= 80) return 'text-emerald-400';
+    if (score >= 60) return 'text-yellow-400';
+    return 'text-rose-400';
+  };
+
+  const getValidityLabel = (score) => {
+    if (score === '-') return '-';
+    if (score >= 80) return 'Valid';
+    if (score >= 60) return 'Meragukan';
+    return 'Tidak Valid';
+  };
+
   const sorted = useMemo(() => {
     let list = [...data];
 
@@ -77,6 +91,15 @@ export default function RekapPage() {
       list.sort((a, b) => {
         let va, vb;
         switch (sortBy) {
+          case 'validitas': {
+            const validityA = a.validity?.overallScore || '-';
+            const validityB = b.validity?.overallScore || '-';
+            // Numeric sort: lower score = lower validity
+            if (validityA === '-' && validityB !== '-') return 1;
+            if (validityA === '-') return 1;
+            if (validityB === '-') return -1;
+            return validityA - validityB;
+          }
           case 'nama': va = a.userData?.nama || ''; vb = b.userData?.nama || ''; break;
           case 'arketipe':
             va = a.aiInsight?.arketipe_personal || a.aiInsight?.arketipe || '';
@@ -100,9 +123,11 @@ export default function RekapPage() {
     const exportData = sorted.map((sub, index) => {
       const d = sub.userData || {};
       const ai = sub.aiInsight || {};
+      const val = sub.validity || {};
 
       return {
         "No": index + 1,
+        "Validitas": val.overallScore || '-',
         "Nama": d.nama || '-',
         "Instansi": d.instansi || '-',
         "Pola DISC Asli": sub.discScores?.fullPattern || sub.discScores?.pattern || '-',
@@ -182,6 +207,9 @@ export default function RekapPage() {
             <thead>
               <tr className="bg-slate-800/80 text-slate-300 text-xs uppercase tracking-wider">
                 <th className="text-left px-4 py-4 whitespace-nowrap">No</th>
+                <th className="text-left px-4 py-4 whitespace-nowrap cursor-pointer hover:text-white" onClick={() => toggleSort('validitas')}>
+                  Validitas <SortIcon sortBy={sortBy} sortDir={sortDir} field="validitas" />
+                </th>
                 <th className="text-left px-4 py-4 whitespace-nowrap cursor-pointer hover:text-white" onClick={() => toggleSort('nama')}>
                   Nama & Identitas <SortIcon sortBy={sortBy} sortDir={sortDir} field="nama" />
                 </th>
@@ -199,9 +227,16 @@ export default function RekapPage() {
               {sorted.map((sub, idx) => {
                 const ai = sub.aiInsight || {};
                 const ud = sub.userData || {};
+                const val = sub.validity || {};
+
                 return (
                   <tr key={sub.id} className="hover:bg-slate-800/30 transition-colors group">
                     <td className="px-4 py-4 text-slate-500 align-top">{idx + 1}</td>
+                    <td className="px-4 py-4 align-top">
+                      <span className={`${getValidityColor(val.overallScore)} font-semibold`}>
+                        {val.overallScore}
+                      </span>
+                    </td>
                     <td className="px-4 py-4 align-top">
                       <div className="text-white font-medium whitespace-nowrap">{ud.nama || '-'}</div>
                       <div className="text-slate-500 text-xs mt-0.5">{sub.discScores?.fullPattern || sub.discScores?.pattern || '-'}</div>
