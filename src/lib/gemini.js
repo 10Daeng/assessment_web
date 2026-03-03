@@ -106,50 +106,91 @@ ${facetStr}
   "saran_pengembangan_spesifik": ["Langkah 1", "Langkah 2", "Langkah 3"]
 }`;
 
-  // ── Single attempt with 45s timeout (must fit in Vercel 60s limit) ──
+  // ── AI Call: Gemini PRIMARY → Z.AI FALLBACK → Local FINAL ──
+  // Gemini Flash is free, fast (5-15s), no strict rate limits
+  // Z.AI actually proxies to GLM models (not real Claude), has Lite plan limits (~80/5hr)
   try {
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), 45000);
     let cleanText = '';
+    let source = '';
 
-    if (zaiKey) {
-      logger.log("[AI] Calling Z.AI (Claude Sonnet)...");
-      const res = await fetch('https://api.z.ai/api/anthropic/v1/messages', {
+    // === PRIMARY: Gemini Flash (free, fast, reliable) ===
+    if (geminiKey) {
+      logger.log("[AI] PRIMARY: Gemini 2.0 Flash...");
+      try {
+        const res = await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'x-goog-api-key': geminiKey },
+          signal: controller.signal,
+          body: JSON.stringify({
+            contents: [{ parts: [{ text: prompt }] }],
+            generationConfig: { temperature: 0.7, maxOutputTokens: 3000, responseMimeType: "application/json" },
+            systemInstruction: { parts: [{ text: "Output JSON murni dalam bahasa Indonesia." }] }
+          })
+        });
+        if (!res.ok) throw new Error(`Gemini HTTP ${res.status}`);
+        const data = await res.json();
+        cleanText = data.candidates?.[0]?.content?.parts?.[0]?.text || '';
+        source = 'gemini';
+      } catch (geminiErr) {
+        logger.warn("[AI] Gemini failed:", geminiErr.message);
+        
+        // === FALLBACK: Z.AI (GLM proxy) ===
+        if (zaiKey) {
+          logger.log("[AI] FALLBACK: Z.AI (GLM)...");
+          const res = await fetch('https://api.z.ai/api/paas/v4/chat/completions', {
+            method: 'POST',
+            headers: {
+              'Authorization': `Bearer ${zaiKey}`,
+              'Content-Type': 'application/json',
+            },
+            signal: controller.signal,
+            body: JSON.stringify({
+              model: 'glm-4-flash',
+              messages: [
+                { role: 'system', content: 'Output JSON murni dalam bahasa Indonesia. Langsung mulai dengan {' },
+                { role: 'user', content: prompt }
+              ],
+              max_tokens: 3000,
+              temperature: 0.7
+            })
+          });
+          if (!res.ok) throw new Error(`Z.AI HTTP ${res.status}`);
+          const data = await res.json();
+          cleanText = data.choices?.[0]?.message?.content || '';
+          source = 'z.ai';
+        } else {
+          throw geminiErr; // No Z.AI fallback either → go to local
+        }
+      }
+    } else if (zaiKey) {
+      // No Gemini, use Z.AI directly
+      logger.log("[AI] Z.AI (GLM) direct...");
+      const res = await fetch('https://api.z.ai/api/paas/v4/chat/completions', {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${zaiKey}`,
           'Content-Type': 'application/json',
-          'anthropic-version': '2023-06-01'
         },
         signal: controller.signal,
         body: JSON.stringify({
-          model: 'claude-3-5-sonnet-20241022',
+          model: 'glm-4-flash',
+          messages: [
+            { role: 'system', content: 'Output JSON murni dalam bahasa Indonesia. Langsung mulai dengan {' },
+            { role: 'user', content: prompt }
+          ],
           max_tokens: 3000,
-          system: "Output JSON murni. Langsung mulai dengan {",
-          messages: [{ role: 'user', content: prompt }]
+          temperature: 0.7
         })
       });
-      clearTimeout(timeout);
       if (!res.ok) throw new Error(`Z.AI HTTP ${res.status}`);
       const data = await res.json();
-      cleanText = data.content?.[0]?.text || '';
-    } else {
-      logger.log("[AI] Calling Gemini Flash...");
-      const res = await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'x-goog-api-key': geminiKey },
-        signal: controller.signal,
-        body: JSON.stringify({
-          contents: [{ parts: [{ text: prompt }] }],
-          generationConfig: { temperature: 0.7, maxOutputTokens: 3000, responseMimeType: "application/json" },
-          systemInstruction: { parts: [{ text: "Output JSON murni." }] }
-        })
-      });
-      clearTimeout(timeout);
-      if (!res.ok) throw new Error(`Gemini HTTP ${res.status}`);
-      const data = await res.json();
-      cleanText = data.candidates?.[0]?.content?.parts?.[0]?.text || '';
+      cleanText = data.choices?.[0]?.message?.content || '';
+      source = 'z.ai';
     }
+
+    clearTimeout(timeout);
 
     const aiResult = extractJSON(cleanText);
     if (!aiResult || !aiResult.deskripsi_kepribadian_terintegrasi) {
@@ -157,7 +198,7 @@ ${facetStr}
     }
 
     const wordCount = (aiResult.deskripsi_kepribadian_terintegrasi || '').split(/\s+/).length;
-    logger.log(`[AI] Success! Words: ${wordCount}, Source: ${zaiKey ? 'z.ai' : 'gemini'}`);
+    logger.log(`[AI] Success! Words: ${wordCount}, Source: ${source}`);
 
     if (!aiResult.peta_potensi_peran && aiResult.peran_potensial_dalam_tim) {
       aiResult.peta_potensi_peran = aiResult.peran_potensial_dalam_tim.map(r => ({
@@ -170,10 +211,10 @@ ${facetStr}
       discAnalysis: localLegacy.discAnalysis, hexacoAnalysis: localLegacy.hexacoAnalysis,
       gayaKerja: localLegacy.gayaKerja, karakterInti: localLegacy.karakterInti,
       rekomendasi1: localLegacy.rekomendasi1, rekomendasi2: localLegacy.rekomendasi2, rekomendasi3: localLegacy.rekomendasi3,
-      _source: zaiKey ? 'z.ai' : 'gemini',
+      _source: source,
     };
   } catch (err) {
-    logger.warn("[AI] Failed:", err.message, "→ using local engine.");
+    logger.warn("[AI] All APIs failed:", err.message, "→ local engine.");
     return {
       ...localInsight,
       gayaKerja: localLegacy.gayaKerja, karakterInti: localLegacy.karakterInti,
