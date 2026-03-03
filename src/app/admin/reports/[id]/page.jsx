@@ -239,13 +239,15 @@ export default function ReportDetailPage({ params }) {
               <div className="h-full rounded-full transition-all duration-700" style={{ width: `${validity.overallScore}%`, backgroundColor: validity.overallColor }}></div>
             </div>
 
-            {/* 4 Indicators Grid */}
+            {/* Indicators Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
               {[
                 { icon: '⏱️', title: 'Durasi Pengerjaan', data: validity.indicators.duration },
-                { icon: '📏', title: 'Keseragaman Jawaban (Straight-Lining)', data: validity.indicators.straightLining },
-                { icon: '⚡', title: 'Jawaban Ekstrem', data: validity.indicators.extreme },
-                { icon: '🔄', title: 'Konsistensi Internal (Reverse-Pairs)', data: validity.indicators.inconsistency },
+                { icon: '📏', title: 'Keseragaman Jawaban (HEXACO)', data: validity.indicators.straightLining },
+                { icon: '⚡', title: 'Jawaban Ekstrem (HEXACO)', data: validity.indicators.extreme },
+                { icon: '🔄', title: 'Konsistensi Internal (HEXACO)', data: validity.indicators.inconsistency },
+                { icon: '🎭', title: 'Konsistensi Publik vs Pribadi (DISC)', data: validity.indicators.discOverShift },
+                { icon: '📊', title: 'Ketegasan Pola (DISC)', data: validity.indicators.discUndifferentiated },
               ].map(({ icon, title, data }) => {
                 const unavailable = data.score < 0;
                 const sc = unavailable ? 0 : data.score;
