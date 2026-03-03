@@ -2,6 +2,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { getDiscPatternName } from '@/utils/scoring';
+import { logger } from '@/utils/logger';
 
 export default function DuplicatesPage() {
   const [duplicates, setDuplicates] = useState([]);
@@ -22,6 +23,21 @@ export default function DuplicatesPage() {
   const maxDuplicateCount = Math.max(...duplicates.map(d => d.count || 0), 0);
   const totalDuplicates = duplicates.reduce((sum, d) => sum + (d.count || 0), 0);
   const uniquePersons = duplicates.length;
+
+  // Validity color function
+  const getValidityColor = (score) => {
+    if (score === '-' || score === undefined) return 'text-slate-500';
+    if (score >= 80) return 'text-emerald-400';
+    if (score >= 60) return 'text-yellow-400';
+    return 'text-rose-400';
+  };
+
+  const getValidityLabel = (score) => {
+    if (score === '-' || score === undefined) return '-';
+    if (score >= 80) return 'Valid';
+    if (score >= 60) return 'Meragukan';
+    return 'Tidak Valid';
+  };
 
   const triggerRefresh = () => setRefreshKey(k => k + 1);
 
@@ -120,6 +136,7 @@ export default function DuplicatesPage() {
                   <thead>
                     <tr className="text-slate-400 text-xs uppercase tracking-wider border-b border-slate-800">
                       <th className="text-left px-6 py-3">ID</th>
+                      <th className="text-left px-4 py-3">Validitas</th>
                       <th className="text-left px-4 py-3">Nama</th>
                       <th className="text-left px-4 py-3">Email/NIK</th>
                       <th className="text-left px-4 py-3">Pola DISC</th>
@@ -128,11 +145,18 @@ export default function DuplicatesPage() {
                     </tr>
                   </thead>
                   <tbody>
-                    {dup.submissions.map(s => (
-                      <tr key={s.id} className="border-b border-slate-800/50 hover:bg-slate-800/30 transition-colors">
-                        <td className="px-6 py-3 text-slate-400 font-mono text-xs">{s.id.substring(0,8)}</td>
-                        <td className="px-4 py-3">
-                          {editId === s.id ? (
+                    {dup.submissions.map(s => {
+                      const val = s.validity || {};
+                      return (
+                        <tr key={s.id} className="border-b border-slate-800/50 hover:bg-slate-800/30 transition-colors">
+                          <td className="px-6 py-3 text-slate-400 font-mono text-xs">{s.id.substring(0,8)}</td>
+                          <td className="px-4 py-3">
+                            <span className={`${getValidityColor(val.overallScore)} font-semibold text-sm`}>
+                              {val.overallScore || '-'}
+                            </span>
+                          </td>
+                          <td className="px-4 py-3">
+                            {editId === s.id ? (
                             <input type="text" className="w-full bg-slate-800 border-none text-white rounded px-2 py-1 text-sm" value={editFormData.nama} onChange={e => setEditFormData({...editFormData, nama: e.target.value})} placeholder="Nama" />
                           ) : (
                             <span className="text-white font-medium">{s.userData?.nama || '-'}</span>
