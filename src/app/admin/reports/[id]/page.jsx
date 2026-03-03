@@ -164,6 +164,7 @@ export default function ReportDetailPage({ params }) {
             hexacoScores={sub.hexacoScores}
             aiInsight={sub.aiInsight}
             submittedAt={sub.submittedAt}
+            rawData={sub.rawData}
           />
         </div>
       </div>
@@ -374,21 +375,30 @@ export default function ReportDetailPage({ params }) {
               const btn = document.getElementById('btn-gen-ai');
               const ogText = btn.innerHTML;
               btn.disabled = true;
-              btn.innerHTML = 'Sedang Memproses... (mungkin 10-15 detik)';
+              btn.innerHTML = '⏳ Memproses... (±30 detik)';
+              const ac = new AbortController();
+              const t = setTimeout(() => ac.abort(), 65000);
               try {
-                const r = await fetch(`/api/admin/submissions/${id}/ai`, { method: 'POST' });
+                const r = await fetch(`/api/admin/submissions/${id}/ai`, {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify({ force: true }),
+                  signal: ac.signal
+                });
+                clearTimeout(t);
                 const j = await r.json();
                 if (j.success) {
                   setSub(prev => ({ ...prev, aiInsight: j.aiInsight }));
                   btn.innerHTML = 'Berhasil Diperbarui ✅';
                   setTimeout(() => { if(btn) btn.innerHTML = ogText; btn.disabled = false; }, 3000);
                 } else {
-                  alert('Gagal menghasilkan interpretasi: ' + j.error);
+                  alert('Gagal: ' + j.error);
                   btn.disabled = false;
                   btn.innerHTML = ogText;
                 }
               } catch (_e) {
-                alert('Terjadi kesalahan jaringan.');
+                clearTimeout(t);
+                alert(_e.name === 'AbortError' ? 'Timeout: server terlalu lama merespons. Coba lagi.' : 'Kesalahan jaringan.');
                 btn.disabled = false;
                 btn.innerHTML = ogText;
               }
@@ -459,9 +469,9 @@ export default function ReportDetailPage({ params }) {
               <div className="bg-slate-800/30 rounded-xl p-5 border border-slate-700/50">
                 <h4 className="text-amber-400 font-medium text-sm mb-3">Peran Potensial dalam Tim</h4>
                 <div className="space-y-4">
-                  {(sub.aiInsight.peran_potensial_dalam_tim || []).map((p, i) => (
+                  {(sub.aiInsight.peran_potensial_dalam_tim || sub.aiInsight.peta_potensi_peran || []).map((p, i) => (
                     <div key={i} className="bg-slate-800/50 p-3 rounded-lg border-l-2 border-amber-500/50">
-                      <p className="text-white font-semibold text-sm mb-1">{p.peran}</p>
+                      <p className="text-white font-semibold text-sm mb-1">{p.peran || p.tipe_arketipe}</p>
                       <p className="text-slate-400 text-xs leading-relaxed">{p.alasan}</p>
                     </div>
                   ))}
@@ -483,13 +493,17 @@ export default function ReportDetailPage({ params }) {
                 onClick={async () => {
                   const btn = document.getElementById('btn-regen-ai');
                   btn.disabled = true;
-                  btn.innerHTML = '⏳ Sedang Memproses...';
+                  btn.innerHTML = '⏳ Memproses... (±30 detik)';
+                  const ac = new AbortController();
+                  const t = setTimeout(() => ac.abort(), 65000);
                   try {
                     const r = await fetch(`/api/admin/submissions/${id}/ai`, {
                       method: 'POST',
                       headers: { 'Content-Type': 'application/json' },
-                      body: JSON.stringify({ force: true })
+                      body: JSON.stringify({ force: true }),
+                      signal: ac.signal
                     });
+                    clearTimeout(t);
                     const j = await r.json();
                     if (j.success) {
                       setSub(prev => ({ ...prev, aiInsight: j.aiInsight }));
@@ -497,7 +511,8 @@ export default function ReportDetailPage({ params }) {
                       alert('Gagal: ' + j.error);
                     }
                   } catch (_e) {
-                    alert('Kesalahan jaringan.');
+                    clearTimeout(t);
+                    alert(_e.name === 'AbortError' ? 'Timeout: coba lagi.' : 'Kesalahan jaringan.');
                   }
                   btn.disabled = false;
                   btn.innerHTML = '🔄 Hasilkan Ulang Interpretasi';

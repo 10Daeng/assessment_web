@@ -1,0 +1,7 @@
+{
+  "functions": {
+    "src/app/api/admin/submissions/[id]/ai/route.js": {
+      "maxDuration": 60
+    }
+  }
+}

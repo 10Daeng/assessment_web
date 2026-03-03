@@ -3,6 +3,9 @@ import { getSubmissionById, updateSubmissionAiInsight } from '@/lib/dataStore';
 import { generatePersonalityDescription } from '@/lib/gemini';
 import { logger } from '@/utils/logger';
 
+// Vercel serverless function config — extend timeout for AI generation
+export const maxDuration = 60;
+
 export async function POST(request, context) {
   try {
     const params = await context.params;

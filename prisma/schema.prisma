@@ -61,3 +61,56 @@ model Submission {
   @@index([nama])
   @@index([submittedAt])
 }
+
+model DeletedSubmission {
+  id          String   @id
+  submittedAt DateTime @default(now())
+
+  nama      String
+  email     String
+  usia      Int?
+  instansi  String?
+  pekerjaan String?
+  jabatan   String?
+
+  discMostD      Int @default(0)
+  discMostI      Int @default(0)
+  discMostS      Int @default(0)
+  discMostC      Int @default(0)
+
+  discLeastD     Int @default(0)
+  discLeastI     Int @default(0)
+  discLeastS     Int @default(0)
+  discLeastC     Int @default(0)
+
+  discCompositeD Int @default(0)
+  discCompositeI Int @default(0)
+  discCompositeS Int @default(0)
+  discCompositeC Int @default(0)
+
+  discPattern    String?
+  discPrimary    String?
+
+  hexacoH Float @default(0)
+  hexacoE Float @default(0)
+  hexacoX Float @default(0)
+  hexacoA Float @default(0)
+  hexacoC Float @default(0)
+  hexacoO Float @default(0)
+
+  hexacoFacetMeans Json?
+  aiInsight        Json?
+  rawData          Json?
+
+  @@index([email])
+  @@index([nama])
+}
+
+model ChatHistory {
+  id             Int      @id @default(autoincrement())
+  title          String
+  selectedTarget String?  @default("all")
+  messages       Json     @default("[]")
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @default(now()) @updatedAt
+}

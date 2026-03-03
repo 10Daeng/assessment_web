@@ -157,44 +157,45 @@ export default function DuplicatesPage() {
                           </td>
                           <td className="px-4 py-3">
                             {editId === s.id ? (
-                            <input type="text" className="w-full bg-slate-800 border-none text-white rounded px-2 py-1 text-sm" value={editFormData.nama} onChange={e => setEditFormData({...editFormData, nama: e.target.value})} placeholder="Nama" />
-                          ) : (
-                            <span className="text-white font-medium">{s.userData?.nama || '-'}</span>
-                          )}
-                        </td>
-                        <td className="px-4 py-3">
-                          {editId === s.id ? (
-                            <input type="text" className="w-full bg-slate-800 border-none text-white rounded px-2 py-1 text-sm" value={editFormData.email} onChange={e => setEditFormData({...editFormData, email: e.target.value})} placeholder="Email/NIK" />
-                          ) : (
-                            <span className="text-slate-400 text-xs">{s.userData?.email || '-'}</span>
-                          )}
-                        </td>
-                        <td className="px-4 py-3">
-                          <span className="bg-blue-500/20 text-blue-400 font-bold px-2.5 py-0.5 rounded-full text-xs">
-                            {getDiscPatternName(s.discScores?.pattern)} ({s.discScores?.pattern || '-'})
-                          </span>
-                        </td>
-                        <td className="px-4 py-3 text-slate-500 text-xs">
-                          {s.submittedAt ? new Date(s.submittedAt).toLocaleString('id-ID', { timeZone: 'Asia/Jakarta', dateStyle: 'medium', timeStyle: 'short' }) + ' WIB' : '-'}
-                        </td>
-                        <td className="px-6 py-3 text-right flex gap-3 justify-end items-center">
-                          {editId === s.id ? (
-                            <>
-                              <button onClick={() => saveEdit(s.id)} className="text-emerald-400 hover:text-emerald-300 font-medium text-xs">Simpan</button>
-                              <button onClick={() => setEditId(null)} className="text-slate-400 hover:text-slate-300 font-medium text-xs">Batal</button>
-                            </>
-                          ) : (
-                            <>
-                              <button onClick={() => startEdit(s)} className="text-amber-400 hover:text-amber-300 font-medium text-xs">Edit</button>
-                              <button onClick={() => handleDelete(s.id)} className="text-red-400 hover:text-red-300 font-medium text-xs">Hapus</button>
-                              <Link href={`/admin/reports/${s.id}`} className="text-blue-400 hover:text-blue-300 font-medium text-xs">
-                                Lihat →
-                              </Link>
-                            </>
-                          )}
-                        </td>
-                      </tr>
-                    ))}
+                              <input type="text" className="w-full bg-slate-800 border-none text-white rounded px-2 py-1 text-sm" value={editFormData.nama} onChange={e => setEditFormData({...editFormData, nama: e.target.value})} placeholder="Nama" />
+                            ) : (
+                              <span className="text-white font-medium">{s.userData?.nama || '-'}</span>
+                            )}
+                          </td>
+                          <td className="px-4 py-3">
+                            {editId === s.id ? (
+                              <input type="text" className="w-full bg-slate-800 border-none text-white rounded px-2 py-1 text-sm" value={editFormData.email} onChange={e => setEditFormData({...editFormData, email: e.target.value})} placeholder="Email/NIK" />
+                            ) : (
+                              <span className="text-slate-400 text-xs">{s.userData?.email || '-'}</span>
+                            )}
+                          </td>
+                          <td className="px-4 py-3">
+                            <span className="bg-blue-500/20 text-blue-400 font-bold px-2.5 py-0.5 rounded-full text-xs">
+                              {getDiscPatternName(s.discScores?.pattern)} ({s.discScores?.pattern || '-'})
+                            </span>
+                          </td>
+                          <td className="px-4 py-3 text-slate-500 text-xs">
+                            {s.submittedAt ? new Date(s.submittedAt).toLocaleString('id-ID', { timeZone: 'Asia/Jakarta', dateStyle: 'medium', timeStyle: 'short' }) + ' WIB' : '-'}
+                          </td>
+                          <td className="px-6 py-3 text-right flex gap-3 justify-end items-center">
+                            {editId === s.id ? (
+                              <>
+                                <button onClick={() => saveEdit(s.id)} className="text-emerald-400 hover:text-emerald-300 font-medium text-xs">Simpan</button>
+                                <button onClick={() => setEditId(null)} className="text-slate-400 hover:text-slate-300 font-medium text-xs">Batal</button>
+                              </>
+                            ) : (
+                              <>
+                                <button onClick={() => startEdit(s)} className="text-amber-400 hover:text-amber-300 font-medium text-xs">Edit</button>
+                                <button onClick={() => handleDelete(s.id)} className="text-red-400 hover:text-red-300 font-medium text-xs">Hapus</button>
+                                <Link href={`/admin/reports/${s.id}`} className="text-blue-400 hover:text-blue-300 font-medium text-xs">
+                                  Lihat →
+                                </Link>
+                              </>
+                            )}
+                          </td>
+                        </tr>
+                      );
+                    })}
                   </tbody>
                 </table>
               </div>

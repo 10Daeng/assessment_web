@@ -1,7 +1,11 @@
 import { neon } from '@neondatabase/serverless';
 
+let _sql;
 function getSQL() {
-  return neon(process.env.DATABASE_URL);
+  if (!_sql) {
+    _sql = neon(process.env.DATABASE_URL);
+  }
+  return _sql;
 }
 
 export async function addSubmission(data) {

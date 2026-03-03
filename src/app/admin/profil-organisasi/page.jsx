@@ -17,19 +17,19 @@ const HEXACO_LABELS = {
 const HEXACO_FACETS = {
   H: ['sinc', 'fair', 'gree', 'mode'],
   E: ['fear', 'anxi', 'depe', 'sent'],
-  X: ['sest', 'sobo', 'soci', 'live'],
+  X: ['sses', 'socb', 'soci', 'live'],
   A: ['forg', 'gent', 'flex', 'pati'],
   C: ['orga', 'dili', 'perf', 'prud'],
-  O: ['aest', 'inqu', 'crea', 'unco'],
+  O: ['aesa', 'inqu', 'crea', 'unco'],
 };
 
 const FACET_NAMES = {
   sinc: 'Sincerity', fair: 'Fairness', gree: 'Greed Avoidance', mode: 'Modesty',
   fear: 'Fearfulness', anxi: 'Anxiety', depe: 'Dependence', sent: 'Sentimentality',
-  sest: 'Social Self-Esteem', sobo: 'Social Boldness', soci: 'Sociability', live: 'Liveliness',
+  sses: 'Social Self-Esteem', socb: 'Social Boldness', soci: 'Sociability', live: 'Liveliness',
   forg: 'Forgiveness', gent: 'Gentleness', flex: 'Flexibility', pati: 'Patience',
   orga: 'Organization', dili: 'Diligence', perf: 'Perfectionism', prud: 'Prudence',
-  aest: 'Aesthetic Appreciation', inqu: 'Inquisitiveness', crea: 'Creativity', unco: 'Unconventionality',
+  aesa: 'Aesthetic Appreciation', inqu: 'Inquisitiveness', crea: 'Creativity', unco: 'Unconventionality',
 };
 
 function getLevel(mean) {
@@ -106,8 +106,9 @@ export default function ProfilOrganisasiPage() {
     const map = {};
     filtered.forEach(d => {
       const ai = d.aiInsight;
-      const ark = ai?.arketipe_personal || ai?.arketipe;
+      let ark = ai?.arketipe_personal || ai?.arketipe;
       if (ark) {
+        ark = ark.trim();
         if (!map[ark]) map[ark] = { count: 0, names: [] };
         map[ark].count++;
         map[ark].names.push(d.userData?.nama || 'Anonim');
@@ -150,14 +151,16 @@ export default function ProfilOrganisasiPage() {
     return list.sort((a, b) => b.avg - a.avg);
   }, [facetAvg]);
 
-  // Peran Distribution
+  // Peran Distribution — support both prompt formats
   const peranDist = useMemo(() => {
     const map = {};
     filtered.forEach(d => {
-      const roles = d.aiInsight?.peta_potensi_peran;
+      // New prompt: peran_potensial_dalam_tim[].peran
+      // Old prompt: peta_potensi_peran[].tipe_arketipe
+      const roles = d.aiInsight?.peran_potensial_dalam_tim || d.aiInsight?.peta_potensi_peran;
       if (Array.isArray(roles)) {
         roles.forEach(r => {
-          const tipe = r.tipe_arketipe;
+          const tipe = r.peran || r.tipe_arketipe;
           if (tipe) {
             if (!map[tipe]) map[tipe] = { count: 0, names: [] };
             map[tipe].count++;
@@ -223,7 +226,10 @@ export default function ProfilOrganisasiPage() {
         "C": fm.C?.toFixed(2) || '-', "O": fm.O?.toFixed(2) || '-',
         "Kekuatan": Array.isArray(ai.kekuatan_utama) ? ai.kekuatan_utama.join('; ') : '-',
         "Tantangan": ai.tantangan_dan_faktor_penghambat ? `${ai.tantangan_dan_faktor_penghambat.komunikasi_dan_pola_kerja || ''} | ${ai.tantangan_dan_faktor_penghambat.hambatan_karakter_internal || ''}` : '-',
-        "Peran Potensial": Array.isArray(ai.peta_potensi_peran) ? ai.peta_potensi_peran.map(p => p.tipe_arketipe).join(', ') : '-',
+        "Peran Potensial": (() => {
+          const roles = ai.peran_potensial_dalam_tim || ai.peta_potensi_peran;
+          return Array.isArray(roles) ? roles.map(p => p.peran || p.tipe_arketipe).join(', ') : '-';
+        })(),
       };
     });
     const ws = XLSX.utils.json_to_sheet(rows);

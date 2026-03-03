@@ -2,6 +2,7 @@
 import { useState, useEffect, useMemo } from 'react';
 import Link from 'next/link';
 import * as XLSX from 'xlsx';
+import { calculateValidityIndex } from '@/utils/validityCheck';
 import { logger } from '@/utils/logger';
 
 function SortIcon({ sortBy, sortDir, field }) {
@@ -13,6 +14,23 @@ const getFirstSentence = (str) => {
   if (!str) return '';
   const match = str.match(/[^.!?]+[.!?]*/);
   return match ? match[0].trim() : str.trim();
+};
+
+// Deteksi kata kunci risiko/bahaya untuk highlight otomatis
+const RISK_KEYWORDS = ['burnout', 'kelelahan', 'konflik', 'stres', 'stress', 'isolasi', 'frustrasi', 'overload', 'masking', 'topeng', 'menguras', 'menahan'];
+
+const highlightRisk = (text) => {
+  if (!text) return '-';
+  const lower = text.toLowerCase();
+  const hasRisk = RISK_KEYWORDS.some(k => lower.includes(k));
+  if (hasRisk) {
+    return (
+      <span className="bg-red-500/15 text-red-400 font-medium px-2 py-1 rounded-md text-xs border border-red-500/20 inline-block">
+        ⚠️ {text}
+      </span>
+    );
+  }
+  return text;
 };
 
 // Same deskripsi as full report, but displayed with proper line breaks
@@ -92,13 +110,13 @@ export default function RekapPage() {
         let va, vb;
         switch (sortBy) {
           case 'validitas': {
-            const validityA = a.validity?.overallScore || '-';
-            const validityB = b.validity?.overallScore || '-';
-            // Numeric sort: lower score = lower validity
-            if (validityA === '-' && validityB !== '-') return 1;
-            if (validityA === '-') return 1;
-            if (validityB === '-') return -1;
-            return validityA - validityB;
+            const validityA = calculateValidityIndex(a.rawData, a);
+            const validityB = calculateValidityIndex(b.rawData, b);
+            va = typeof validityA.overallScore === 'number' ? validityA.overallScore : -1;
+            vb = typeof validityB.overallScore === 'number' ? validityB.overallScore : -1;
+            if (va < vb) return sortDir === 'asc' ? -1 : 1;
+            if (va > vb) return sortDir === 'asc' ? 1 : -1;
+            return 0;
           }
           case 'nama': va = a.userData?.nama || ''; vb = b.userData?.nama || ''; break;
           case 'arketipe':
@@ -123,11 +141,11 @@ export default function RekapPage() {
     const exportData = sorted.map((sub, index) => {
       const d = sub.userData || {};
       const ai = sub.aiInsight || {};
-      const val = sub.validity || {};
+      const val = calculateValidityIndex(sub.rawData, sub);
 
       return {
         "No": index + 1,
-        "Validitas": val.overallScore || '-',
+        "Validitas": val.overallScore ?? '-',
         "Nama": d.nama || '-',
         "Instansi": d.instansi || '-',
         "Pola DISC Asli": sub.discScores?.fullPattern || sub.discScores?.pattern || '-',
@@ -136,7 +154,10 @@ export default function RekapPage() {
         "Kekuatan Utama": Array.isArray(ai.kekuatan_utama) ? ai.kekuatan_utama.map(k=>`• ${k}`).join('\n') : (ai.kekuatan || '-'),
         "Tantangan Utama": ai.tantangan_dan_faktor_penghambat ? `Komunikasi: ${ai.tantangan_dan_faktor_penghambat.komunikasi_dan_pola_kerja}\nInternal: ${ai.tantangan_dan_faktor_penghambat.hambatan_karakter_internal}` : (ai.tantangan || '-'),
         "Saran Pengembangan": Array.isArray(ai.saran_pengembangan_spesifik) ? ai.saran_pengembangan_spesifik.map(s=>`• ${s}`).join('\n') : (ai.saran || '-'),
-        "Peran Potensial (Tim)": Array.isArray(ai.peta_potensi_peran) ? ai.peta_potensi_peran.map(p=>`[${p.tipe_arketipe}] ${p.alasan}`).join('\n\n') : (ai.peran || '-')
+        "Peran Potensial (Tim)": (() => {
+          const roles = ai.peran_potensial_dalam_tim || ai.peta_potensi_peran;
+          return Array.isArray(roles) ? roles.map(p => `[${p.peran || p.tipe_arketipe}] ${p.alasan}`).join('\n\n') : (ai.peran || '-');
+        })()
       };
     });
 
@@ -227,21 +248,26 @@ export default function RekapPage() {
               {sorted.map((sub, idx) => {
                 const ai = sub.aiInsight || {};
                 const ud = sub.userData || {};
-                const val = sub.validity || {};
+                const val = calculateValidityIndex(sub.rawData, sub);
+                const vScore = typeof val.overallScore === 'number' ? val.overallScore : '-';
 
                 return (
                   <tr key={sub.id} className="hover:bg-slate-800/30 transition-colors group">
                     <td className="px-4 py-4 text-slate-500 align-top">{idx + 1}</td>
                     <td className="px-4 py-4 align-top">
-                      <span className={`${getValidityColor(val.overallScore)} font-semibold`}>
-                        {val.overallScore}
+                      <span className={`${getValidityColor(vScore)} font-semibold`}>
+                        {vScore}
                       </span>
                     </td>
                     <td className="px-4 py-4 align-top">
                       <div className="text-white font-medium whitespace-nowrap">{ud.nama || '-'}</div>
-                      <div className="text-slate-500 text-xs mt-0.5">{sub.discScores?.fullPattern || sub.discScores?.pattern || '-'}</div>
-                      <Link href={`/admin/reports/${sub.id}`} className="text-blue-400 mt-2 block hover:text-blue-300 text-xs hover:underline whitespace-nowrap">
-                        Lihat Detail Berkas →
+                      <div className="text-slate-500 text-xs mt-0.5">
+                        {[ud.jenis_kelamin, ud.usia ? `${ud.usia} Thn` : null].filter(Boolean).join(', ') || '-'}
+                      </div>
+                      {ud.jabatan && <div className="text-blue-400 font-medium text-xs mt-0.5">{ud.jabatan}</div>}
+                      {ud.instansi && <div className="text-slate-600 text-xs">{ud.instansi}</div>}
+                      <Link href={`/admin/reports/${sub.id}`} className="text-blue-400/70 mt-1.5 block hover:text-blue-300 text-xs hover:underline whitespace-nowrap">
+                        Lihat Detail →
                       </Link>
                     </td>
                     <td className="px-4 py-4 align-top">
@@ -259,19 +285,31 @@ export default function RekapPage() {
                     </td>
                     <td className="px-4 py-4 align-top text-rose-400/80 text-xs leading-relaxed">
                        {ai.rekap_singkat?.tantangan || (ai.tantangan_dan_faktor_penghambat ?
-                         <div>
-                           <div className="font-semibold mb-1">Komunikasi:</div>
-                           <div className="mb-2">{getFirstSentence(ai.tantangan_dan_faktor_penghambat.komunikasi_dan_pola_kerja)}</div>
-                           <div className="font-semibold mb-1">Internal:</div>
-                           <div>{getFirstSentence(ai.tantangan_dan_faktor_penghambat.hambatan_karakter_internal)}</div>
+                         <div className="space-y-2">
+                           <div>
+                             <div className="font-semibold mb-0.5 text-rose-300">Komunikasi:</div>
+                             <div>{highlightRisk(getFirstSentence(ai.tantangan_dan_faktor_penghambat.komunikasi_dan_pola_kerja))}</div>
+                           </div>
+                           <div>
+                             <div className="font-semibold mb-0.5 text-rose-300">Internal:</div>
+                             <div>{highlightRisk(getFirstSentence(ai.tantangan_dan_faktor_penghambat.hambatan_karakter_internal))}</div>
+                           </div>
                          </div>
-                       : (getFirstSentence(ai.tantangan) || '-'))}
+                       : highlightRisk(getFirstSentence(ai.tantangan)) || '-')}
                     </td>
                     <td className="px-4 py-4 align-top text-blue-300/80 text-xs leading-relaxed">
                        {ai.rekap_singkat?.saran || (Array.isArray(ai.saran_pengembangan_spesifik) ? <ul className="list-decimal pl-3">{ai.saran_pengembangan_spesifik.map((s,i) => <li key={i} className="mb-1">{getFirstSentence(s)}</li>)}</ul> : (getFirstSentence(ai.saran) || '-'))}
                     </td>
                     <td className="px-4 py-4 align-top text-teal-400/80 text-xs leading-relaxed">
-                      {ai.rekap_singkat?.peran || (Array.isArray(ai.peta_potensi_peran) ?
+                      {ai.rekap_singkat?.peran || (Array.isArray(ai.peran_potensial_dalam_tim) ?
+                        <div>
+                          {ai.peran_potensial_dalam_tim.map((p,i) => (
+                             <div key={i} className="mb-1.5 flex flex-col">
+                               <span className="font-bold text-teal-300">{p.peran}</span> <span>{getFirstSentence(p.alasan)}</span>
+                             </div>
+                          ))}
+                        </div>
+                      : Array.isArray(ai.peta_potensi_peran) ?
                         <div>
                           {ai.peta_potensi_peran.map((p,i) => (
                              <div key={i} className="mb-1.5 flex flex-col">

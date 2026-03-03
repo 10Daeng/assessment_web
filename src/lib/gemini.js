@@ -5,130 +5,116 @@ import { logger } from '../utils/logger';
 /**
  * Generate personality description.
  * PRIMARY: Z.AI (Claude Sonnet) → structured JSON insight
+ * SECONDARY: Gemini Flash
  * FALLBACK: Local AI Engine → same schema, 100% offline
- * LEGACY: Gemini (if ZAI_API_KEY not set but GEMINI_API_KEY exists)
  */
+
+// Helper: HEXACO score → qualitative category
+function categorizeHexaco(mean) {
+  if (!mean || mean === 0) return '-';
+  if (mean < 2.05) return 'Very Low';
+  if (mean < 2.80) return 'Low';
+  if (mean < 3.40) return 'Mid';
+  if (mean < 4.10) return 'High';
+  return 'Very High';
+}
+
+// Helper: Extract JSON from messy AI response
+function extractJSON(text) {
+  let cleaned = text.replace(/```json/gi, '').replace(/```/g, '').trim();
+  try { return JSON.parse(cleaned); } catch {}
+  const jsonMatch = cleaned.match(/\{[\s\S]*\}/);
+  if (jsonMatch) {
+    try { return JSON.parse(jsonMatch[0]); } catch {}
+  }
+  return null;
+}
+
 export async function generatePersonalityDescription(discPattern, hexacoMeanH, hexacoMeanE, hexacoMeanX, hexacoMeanA, hexacoMeanC, hexacoMeanO, hexacoFacetMeans, discScores, userData = {}) {
   const factorMeans = { H: hexacoMeanH, E: hexacoMeanE, X: hexacoMeanX, A: hexacoMeanA, C: hexacoMeanC, O: hexacoMeanO };
 
-  // Always prepare local insight (same schema as Claude)
   const localInsight = generateLocalAiInsight(
-    discPattern,
-    factorMeans,
-    hexacoFacetMeans || {},
-    discScores || null,
-    userData || {}
+    discPattern, factorMeans, hexacoFacetMeans || {}, discScores || null, userData || {}
   );
 
-  // Also prepare legacy local interpretation (for PDF gayaKerja/karakterInti)
   const localLegacy = generateLocalInterpretation(
-    discPattern,
-    factorMeans,
-    hexacoFacetMeans || {},
-    discScores || null
+    discPattern, factorMeans, hexacoFacetMeans || {}, discScores || null
   );
 
   const zaiKey = process.env.ZAI_API_KEY;
   const geminiKey = process.env.GEMINI_API_KEY;
 
   if (!zaiKey && !geminiKey) {
-    logger.log("[AI] No API Keys found (Z.AI or Gemini), using local AI engine.");
-    // Merge: local insight (Claude schema) + legacy fields for PDF
-    return {
-      ...localInsight,
-      gayaKerja: localLegacy.gayaKerja,
-      karakterInti: localLegacy.karakterInti,
-      rekomendasi1: localLegacy.rekomendasi1,
-      rekomendasi2: localLegacy.rekomendasi2,
-      rekomendasi3: localLegacy.rekomendasi3,
-    };
+    logger.log("[AI] No API Keys, using local engine.");
+    return { ...localInsight, gayaKerja: localLegacy.gayaKerja, karakterInti: localLegacy.karakterInti,
+      rekomendasi1: localLegacy.rekomendasi1, rekomendasi2: localLegacy.rekomendasi2, rekomendasi3: localLegacy.rekomendasi3 };
   }
 
-  try {
-    const prompt = `Anda adalah seorang Konsultan Psikologi Organisasi dan Pakar Manajemen SDM dengan pengalaman lebih dari 25 tahun. Anda memiliki pendekatan yang holistik, mendalam, dan mampu memadukan psikologi modern dengan analisis perilaku. Tugas Anda adalah menganalisis data psikometrik seseorang (DISC & HEXACO) untuk memberikan rekomendasi "Capability-Based Placement" (pemetaan potensi peran tanpa terpaku pada jabatan tertentu).
+  // ── Build Facet Detail ──
+  const facetList = [
+    {k:'sinc', n:'Sincerity (H)'}, {k:'fair', n:'Fairness (H)'}, {k:'gree', n:'Greed Avoidance (H)'}, {k:'mode', n:'Modesty (H)'},
+    {k:'fear', n:'Fearfulness (E)'}, {k:'anxi', n:'Anxiety (E)'}, {k:'depe', n:'Dependence (E)'}, {k:'sent', n:'Sentimentality (E)'},
+    {k:'sses', n:'Social Self-Esteem (X)'}, {k:'socb', n:'Social Boldness (X)'}, {k:'soci', n:'Sociability (X)'}, {k:'live', n:'Liveliness (X)'},
+    {k:'forg', n:'Forgivingness (A)'}, {k:'gent', n:'Gentleness (A)'}, {k:'flex', n:'Flexibility (A)'}, {k:'pati', n:'Patience (A)'},
+    {k:'orga', n:'Organization (C)'}, {k:'dili', n:'Diligence (C)'}, {k:'perf', n:'Perfectionism (C)'}, {k:'prud', n:'Prudence (C)'},
+    {k:'aesa', n:'Aesthetic Appr. (O)'}, {k:'inqu', n:'Inquisitiveness (O)'}, {k:'crea', n:'Creativity (O)'}, {k:'unco', n:'Unconventionality (O)'},
+    {k:'altr', n:'Altruism'}
+  ];
+  const facetStr = facetList.map(f => `  • ${f.n}: ${hexacoFacetMeans?.[f.k] ?? '-'}`).join('\n');
+
+  // ── Prompt ──
+  const prompt = `Anda adalah Psikolog Asesor Senior dan Konsultan HR berpengalaman 25+ tahun. Susun "Laporan Integrasi Kepribadian" yang menggabungkan DISC dan HEXACO menjadi narasi karakter utuh dan manusiawi.
+
+### KONTEKS:
+- Usia: ${userData?.usia || 'N/A'} tahun | Jabatan: ${userData?.jabatan || userData?.pekerjaan || 'N/A'} | Instansi: ${userData?.instansi || 'N/A'}
 
 ### DATA PROFIL:
-- Demografi & Pekerjaan:
-  • Usia: ${userData?.usia || 'Tidak disebutkan'} tahun
-  • Asal Instansi: ${userData?.instansi || 'Tidak disebutkan'}
-  • Pekerjaan: ${userData?.pekerjaan || 'Tidak disebutkan'}
-  • Jabatan: ${userData?.jabatan || 'Tidak disebutkan'}
-- Gaya Kerja (Pola DISC): ${discPattern}
-  • Grafik 1 (Publik/Mask) : D=${discScores?.discMost?.D || 0}, I=${discScores?.discMost?.I || 0}, S=${discScores?.discMost?.S || 0}, C=${discScores?.discMost?.C || 0}
-  • Grafik 2 (Pribadi/Core) : D=${discScores?.discLeast?.D || 0}, I=${discScores?.discLeast?.I || 0}, S=${discScores?.discLeast?.S || 0}, C=${discScores?.discLeast?.C || 0}
-  • Grafik 3 (Aktual/Composite) : D=${discScores?.discComposite?.D || 0}, I=${discScores?.discComposite?.I || 0}, S=${discScores?.discComposite?.S || 0}, C=${discScores?.discComposite?.C || 0}
-- Karakter Inti (HEXACO - Skor 1.0 - 5.0):
-  • Integritas (H): ${hexacoMeanH}
-  • Stabilitas Emosi (E): ${hexacoMeanE}
-  • Energi Sosial (X): ${hexacoMeanX}
-  • Kesabaran (A): ${hexacoMeanA}
-  • Disiplin (C): ${hexacoMeanC}
-  • Kreativitas (O): ${hexacoMeanO}
-- Detail Sub-Facet (Analisis):
-  ${JSON.stringify(hexacoFacetMeans)}
+1. DISC:
+   Pola: ${discPattern}
+   Publik: D=${discScores?.discMost?.D||0} I=${discScores?.discMost?.I||0} S=${discScores?.discMost?.S||0} C=${discScores?.discMost?.C||0}
+   Pribadi: D=${discScores?.discLeast?.D||0} I=${discScores?.discLeast?.I||0} S=${discScores?.discLeast?.S||0} C=${discScores?.discLeast?.C||0}
+   Aktual: D=${discScores?.discComposite?.D||0} I=${discScores?.discComposite?.I||0} S=${discScores?.discComposite?.S||0} C=${discScores?.discComposite?.C||0}
 
-### ATURAN UTAMA (WAJIB DIIKUTI - ZERO JARGON & ZERO METRIC POLICY):
-1. INTEGRASI TOTAL: Gabungkan DISC, HEXACO, serta latar belakang Pekerjaan, Usia, dan Jabatannya menjadi narasi yang relevan. Jangan pisahkan analisisnya.
-2. DILARANG KERAS MENGGUNAKAN BLACKLIST KATA BERIKUT: 
-   "skor", "angka", "maksimal", "persentase", "tingkat", "level", "dimensi", "aspek", "facet", "grafik", "profil", "Altruisme", "Integritas", "Dominance", "Influence", "Steadiness", "Compliance", "Extraversion", "Agreeableness", "Conscientiousness", "Openness", "Honesty-Humility", "Emotionality".
-3. UBAH LABEL MENJADI DESKRIPSI PERILAKU: Jangan sebut nama sifatnya, tapi deskripsikan perilakunya.
-   - SALAH: "Tingkat altruismenya maksimal/nyaris sempurna."
-   - BENAR: "Ia memiliki dorongan tanpa pamrih yang sangat kuat untuk selalu mendahulukan kesejahteraan orang lain."
-   - SALAH: "Integritas dan keadilannya tinggi."
-   - BENAR: "Ia adalah sosok yang berpegang teguh pada prinsip moral dan selalu memastikan setiap keputusannya tidak memihak."
-4. HINDARI KESAN TES ALAT UKUR: Tuliskan seakan-akan Anda adalah psikolog yang baru saja mengobservasi klien ini selama 1 tahun penuh, BUKAN sedang membaca hasil tes.
-5. REALISTIS & KLINIS: Hindari kata mutlak (selalu/tidak pernah). Gunakan "cenderung", "memiliki kecenderungan", "tampak", atau "biasanya".
-6. ANALISIS FRIKSI INTERNAL: Jika ada perbedaan tajam antara perilaku publik (Mask) dan karakter asli (Core), jadikan ini sebagai sumber kelelahan emosional atau "Faktor Penghambat".
-7. PANJANG NARASI: Bagian \`deskripsi_kepribadian_terintegrasi\` HARUS berupa narasi mengalir (bukan poin-poin/bullet), detail, utuh, maksimal 2 paragraf (sekitar 10-15 kalimat), menghubungkan karakternya dengan tuntutan pekerjaannya.
-8. PERSPEKTIF HR: Fokuslah pada potensi dan kapabilitas sesuai jabatannya, bukan hanya deskripsi statis.
+2. HEXACO (1.0-5.0):
+   H: ${hexacoMeanH} (${categorizeHexaco(hexacoMeanH)}) | E: ${hexacoMeanE} (${categorizeHexaco(hexacoMeanE)}) | X: ${hexacoMeanX} (${categorizeHexaco(hexacoMeanX)})
+   A: ${hexacoMeanA} (${categorizeHexaco(hexacoMeanA)}) | C: ${hexacoMeanC} (${categorizeHexaco(hexacoMeanC)}) | O: ${hexacoMeanO} (${categorizeHexaco(hexacoMeanO)})
 
-### OUTPUT JSON (Strict Format):
+3. Sub-Facet:
+${facetStr}
+
+### ATURAN:
+1. INTEGRASI TOTAL — padukan DISC & HEXACO secara implisit, jangan eksplisit.
+2. DILARANG menyebut: "skor", "tingkat", "level", "facet", "grafik", "Dominance", "Influence", "Steadiness", "Compliance", "Honesty-Humility", "Emotionality", "Extraversion", "Agreeableness", "Conscientiousness", "Openness", "Altruism", "DISC", "HEXACO".
+3. Deskripsikan PERILAKU, bukan label metrik. Tulis seakan psikolog yang mengobservasi klien 1 tahun.
+4. deskripsi_kepribadian_terintegrasi HARUS 3-4 paragraf (300-400 kata). WAJIB narasi mengalir, TANPA bullet points.
+5. Gunakan "cenderung", "tampak", "berpotensi". Jika ada gap Publik vs Pribadi, analisis sebagai sumber kelelahan emosional.
+
+### OUTPUT (Raw JSON saja, tanpa markdown):
 {
-  "arketipe_personal": "Julukan unik 2-4 kata yang mencerminkan esensi kepribadian & peran alaminya",
-  "deskripsi_kepribadian_terintegrasi": "Narasi maksimal 2 paragraf (sekitar 10-15 kalimat) menggabungkan DISC, HEXACO, jabatan/pekerjaan. Elaborasi dinamika perilaku.",
-  "ringkasan_kepribadian": "Ringkasan singkat 3-5 poin, istilah tepat, tanpa filler. Format: • Poin 1 • Poin 2 • Poin 3. Contoh: • Ekstrovert kreatif • Pemimpin hasil-orientasi • Analitis namun fleksibel",
-  "kekuatan_utama": [
-    "Kekuatan 1: (Penjelasan singkat 1 kalimat terkait kombinasi karakter & perilakunya)",
-    "Kekuatan 2: (Penjelasan)",
-    "Kekuatan 3: (Penjelasan)"
-  ],
+  "arketipe_personal": "Julukan unik 2-4 kata",
+  "deskripsi_kepribadian_terintegrasi": "3-4 paragraf narasi (300-400 kata)",
+  "kekuatan_utama": ["Kekuatan 1 (1-2 kalimat)", "Kekuatan 2", "Kekuatan 3"],
   "tantangan_dan_faktor_penghambat": {
-    "komunikasi_dan_pola_kerja": "Analisis gaya komunikasi yang mungkin menimbulkan friksi dengan orang lain, atau kebiasaan kerja yang menahan efisiensinya.",
-    "hambatan_karakter_internal": "Faktor dari dalam diri yang menghalangi potensi terbaiknya saat ini (misal benturan tuntutan lingkungan vs karakter asli)."
+    "komunikasi_dan_pola_kerja": "Analisis friksi komunikasi/kerja",
+    "hambatan_karakter_internal": "Faktor internal penghambat"
   },
   "analisis_lingkungan_ideal": {
-    "ekosistem_kerja": "Tipe budaya organisasi atau tim yang paling optimal bagi individu ini.",
-    "kebutuhan_motivasi": "Apa yang menjadi 'bahan bakar' psikologis utamanya agar ia merasa berdaya."
+    "ekosistem_kerja": "Budaya organisasi optimal",
+    "kebutuhan_motivasi": "Bahan bakar psikologis utama"
   },
-  "peran_potensial_dalam_tim": [
-    {
-      "peran": "Nama peran fungsional (contoh: The Strategic Anchor, The Catalyst, The Stabilizer)",
-      "alasan": "Mengapa ia sangat cocok di peran ini berdasarkan kekuatan intinya."
-    }
-  ],
-  "saran_pengembangan_spesifik": [
-    "Langkah taktis dan konkret 1 untuk mengatasi faktor penghambat atau mematangkan karakternya.",
-    "Langkah taktis 2...",
-    "Langkah taktis 3..."
-  ],
-  "rekap_singkat": {
-    "kekuatan": "Ringkasan 1 kalimat/peluru tentang kekuatan kuncinya.",
-    "tantangan": "Ringkasan 1 kalimat tentang masalah utamanya.",
-    "saran": "Ringkasan 1 kalimat taktis sarannya.",
-    "peran": "Ringkasan 1 kalimat peran idealnya."
-  }
+  "peran_potensial_dalam_tim": [{"peran": "Nama peran", "alasan": "Mengapa cocok"}],
+  "saran_pengembangan_spesifik": ["Langkah 1", "Langkah 2", "Langkah 3"]
 }`;
 
+  // ── Single attempt with 45s timeout (must fit in Vercel 60s limit) ──
+  try {
     const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), 15000);
-
+    const timeout = setTimeout(() => controller.abort(), 45000);
     let cleanText = '';
 
     if (zaiKey) {
-      logger.log("[AI] Attempting Z.AI (Claude Sonnet) enhancement...");
-      const zaiUrl = 'https://api.z.ai/api/anthropic/v1/messages';
-      
-      const response = await fetch(zaiUrl, {
+      logger.log("[AI] Calling Z.AI (Claude Sonnet)...");
+      const res = await fetch('https://api.z.ai/api/anthropic/v1/messages', {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${zaiKey}`,
@@ -138,75 +124,61 @@ export async function generatePersonalityDescription(discPattern, hexacoMeanH, h
         signal: controller.signal,
         body: JSON.stringify({
           model: 'claude-3-5-sonnet-20241022',
-          max_tokens: 2000,
-          system: "Output JSON murni tanpa markdown.",
+          max_tokens: 3000,
+          system: "Output JSON murni. Langsung mulai dengan {",
           messages: [{ role: 'user', content: prompt }]
         })
       });
-
       clearTimeout(timeout);
-      if (!response.ok) throw new Error(`Z.AI Error ${response.status}`);
-      
-      const data = await response.json();
-      const text = data.content?.[0]?.text || '';
-      cleanText = text.replace(/```json/gi, '').replace(/```/g, '').trim();
-
+      if (!res.ok) throw new Error(`Z.AI HTTP ${res.status}`);
+      const data = await res.json();
+      cleanText = data.content?.[0]?.text || '';
     } else {
-      logger.log("[AI] Attempting Gemini enhancement...");
-      const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${geminiKey}`;
-      
-      const response = await fetch(geminiUrl, {
+      logger.log("[AI] Calling Gemini Flash...");
+      const res = await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', 'x-goog-api-key': geminiKey },
         signal: controller.signal,
         body: JSON.stringify({
           contents: [{ parts: [{ text: prompt }] }],
-          generationConfig: { temperature: 0.7, maxOutputTokens: 2000, responseMimeType: "application/json" },
-          systemInstruction: { parts: [{ text: "Output JSON murni tanpa markdown." }] }
+          generationConfig: { temperature: 0.7, maxOutputTokens: 3000, responseMimeType: "application/json" },
+          systemInstruction: { parts: [{ text: "Output JSON murni." }] }
         })
       });
-
       clearTimeout(timeout);
-      if (!response.ok) throw new Error(`Gemini Error ${response.status}`);
-      
-      const data = await response.json();
-      const text = data.candidates?.[0]?.content?.parts?.[0]?.text || '';
-      cleanText = text.replace(/```json/gi, '').replace(/```/g, '').trim();
+      if (!res.ok) throw new Error(`Gemini HTTP ${res.status}`);
+      const data = await res.json();
+      cleanText = data.candidates?.[0]?.content?.parts?.[0]?.text || '';
     }
 
-    const aiResult = JSON.parse(cleanText);
-    logger.log("[AI] API enhancement succeeded.");
-    
-    // Normalize: ensure peta_potensi_peran exists (some prompts return peran_potensial_dalam_tim)
+    const aiResult = extractJSON(cleanText);
+    if (!aiResult || !aiResult.deskripsi_kepribadian_terintegrasi) {
+      throw new Error('AI returned invalid JSON');
+    }
+
+    const wordCount = (aiResult.deskripsi_kepribadian_terintegrasi || '').split(/\s+/).length;
+    logger.log(`[AI] Success! Words: ${wordCount}, Source: ${zaiKey ? 'z.ai' : 'gemini'}`);
+
     if (!aiResult.peta_potensi_peran && aiResult.peran_potensial_dalam_tim) {
       aiResult.peta_potensi_peran = aiResult.peran_potensial_dalam_tim.map(r => ({
-        tipe_arketipe: r.peran || r.tipe_arketipe,
-        alasan: r.alasan,
+        tipe_arketipe: r.peran || r.tipe_arketipe, alasan: r.alasan,
       }));
     }
 
-    // Merge: AI output + local analysis data + legacy PDF fields
     return {
       ...aiResult,
-      discAnalysis: localLegacy.discAnalysis,
-      hexacoAnalysis: localLegacy.hexacoAnalysis,
-      gayaKerja: localLegacy.gayaKerja,
-      karakterInti: localLegacy.karakterInti,
-      rekomendasi1: localLegacy.rekomendasi1,
-      rekomendasi2: localLegacy.rekomendasi2,
-      rekomendasi3: localLegacy.rekomendasi3,
-      _source: 'z.ai',
+      discAnalysis: localLegacy.discAnalysis, hexacoAnalysis: localLegacy.hexacoAnalysis,
+      gayaKerja: localLegacy.gayaKerja, karakterInti: localLegacy.karakterInti,
+      rekomendasi1: localLegacy.rekomendasi1, rekomendasi2: localLegacy.rekomendasi2, rekomendasi3: localLegacy.rekomendasi3,
+      _source: zaiKey ? 'z.ai' : 'gemini',
     };
   } catch (err) {
-    logger.warn("[AI] API failed, using local AI engine:", err.message);
-    // Fallback: local AI insight (same Claude schema) + legacy PDF fields
+    logger.warn("[AI] Failed:", err.message, "→ using local engine.");
     return {
       ...localInsight,
-      gayaKerja: localLegacy.gayaKerja,
-      karakterInti: localLegacy.karakterInti,
-      rekomendasi1: localLegacy.rekomendasi1,
-      rekomendasi2: localLegacy.rekomendasi2,
-      rekomendasi3: localLegacy.rekomendasi3,
+      gayaKerja: localLegacy.gayaKerja, karakterInti: localLegacy.karakterInti,
+      rekomendasi1: localLegacy.rekomendasi1, rekomendasi2: localLegacy.rekomendasi2, rekomendasi3: localLegacy.rekomendasi3,
+      _source: 'local',
     };
   }
 }

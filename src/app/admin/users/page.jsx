@@ -84,10 +84,12 @@ export default function UsersPage() {
       if (!confirm(`PERINGATAN! Anda akan MENGHASILKAN ULANG (Regenerate) AI Insight untuk SEMUA ${targets.length} klien di daftar ini. Proses ini akan menimpa data lama dan memakan waktu sangat lama (±10-15 detik per klien). Lanjutkan?`)) return;
     }
     
-    setBulkGenState({ active: true, current: 0, total: targets.length });
+    setBulkGenState({ active: true, current: 0, total: targets.length, currentName: '' });
     let successCount = 0;
     
     for (let i = 0; i < targets.length; i++) {
+      const clientName = targets[i].userData?.nama || `Klien #${i + 1}`;
+      setBulkGenState(prev => ({ ...prev, current: i, currentName: clientName }));
       try {
         const bodyMsg = mode === 'all' ? JSON.stringify({ force: true }) : undefined;
         const res = await fetch(`/api/admin/submissions/${targets[i].id}/ai`, { 
@@ -104,7 +106,7 @@ export default function UsersPage() {
     }
     
     setTimeout(() => {
-      setBulkGenState({ active: false, current: 0, total: 0 });
+      setBulkGenState({ active: false, current: 0, total: 0, currentName: '' });
       triggerRefresh();
       alert(`Proses generate massal selesai! Berhasil: ${successCount} dari ${targets.length}`);
     }, 1000);
@@ -171,7 +173,12 @@ export default function UsersPage() {
               disabled={bulkGenState.active}
               className="bg-purple-600 hover:bg-purple-700 text-white font-medium py-2 px-4 rounded-xl text-sm transition-all disabled:opacity-50 flex items-center gap-2 shadow-lg"
             >
-              {bulkGenState.active ? 'Sedang Memproses...' : '✨ Hasilkan AI Massal ▾'}
+              {bulkGenState.active ? (
+                <span className="flex flex-col items-center text-xs">
+                  <span>⏳ {bulkGenState.current}/{bulkGenState.total}</span>
+                  <span className="text-purple-300 truncate max-w-[150px]">{bulkGenState.currentName || '...'}</span>
+                </span>
+              ) : '✨ Hasilkan AI Massal ▾'}
             </button>
             {!bulkGenState.active && (
               <div className="absolute right-0 mt-2 w-56 bg-slate-800 border border-slate-700 rounded-xl shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-10 focus-within:opacity-100 focus-within:visible">

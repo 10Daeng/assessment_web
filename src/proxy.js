@@ -1,43 +1,68 @@
 import { NextResponse } from 'next/server';
 import { jwtVerify } from 'jose';
 
+const SECRET = new TextEncoder().encode(process.env.JWT_SECRET);
+
+// Routes that require admin authentication
+const PROTECTED_PATHS = [
+  '/api/admin/submissions',
+  '/api/admin/chat',
+];
+
+// Routes that should NOT be protected (login/logout)
+const PUBLIC_API_PATHS = [
+  '/api/admin/auth/login',
+  '/api/admin/auth/logout',
+];
+
+// Admin pages that should redirect to login if not authenticated
+const ADMIN_PAGE_PATHS = ['/admin'];
+const ADMIN_PAGE_EXCLUDE = ['/admin/login'];
+
 export async function proxy(request) {
   const { pathname } = request.nextUrl;
 
-  // Only protect /admin routes (except login page)
-  if (pathname.startsWith('/admin') && pathname !== '/admin/login') {
+  // Skip public API paths
+  if (PUBLIC_API_PATHS.some(p => pathname.startsWith(p))) {
+    return NextResponse.next();
+  }
+
+  // Skip the public submit endpoint (klien mengisi tes tanpa login)
+  if (pathname === '/api/submit') {
+    return NextResponse.next();
+  }
+
+  // Check protected API paths
+  const isProtectedAPI = PROTECTED_PATHS.some(p => pathname.startsWith(p));
+  const isAdminPage = ADMIN_PAGE_PATHS.some(p => pathname.startsWith(p)) &&
+                      !ADMIN_PAGE_EXCLUDE.some(p => pathname === p);
+
+  if (isProtectedAPI || isAdminPage) {
     const token = request.cookies.get('admin_token')?.value;
 
     if (!token) {
+      if (isProtectedAPI) {
+        return NextResponse.json(
+          { success: false, error: 'Authentication required' },
+          { status: 401 }
+        );
+      }
+      // Redirect admin pages to login
       return NextResponse.redirect(new URL('/admin/login', request.url));
     }
 
     try {
-      const secret = new TextEncoder().encode(process.env.JWT_SECRET || 'fallback-secret');
-      await jwtVerify(token, secret);
+      await jwtVerify(token, SECRET);
       return NextResponse.next();
     } catch {
-      // Token invalid/expired — redirect to login
-      const response = NextResponse.redirect(new URL('/admin/login', request.url));
-      response.cookies.set('admin_token', '', { maxAge: 0, path: '/' });
-      return response;
-    }
-  }
-
-  // Also protect admin API routes
-  if (pathname.startsWith('/api/admin') && !pathname.startsWith('/api/admin/auth')) {
-    const token = request.cookies.get('admin_token')?.value;
-
-    if (!token) {
-      return NextResponse.json({ success: false, error: 'Unauthorized' }, { status: 401 });
-    }
-
-    try {
-      const secret = new TextEncoder().encode(process.env.JWT_SECRET || 'fallback-secret');
-      await jwtVerify(token, secret);
-      return NextResponse.next();
-    } catch {
-      return NextResponse.json({ success: false, error: 'Token expired' }, { status: 401 });
+      if (isProtectedAPI) {
+        return NextResponse.json(
+          { success: false, error: 'Invalid or expired token' },
+          { status: 401 }
+        );
+      }
+      // Redirect admin pages to login if token invalid
+      return NextResponse.redirect(new URL('/admin/login', request.url));
     }
   }
 
@@ -45,5 +70,8 @@ export async function proxy(request) {
 }
 
 export const config = {
-  matcher: ['/admin/:path*', '/api/admin/:path*'],
+  matcher: [
+    '/admin/:path*',
+    '/api/admin/:path*',
+  ],
 };

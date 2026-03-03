@@ -14,7 +14,7 @@ function createPrismaClient() {
     throw new Error('DATABASE_URL is not set!');
   }
 
-  logger.log('[Prisma] Creating client with URL:', connectionString.substring(0, 40) + '...');
+  logger.log('[Prisma] Creating client (connection configured via DATABASE_URL)');
 
   const pool = new Pool({ connectionString });
   const adapter = new PrismaNeon(pool);

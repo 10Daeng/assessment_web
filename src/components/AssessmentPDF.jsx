@@ -157,12 +157,13 @@ function HexacoBox({ group, factorMean, facetMeans }) {
 // ==========================================
 // MAIN PDF DOCUMENT — 4 PAGES
 // ==========================================
-export default function AssessmentPDF({ userData, discScores, hexacoScores, aiInsight, submittedAt }) {
+export default function AssessmentPDF({ userData, discScores, hexacoScores, aiInsight, submittedAt, rawData }) {
   // Format date for signature
   const formatDate = (dateStr) => {
     if (!dateStr) return '.........................';
     try {
       const d = new Date(dateStr);
+      if (isNaN(d.getTime())) return '.........................';
       const months = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
       return `${d.getDate()} ${months[d.getMonth()]} ${d.getFullYear()}`;
     } catch { return '.........................'; }
@@ -265,7 +266,7 @@ export default function AssessmentPDF({ userData, discScores, hexacoScores, aiIn
 
         {/* Status Validitas - dipindahkan ke Halaman 2 */}
         {(() => {
-          const validity = calculateValidityIndex(userData?.rawData || {}, { rawData: userData?.rawData, hexacoScores });
+          const validity = calculateValidityIndex(rawData || {}, { rawData, discScores, hexacoScores });
           const isSuspicious = validity.overallScore !== '-' && validity.overallScore < 60;
           return (
             <View style={{ marginTop: 15, padding: 10, borderRadius: 4, backgroundColor: isSuspicious ? '#fee2e2' : '#dcfce7', borderWidth: 1, borderColor: isSuspicious ? '#f87171' : '#86efac' }}>

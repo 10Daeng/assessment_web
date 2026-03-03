@@ -33,6 +33,8 @@ export default function BatchExportPDF({ data }) {
             discScores={sub.discScores} 
             hexacoScores={sub.hexacoScores} 
             aiInsight={sub.aiInsight} 
+            submittedAt={sub.submittedAt}
+            rawData={sub.rawData}
           />
         );
         const blob = await pdf(doc).toBlob();
