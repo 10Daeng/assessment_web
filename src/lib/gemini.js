@@ -86,6 +86,7 @@ export async function generatePersonalityDescription(discPattern, hexacoMeanH, h
 {
   "arketipe_personal": "Julukan unik 2-4 kata yang mencerminkan esensi kepribadian & peran alaminya",
   "deskripsi_kepribadian_terintegrasi": "Narasi maksimal 2 paragraf (sekitar 10-15 kalimat) menggabungkan DISC, HEXACO, jabatan/pekerjaan. Elaborasi dinamika perilaku.",
+  "ringkasan_kepribadian": "Ringkasan singkat 3-5 poin, istilah tepat, tanpa filler. Format: • Poin 1 • Poin 2 • Poin 3. Contoh: • Ekstrovert kreatif • Pemimpin hasil-orientasi • Analitis namun fleksibel",
   "kekuatan_utama": [
     "Kekuatan 1: (Penjelasan singkat 1 kalimat terkait kombinasi karakter & perilakunya)",
     "Kekuatan 2: (Penjelasan)",

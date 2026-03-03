@@ -247,10 +247,47 @@ export function generateLocalAiInsight(discPattern, factorMeans, facetMeans, dis
   ekosistem_kerja = `Individu ini akan berkembang optimal di ${ecoMap[top1] || 'lingkungan profesional yang mendukung'}. Ia juga membutuhkan ${ecoMap[top2] || 'sistem kerja yang terstruktur'}.`;
   kebutuhan_motivasi = `Bahan bakar psikologis utamanya adalah ${motivMap[top1] || 'pencapaian'}. Ia juga termotivasi ketika ${motivMap[top2] || 'mendapat dukungan dari tim'}.`;
 
+  // === BUILD RINGKASAN KEPRIBADIAN (3-5 poin pendek) ===
+  const ringkasan_poin = [];
+
+  // Poin 1: Gaya kerja DISC singkat
+  const discKeywords = disc.gayaKerja.toLowerCase().includes('memimpin') ? 'Pemimpin' :
+                        disc.gayaKerja.toLowerCase().includes('analitis') ? 'Analitis' :
+                        disc.gayaKerja.toLowerCase().includes('konsisten') ? 'Konsisten' :
+                        disc.gayaKerja.toLowerCase().includes('stabil') ? 'Stabil' :
+                        disc.gayaKerja.toLowerCase().includes('sosial') ? 'Sosial' : 'Adaptif';
+  ringkasan_poin.push(`${discKeywords} dan hasil-orientasi`);
+
+  // Poin 2: HEXACO strength singkat
+  if (hexAnalysis.kelebihan && hexAnalysis.kelebihan.length > 0) {
+    const firstStrength = hexAnalysis.kelebihan[0];
+    const shortStrength = firstStrength.substring(0, 50).split('.')[0] + '.';
+    ringkasan_poin.push(shortStrength);
+  }
+
+  // Poin 3: Work style based on HEXACO
+  const workStyle = [];
+  if (fm.C >= 3.5) workStyle.push('Terdisiplin');
+  if (fm.X >= 3.5) workStyle.push('Ekstrovert');
+  if (fm.E <= 2.5) workStyle.push('Tangguh tekanan');
+  if (fm.O >= 3.5) workStyle.push('Kreatif');
+  if (workStyle.length > 0) {
+    ringkasan_poin.push(workStyle.join(', '));
+  }
+
+  // Poin 4: Key challenge if any
+  if (hexAnalysis.tantangan && hexAnalysis.tantangan.length > 0) {
+    const shortChallenge = hexAnalysis.tantangan[0].substring(0, 40).split(',')[0] + '.';
+    ringkasan_poin.push(shortChallenge);
+  }
+
+  const ringkasan_kepribadian = ringkasan_poin.slice(0, 5).join(' • ');
+
   // === RETURN: Same schema as Claude/z.ai ===
   return {
     arketipe_personal: arketipe,
     deskripsi_kepribadian_terintegrasi: deskripsi.trim(),
+    ringkasan_kepribadian: ringkasan_kepribadian,
     kekuatan_utama: kekuatan_utama.slice(0, 4),
     tantangan_dan_faktor_penghambat: {
       komunikasi_dan_pola_kerja,

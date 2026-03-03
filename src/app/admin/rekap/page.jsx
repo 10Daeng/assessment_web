@@ -15,25 +15,6 @@ const getFirstSentence = (str) => {
   return match ? match[0].trim() : str.trim();
 };
 
-// Get concise summary for table (max 2 sentences, ~150 chars)
-const getDeskripsiRingkas = (ai) => {
-  const fullDesc = ai?.deskripsi_kepribadian_terintegrasi || ai?.deskripsi_kepribadian || ai?.karakterInti || '';
-  if (!fullDesc) return 'Analisis AI belum digenerate';
-
-  // Split by paragraphs and take first one
-  const firstPara = fullDesc.split('\n\n')[0];
-
-  // Take first 2 sentences and limit to ~150 chars
-  const sentences = firstPara.match(/[^.!?]+[.!?]*/g) || [firstPara];
-  let result = sentences.slice(0, 2).join(' ');
-
-  if (result.length > 150) {
-    result = result.substring(0, 150) + '...';
-  }
-
-  return result.trim();
-};
-
 export default function RekapPage() {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -225,8 +206,10 @@ export default function RekapPage() {
                       <span className="text-yellow-400 font-semibold">{ai.arketipe_personal || ai.arketipe || '-'}</span>
                     </td>
                     <td className="px-4 py-4 align-top text-slate-300 text-[13px] leading-relaxed">
-                      <div className="whitespace-pre-wrap">
-                        {getDeskripsiRingkas(ai)}
+                      <div className="whitespace-pre-wrap text-xs">
+                        {ai.ringkasan_kepribadian || ai.deskripsi_kepribadian_terintegrasi || (
+                           <span className="text-slate-600 italic">Analisis AI belum digenerate</span>
+                        )}
                       </div>
                     </td>
                     <td className="px-4 py-4 align-top text-slate-400 text-xs leading-relaxed">
