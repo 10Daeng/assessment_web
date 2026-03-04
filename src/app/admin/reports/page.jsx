@@ -4,9 +4,8 @@ import Link from 'next/link';
 import dynamic from 'next/dynamic';
 import { getDiscPatternName } from '@/utils/scoring';
 import { logger } from '@/utils/logger';
-import ExportSinglePDF from '@/components/ExportSinglePDF';
-
 const BatchExportPDF = dynamic(() => import('@/components/BatchExportPDF'), { ssr: false });
+const ExportSinglePDF = dynamic(() => import('@/components/ExportSinglePDF'), { ssr: false });
 
 function SortIcon({ sortBy, sortDir, field }) {
   if (sortBy !== field) return <span className="text-slate-600 ml-1">↕</span>;

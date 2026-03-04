@@ -1,9 +1,10 @@
 'use client';
 import { useState, useEffect, useMemo } from 'react';
 import Link from 'next/link';
-import { calculateValidityIndex } from '@/utils/validityCheck';
 import { logger } from '@/utils/logger';
-import ExportSinglePDF from '@/components/ExportSinglePDF';
+import dynamic from 'next/dynamic';
+
+const ExportSinglePDF = dynamic(() => import('@/components/ExportSinglePDF'), { ssr: false });
 
 function SortIcon({ sortBy, sortDir, field }) {
   if (sortBy !== field) return <span className="text-slate-600 ml-1">↕</span>;

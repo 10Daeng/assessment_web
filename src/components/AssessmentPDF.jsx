@@ -69,8 +69,10 @@ const styles = StyleSheet.create({
   bulletItem: { fontSize: 10.5, lineHeight: 1.5, color: '#333333', marginBottom: 5, paddingLeft: 10 },
 
   // Footer & Page Numbers
+  nameFooterEven: { position: 'absolute', bottom: 20, left: 40, fontSize: 8, color: c.grey, fontFamily: 'Helvetica-Bold' },
+  nameFooterWrap: { position: 'absolute', bottom: 20, left: 85, fontSize: 8, color: c.grey, fontFamily: 'Helvetica-Bold' },
   pageNumOdd: { position: 'absolute', bottom: 20, right: 40, fontSize: 8, color: 'grey' },
-  pageNumEven: { position: 'absolute', bottom: 20, left: 40, fontSize: 8, color: 'grey' },
+  pageNumEven: { position: 'absolute', bottom: 20, right: 85, fontSize: 8, color: 'grey' },
   pageNumWrap: { position: 'absolute', bottom: 20, right: 85, fontSize: 8, color: 'grey' },
   disclaimer: { fontSize: 8, color: c.grey, textAlign: 'center', fontStyle: 'italic', marginTop: 15, paddingHorizontal: 15 },
 });

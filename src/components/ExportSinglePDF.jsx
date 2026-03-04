@@ -6,7 +6,7 @@ import { saveAs } from 'file-saver';
 import { logger } from '@/utils/logger';
 import dynamic from 'next/dynamic';
 
-const AssessmentPDF = dynamic(() => import('./AssessmentPDF'), { ssr: false });
+import AssessmentPDF from './AssessmentPDF';
 
 export default function ExportSinglePDF({ sub }) {
   const [isExporting, setIsExporting] = useState(false);
