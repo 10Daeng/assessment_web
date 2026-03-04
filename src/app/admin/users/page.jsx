@@ -90,18 +90,35 @@ export default function UsersPage() {
     for (let i = 0; i < targets.length; i++) {
       const clientName = targets[i].userData?.nama || `Klien #${i + 1}`;
       setBulkGenState(prev => ({ ...prev, current: i, currentName: clientName }));
-      try {
-        const bodyMsg = mode === 'all' ? JSON.stringify({ force: true }) : undefined;
-        const res = await fetch(`/api/admin/submissions/${targets[i].id}/ai`, { 
-          method: 'POST',
-          headers: bodyMsg ? { 'Content-Type': 'application/json' } : undefined,
-          body: bodyMsg 
-        });
-        const json = await res.json();
-        if (json.success) successCount++;
-      } catch (e) {
-        logger.error('Failed to generate for', targets[i].id, e);
+      
+      let success = false;
+      for (let attempt = 0; attempt < 2; attempt++) {
+        if (success) break;
+        try {
+          const controller = new AbortController();
+          const timeoutId = setTimeout(() => controller.abort(), 60000); // 60 detik timeout
+          
+          const bodyMsg = mode === 'all' ? JSON.stringify({ force: true }) : undefined;
+          const res = await fetch(`/api/admin/submissions/${targets[i].id}/ai`, { 
+            method: 'POST',
+            headers: bodyMsg ? { 'Content-Type': 'application/json' } : undefined,
+            body: bodyMsg,
+            signal: controller.signal
+          });
+          
+          clearTimeout(timeoutId);
+          const json = await res.json();
+          if (json.success) {
+            successCount++;
+            success = true;
+          }
+        } catch (e) {
+          logger.error(`[Attempt ${attempt+1}] Failed to generate for`, targets[i].id, e);
+          // Wait 2 seconds before retry
+          if (attempt === 0) await new Promise(r => setTimeout(r, 2000));
+        }
       }
+      
       setBulkGenState(prev => ({ ...prev, current: i + 1 }));
     }
     
