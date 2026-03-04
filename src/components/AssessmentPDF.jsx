@@ -209,8 +209,8 @@ export default function AssessmentPDF({ userData, discScores, hexacoScores, aiIn
         </View>
 
         <View style={styles.discGrid}>
-          <DiscPanel title="Grafik 1 — Publik (Mask)" scores={discScores?.discMost} />
-          <DiscPanel title="Grafik 2 — Pribadi (Core)" scores={discScores?.discLeast} />
+          <DiscPanel title="Grafik 1 — Publik" scores={discScores?.discMost} />
+          <DiscPanel title="Grafik 2 — Pribadi" scores={discScores?.discLeast} />
           <DiscPanel title="Grafik 3 — Aktual" scores={discScores?.discComposite} />
         </View>
 
