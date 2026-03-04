@@ -17,9 +17,9 @@ const c = {
 // ==========================================
 // 85pt = 3 cm margin for binding (jilid)
 const styles = StyleSheet.create({
-  pageOdd: { paddingTop: 40, paddingBottom: 65, paddingLeft: 85, paddingRight: 40, fontFamily: 'Helvetica', backgroundColor: '#ffffff' },
-  pageEven: { paddingTop: 40, paddingBottom: 65, paddingLeft: 40, paddingRight: 85, fontFamily: 'Helvetica', backgroundColor: '#ffffff' },
-  pageWrap: { paddingTop: 40, paddingBottom: 65, paddingLeft: 60, paddingRight: 60, fontFamily: 'Helvetica', backgroundColor: '#ffffff' },
+  pageOdd: { paddingTop: 40, paddingBottom: 65, paddingLeft: 71, paddingRight: 40, fontFamily: 'Helvetica', backgroundColor: '#ffffff' },
+  pageEven: { paddingTop: 40, paddingBottom: 65, paddingLeft: 40, paddingRight: 71, fontFamily: 'Helvetica', backgroundColor: '#ffffff' },
+  pageWrap: { paddingTop: 40, paddingBottom: 65, paddingLeft: 55, paddingRight: 55, fontFamily: 'Helvetica', backgroundColor: '#ffffff' },
 
   // Fonts back to normal/readable size
   rahasia: { color: 'red', fontSize: 10, textAlign: 'right', fontFamily: 'Helvetica-Bold', marginBottom: 5 },
@@ -72,7 +72,7 @@ const styles = StyleSheet.create({
   bulletItem: { fontSize: 10.5, lineHeight: 1.5, color: '#333333', marginBottom: 4, paddingLeft: 10 },
 
   // Footer (absolute positioned)
-  footerContainer: { position: 'absolute', bottom: 25, left: 60, right: 60, flexDirection: 'row', justifyContent: 'space-between' },
+  footerContainer: { position: 'absolute', bottom: 25, left: 55, right: 55, flexDirection: 'row', justifyContent: 'space-between' },
   footerText: { fontSize: 8, color: c.grey, fontFamily: 'Helvetica-Bold' },
   disclaimer: { fontSize: 8.5, color: c.grey, textAlign: 'justify', fontStyle: 'italic', marginTop: 15 },
 });
@@ -238,11 +238,6 @@ export default function AssessmentPDF({ userData, discScores, hexacoScores, aiIn
           </View>
         </View>
 
-        {/* Disclaimer Halaman 1 */}
-        <Text style={styles.disclaimer}>
-          *Laporan ini disusun berdasarkan hasil asesmen mandiri (self-report). Akurasi hasil sangat bergantung pada keterbukaan dan kejujuran dalam menjawab. Profil kepribadian bersifat dinamis dan dapat berkembang seiring waktu serta pengalaman hidup.
-        </Text>
-        
         {/* TIDAK ADA FOOTER DI HALAMAN 1 */}
       </Page>
 
@@ -304,10 +299,10 @@ export default function AssessmentPDF({ userData, discScores, hexacoScores, aiIn
           ) : null}
         </View>
 
-        {/* Teks Penutup */}
+        {/* Disclaimer / Teks Penutup */}
         <View style={{ marginTop: 25, padding: 15, backgroundColor: '#fcfcfc', borderRadius: 4 }}>
           <Text style={{ fontSize: 9, color: c.grey, lineHeight: 1.5, textAlign: 'center', fontStyle: 'italic' }}>
-            Profil kepribadian bersifat dinamis dan dapat berkembang seiring waktu serta pengalaman hidup. Laporan ini hendaknya dipahami sebagai gambaran kecenderungan perilaku pada saat pengisian asesmen berlangsung, bukan sebagai penilaian mutlak terhadap kemampuan atau potensi seseorang.
+            *Laporan ini disusun berdasarkan hasil asesmen mandiri (self-report). Akurasi hasil sangat bergantung pada keterbukaan dan kejujuran dalam menjawab. Profil kepribadian bersifat dinamis dan dapat berkembang seiring waktu serta pengalaman hidup. Laporan ini hendaknya dipahami sebagai gambaran kecenderungan perilaku pada saat pengisian asesmen berlangsung, bukan sebagai penilaian mutlak terhadap kemampuan atau potensi seseorang.
           </Text>
         </View>
 
