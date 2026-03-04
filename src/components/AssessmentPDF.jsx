@@ -304,20 +304,8 @@ export default function AssessmentPDF({ userData, discScores, hexacoScores, aiIn
           ) : null}
         </View>
 
-        {/* Footer Halaman Narasi */}
-        <View fixed style={styles.footerContainer}>
-          <Text render={({ pageNumber }) => `Hal. ${pageNumber}`} style={styles.footerText} />
-          <Text style={styles.footerText}>{nameLabel}</Text>
-        </View>
-      </Page>
-
-      {/* ============================================================ */}
-      {/* PAGE TERAKHIR — TANDA TANGAN & UPSELL PREMIUM                */}
-      {/* ============================================================ */}
-      <Page size="A4" style={styles.pageWrap}>
-        
         {/* Teks Penutup */}
-        <View style={{ marginTop: 20, padding: 15, backgroundColor: '#fcfcfc', borderRadius: 4 }}>
+        <View style={{ marginTop: 25, padding: 15, backgroundColor: '#fcfcfc', borderRadius: 4 }}>
           <Text style={{ fontSize: 9, color: c.grey, lineHeight: 1.5, textAlign: 'center', fontStyle: 'italic' }}>
             Profil kepribadian bersifat dinamis dan dapat berkembang seiring waktu serta pengalaman hidup. Laporan ini hendaknya dipahami sebagai gambaran kecenderungan perilaku pada saat pengisian asesmen berlangsung, bukan sebagai penilaian mutlak terhadap kemampuan atau potensi seseorang.
           </Text>
@@ -334,7 +322,7 @@ export default function AssessmentPDF({ userData, discScores, hexacoScores, aiIn
         </View>
 
         {/* Premium Upsell Box */}
-        <View style={{ marginTop: 30, padding: 15, borderRadius: 8, borderWidth: 1, borderColor: '#3b82f6', backgroundColor: '#eff6ff' }}>
+        <View wrap={false} style={{ marginTop: 30, padding: 15, borderRadius: 8, borderWidth: 1, borderColor: '#3b82f6', backgroundColor: '#eff6ff' }}>
           <Text style={{ fontSize: 11, fontFamily: 'Helvetica-Bold', color: '#1e40af', marginBottom: 6 }}>
             Ingin Membedah Hasil Ini Lebih Dalam?
           </Text>
@@ -346,12 +334,11 @@ export default function AssessmentPDF({ userData, discScores, hexacoScores, aiIn
           </Text>
         </View>
 
-        {/* Footer Halaman Terakhir */}
+        {/* Footer */}
         <View fixed style={styles.footerContainer}>
           <Text render={({ pageNumber }) => `Hal. ${pageNumber}`} style={styles.footerText} />
           <Text style={styles.footerText}>{nameLabel}</Text>
         </View>
-
       </Page>
     </Document>
   );
