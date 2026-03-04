@@ -80,12 +80,12 @@ const styles = StyleSheet.create({
 // HELPERS
 // ==========================================
 const hexacoStructure = [
-  { factor: 'H', name: 'Honesty-Humility', color: c.hexH, facets: [{k:'sinc',n:'Sincerity'},{k:'fair',n:'Fairness'},{k:'gree',n:'Greed Avoidance'},{k:'mode',n:'Modesty'}] },
-  { factor: 'E', name: 'Emotionality', color: c.hexE, facets: [{k:'fear',n:'Fearfulness'},{k:'anxi',n:'Anxiety'},{k:'depe',n:'Dependence'},{k:'sent',n:'Sentimentality'}] },
-  { factor: 'X', name: 'eXtraversion', color: c.hexX, facets: [{k:'sses',n:'Social Self-Esteem'},{k:'socb',n:'Social Boldness'},{k:'soci',n:'Sociability'},{k:'live',n:'Liveliness'}] },
-  { factor: 'A', name: 'Agreeableness', color: c.hexA, facets: [{k:'forg',n:'Forgivingness'},{k:'gent',n:'Gentleness'},{k:'flex',n:'Flexibility'},{k:'pati',n:'Patience'}] },
-  { factor: 'C', name: 'Conscientiousness', color: c.hexC, facets: [{k:'orga',n:'Organization'},{k:'dili',n:'Diligence'},{k:'perf',n:'Perfectionism'},{k:'prud',n:'Prudence'}] },
-  { factor: 'O', name: 'Openness', color: c.hexO, facets: [{k:'aesa',n:'Aesthetic Appreciation'},{k:'inqu',n:'Inquisitiveness'},{k:'crea',n:'Creativity'},{k:'unco',n:'Unconventionality'}] },
+  { factor: 'H', name: 'Kejujuran-Kerendahan Hati', color: c.hexH, facets: [{k:'sinc',n:'Ketulusan'},{k:'fair',n:'Keadilan'},{k:'gree',n:'Tanpa Keserakahan'},{k:'mode',n:'Kesederhanaan'}] },
+  { factor: 'E', name: 'Emosionalitas', color: c.hexE, facets: [{k:'fear',n:'Ketakutan'},{k:'anxi',n:'Kecemasan'},{k:'depe',n:'Ketergantungan'},{k:'sent',n:'Sentimentalitas'}] },
+  { factor: 'X', name: 'Ekstraversi', color: c.hexX, facets: [{k:'sses',n:'Percaya Diri Sosial'},{k:'socb',n:'Keberanian Sosial'},{k:'soci',n:'Kemudahan Bergaul'},{k:'live',n:'Semangat / Ceria'}] },
+  { factor: 'A', name: 'Keramahan', color: c.hexA, facets: [{k:'forg',n:'Pemaaf'},{k:'gent',n:'Kelembutan'},{k:'flex',n:'Fleksibilitas'},{k:'pati',n:'Kesabaran'}] },
+  { factor: 'C', name: 'Kesungguhan (Hati-hati)', color: c.hexC, facets: [{k:'orga',n:'Pengorganisasian'},{k:'dili',n:'Kerajinan'},{k:'perf',n:'Perfeksionisme'},{k:'prud',n:'Kehati-hatian'}] },
+  { factor: 'O', name: 'Keterbukaan', color: c.hexO, facets: [{k:'aesa',n:'Apresiasi Estetika'},{k:'inqu',n:'Keingintahuan'},{k:'crea',n:'Kreativitas'},{k:'unco',n:'Originalitas'}] },
 ];
 
 const getDiscPct = (raw) => Math.max(0, Math.min(100, (((raw || 0) + 24) / 48) * 100));
@@ -126,13 +126,6 @@ function HexacoBox({ group, factorMean, facetMeans }) {
       <View style={styles.hexFactorHeader}>
         <Text style={styles.hexFactorName}>{group.name}</Text>
         <Text style={[styles.hexPctBadge, { backgroundColor: group.color }]}>{Math.round(factorPct)}%</Text>
-      </View>
-      <View style={styles.hexRow}>
-        <Text style={styles.hexRowLabel}>Skor Dimensi</Text>
-        <View style={styles.hexRowBar}>
-          <View style={[styles.barFill, { width: `${factorPct}%`, backgroundColor: group.color }]} />
-        </View>
-        <Text style={styles.hexRowPct}>{Math.round(factorPct)}%</Text>
       </View>
       {group.facets.map((facet) => {
         const fm = facetMeans?.[facet.k];
@@ -266,9 +259,9 @@ export default function AssessmentPDF({ userData, discScores, hexacoScores, aiIn
               facetMeans={hexacoScores?.facetMeans}
             />
           ))}
-          {/* Altruism */}
+          {/* Altruisme */}
           <View style={{ ...styles.hexBox, width: '100%', marginBottom: 0, flexDirection: 'row', alignItems: 'center' }}>
-             <Text style={{...styles.hexFactorName, width: '40%'}}>Altruism (Interstitial)</Text>
+             <Text style={{...styles.hexFactorName, width: '40%'}}>Altruisme (Tambahan)</Text>
              <View style={{...styles.hexRowBar, width: '45%'}}>
                 <View style={[styles.barFill, { width: `${getHexacoPct(hexacoScores?.facetMeans?.['altr'])}%`, backgroundColor: '#e67e22' }]} />
              </View>
