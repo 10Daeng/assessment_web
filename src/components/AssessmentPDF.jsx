@@ -292,9 +292,12 @@ export default function AssessmentPDF({ userData, discScores, hexacoScores, aiIn
 
       {/* ============================================================ */}
       {/* PAGE 3+ — DINAMIKA KEPRIBADIAN & REKOMENDASI                   */}
-      {/* (Will wrap across pages automatically as needed)              */}
       {/* ============================================================ */}
       <Page size="A4" style={styles.page} wrap>
+        <Text style={{ position: 'absolute', top: 25, right: 40, fontSize: 8, color: c.grey, fontFamily: 'Helvetica-Bold' }} fixed>
+          Responden: {(userData?.nama || '-').toUpperCase()}
+        </Text>
+
         <Image src="/logo.png" style={styles.watermark} alt="Watermark" />
 
         <Text style={{ ...styles.mainTitle, fontSize: 13, marginBottom: 15 }}>DESKRIPSI KEPRIBADIAN</Text>
