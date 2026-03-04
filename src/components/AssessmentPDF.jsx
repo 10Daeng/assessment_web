@@ -67,7 +67,7 @@ const styles = StyleSheet.create({
   hexRowPct: { width: '14%', fontSize: 7.5, textAlign: 'right', color: c.grey },
 
   // Narrative
-  narrativeTitle: { fontSize: 12, fontFamily: 'Helvetica-Bold', color: c.primary, marginBottom: 6, marginTop: 12 },
+  narrativeTitle: { fontSize: 12, fontFamily: 'Helvetica-Bold', color: c.primary, marginBottom: 6, marginTop: 8 },
   narrativeBody: { fontSize: 10.5, lineHeight: 1.5, color: '#222222', marginBottom: 8, textAlign: 'justify' },
   bulletItem: { fontSize: 10.5, lineHeight: 1.5, color: '#333333', marginBottom: 4, paddingLeft: 10 },
 
@@ -250,7 +250,7 @@ export default function AssessmentPDF({ userData, discScores, hexacoScores, aiIn
         
         <Text style={styles.pageHeader}>DESKRIPSI KEPRIBADIAN</Text>
 
-        <View wrap={false} style={{ marginBottom: 15 }}>
+        <View wrap={false} style={{ marginBottom: 6 }}>
           <Text style={{...styles.narrativeTitle, marginTop: 0}}>1. Deskripsi Kepribadian Terintegrasi</Text>
           <Text style={styles.narrativeBody}>
             {aiInsight?.deskripsi_kepribadian_terintegrasi || aiInsight?.deskripsi_kepribadian || aiInsight?.gayaKerja || 'Deskripsi kepribadian terpadu belum tersedia. Silakan generate interpretasi AI.'}
@@ -258,7 +258,7 @@ export default function AssessmentPDF({ userData, discScores, hexacoScores, aiIn
         </View>
 
         {aiInsight?.kekuatan_utama ? (
-          <View wrap={false} style={{ marginBottom: 15 }}>
+          <View wrap={false} style={{ marginBottom: 6 }}>
             <Text style={styles.narrativeTitle}>2. Kekuatan Utama</Text>
             {aiInsight.kekuatan_utama.map((k, i) => (
               <Text key={i} style={styles.bulletItem}>• {k}</Text>
@@ -266,7 +266,7 @@ export default function AssessmentPDF({ userData, discScores, hexacoScores, aiIn
           </View>
         ) : null}
 
-        <View wrap={false} style={{ marginBottom: 15 }}>
+        <View wrap={false} style={{ marginBottom: 6 }}>
           <Text style={styles.narrativeTitle}>{aiInsight?.kekuatan_utama ? '3' : '2'}. Tantangan & Hambatan</Text>
           <Text style={styles.narrativeBody}>
             <Text style={{ fontFamily: 'Helvetica-Bold' }}>Area Friksi / Hambatan: </Text>
@@ -276,7 +276,7 @@ export default function AssessmentPDF({ userData, discScores, hexacoScores, aiIn
         </View>
 
         {aiInsight?.analisis_lingkungan_ideal ? (
-           <View wrap={false} style={{ marginBottom: 15 }}>
+           <View wrap={false} style={{ marginBottom: 6 }}>
             <Text style={styles.narrativeTitle}>{aiInsight?.kekuatan_utama ? '4' : '3'}. Analisis Lingkungan Ideal</Text>
             <Text style={styles.narrativeBody}>
               <Text style={{ fontFamily: 'Helvetica-Bold' }}>Ekosistem Kerja: </Text>
@@ -289,7 +289,7 @@ export default function AssessmentPDF({ userData, discScores, hexacoScores, aiIn
           </View>
         ) : null}
 
-        <View wrap={false} style={{ marginBottom: 15 }}>
+        <View wrap={false} style={{ marginBottom: 6 }}>
           <Text style={styles.narrativeTitle}>{aiInsight?.analisis_lingkungan_ideal ? '5' : '4'}. Saran Pengembangan Strategis</Text>
           {(aiInsight?.saran_pengembangan_spesifik || []).map((k, i) => (
              <Text key={i} style={styles.bulletItem}>• {k}</Text>
