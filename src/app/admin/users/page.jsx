@@ -1,6 +1,7 @@
 'use client';
 import { useState, useEffect, useMemo } from 'react';
 import Link from 'next/link';
+import { calculateValidityIndex } from '@/utils/validityCheck';
 import { logger } from '@/utils/logger';
 import dynamic from 'next/dynamic';
 
