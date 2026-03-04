@@ -16,59 +16,59 @@ const c = {
 // STYLES
 // ==========================================
 const styles = StyleSheet.create({
-  page: { padding: 40, fontFamily: 'Helvetica', backgroundColor: '#ffffff' },
+  page: { paddingHorizontal: 35, paddingVertical: 35, fontFamily: 'Helvetica', backgroundColor: '#ffffff' },
 
   // Page 1 Header
-  rahasia: { color: 'red', fontSize: 10, textAlign: 'right', fontFamily: 'Helvetica-Bold', marginBottom: 5 },
-  lembaga: { fontSize: 14, fontFamily: 'Helvetica-Bold', textAlign: 'center', marginBottom: 6 },
-  logo: { width: 200, height: 43, alignSelf: 'center', marginBottom: 5 },
-  address: { fontSize: 9, color: c.grey, textAlign: 'center', marginBottom: 15 },
-  mainTitle: { fontSize: 18, fontFamily: 'Helvetica-Bold', textAlign: 'center', marginBottom: 15, color: c.dark },
-  hr: { borderBottomWidth: 2, borderBottomColor: c.primary, marginBottom: 20 },
+  rahasia: { color: 'red', fontSize: 9, textAlign: 'right', fontFamily: 'Helvetica-Bold', marginBottom: 4 },
+  lembaga: { fontSize: 13, fontFamily: 'Helvetica-Bold', textAlign: 'center', marginBottom: 5 },
+  logo: { width: 180, height: 38, alignSelf: 'center', marginBottom: 5 },
+  address: { fontSize: 8, color: c.grey, textAlign: 'center', marginBottom: 12 },
+  mainTitle: { fontSize: 16, fontFamily: 'Helvetica-Bold', textAlign: 'center', marginBottom: 12, color: c.dark },
+  hr: { borderBottomWidth: 1.5, borderBottomColor: c.primary, marginBottom: 15 },
 
   // Watermark for pages 2-4
   watermark: { position: 'absolute', top: '42%', left: '15%', width: '70%', opacity: 0.04 },
 
   // Identity
-  identityRow: { flexDirection: 'row', borderBottomWidth: 1, borderBottomColor: '#eeeeee', paddingVertical: 8 },
-  identityLabel: { width: '35%', fontSize: 10, color: c.grey, paddingLeft: 10 },
-  identityValue: { width: '65%', fontSize: 10, fontFamily: 'Helvetica-Bold', color: c.dark },
+  identityRow: { flexDirection: 'row', borderBottomWidth: 1, borderBottomColor: '#eeeeee', paddingVertical: 6 },
+  identityLabel: { width: '35%', fontSize: 9.5, color: c.grey, paddingLeft: 8 },
+  identityValue: { width: '65%', fontSize: 9.5, fontFamily: 'Helvetica-Bold', color: c.dark },
 
   // Section Title
-  sectionTitle: { fontSize: 12, color: c.primary, fontFamily: 'Helvetica-Bold', marginBottom: 8, borderBottomWidth: 2, borderBottomColor: c.primary, paddingBottom: 4 },
-  subTitle: { fontSize: 8, fontFamily: 'Helvetica-Bold', color: c.grey, marginBottom: 6, textTransform: 'uppercase', letterSpacing: 1 },
+  sectionTitle: { fontSize: 11, color: c.primary, fontFamily: 'Helvetica-Bold', marginBottom: 6, borderBottomWidth: 1.5, borderBottomColor: c.primary, paddingBottom: 3 },
+  subTitle: { fontSize: 7.5, fontFamily: 'Helvetica-Bold', color: c.grey, marginBottom: 5, textTransform: 'uppercase', letterSpacing: 1 },
 
   // DISC 3-column
   discGrid: { flexDirection: 'row', justifyContent: 'space-between', marginBottom: 8 },
-  discPanel: { width: '31.5%', border: '1 solid #e0e0e0', borderRadius: 3, padding: 8 },
-  discPanelTitle: { fontSize: 7.5, fontFamily: 'Helvetica-Bold', textAlign: 'center', color: c.grey, marginBottom: 6, textTransform: 'uppercase', letterSpacing: 0.5 },
-  discRow: { flexDirection: 'row', alignItems: 'center', marginBottom: 4 },
-  discLabel: { width: '35%', fontSize: 7.5, fontFamily: 'Helvetica-Bold' },
-  discBarBg: { width: '42%', height: 7, backgroundColor: '#f0f0f0', position: 'relative' },
+  discPanel: { width: '31.5%', border: '1 solid #e0e0e0', borderRadius: 3, padding: 6 },
+  discPanelTitle: { fontSize: 7, fontFamily: 'Helvetica-Bold', textAlign: 'center', color: c.grey, marginBottom: 5, textTransform: 'uppercase', letterSpacing: 0.5 },
+  discRow: { flexDirection: 'row', alignItems: 'center', marginBottom: 3 },
+  discLabel: { width: '35%', fontSize: 7, fontFamily: 'Helvetica-Bold' },
+  discBarBg: { width: '42%', height: 6, backgroundColor: '#f0f0f0', position: 'relative' },
   discBarFill: { height: '100%', position: 'absolute', left: 0, top: 0 },
-  discVal: { width: '23%', fontSize: 7.5, textAlign: 'right', fontFamily: 'Helvetica-Bold' },
+  discVal: { width: '23%', fontSize: 7, textAlign: 'right', fontFamily: 'Helvetica-Bold' },
 
   // HEXACO
   hexGrid: { flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between' },
-  hexBox: { width: '48.5%', border: '1 solid #e0e0e0', borderRadius: 3, padding: 8, marginBottom: 8 },
-  hexFactorHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 },
-  hexFactorName: { fontSize: 10, fontFamily: 'Helvetica-Bold', color: c.dark },
-  hexPctBadge: { fontSize: 8, fontFamily: 'Helvetica-Bold', color: '#ffffff', paddingHorizontal: 6, paddingVertical: 2, borderRadius: 8 },
-  hexRow: { flexDirection: 'row', alignItems: 'center', marginBottom: 3 },
-  hexRowLabel: { width: '38%', fontSize: 7.5, color: c.grey, textAlign: 'right', paddingRight: 6 },
-  hexRowBar: { width: '48%', height: 6, backgroundColor: '#f0f0f0', position: 'relative' },
-  hexRowPct: { width: '14%', fontSize: 7.5, textAlign: 'right', color: c.grey },
+  hexBox: { width: '48.5%', border: '1 solid #e0e0e0', borderRadius: 3, padding: 6, marginBottom: 6 },
+  hexFactorHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 5 },
+  hexFactorName: { fontSize: 9, fontFamily: 'Helvetica-Bold', color: c.dark },
+  hexPctBadge: { fontSize: 7.5, fontFamily: 'Helvetica-Bold', color: '#ffffff', paddingHorizontal: 5, paddingVertical: 1.5, borderRadius: 6 },
+  hexRow: { flexDirection: 'row', alignItems: 'center', marginBottom: 2.5 },
+  hexRowLabel: { width: '38%', fontSize: 7, color: c.grey, textAlign: 'right', paddingRight: 5 },
+  hexRowBar: { width: '48%', height: 5, backgroundColor: '#f0f0f0', position: 'relative' },
+  hexRowPct: { width: '14%', fontSize: 7, textAlign: 'right', color: c.grey },
   barFill: { height: '100%', position: 'absolute', left: 0, top: 0 },
 
   // Narrative
-  narrativeTitle: { fontSize: 13, fontFamily: 'Helvetica-Bold', color: c.dark, marginBottom: 8, borderBottomWidth: 1, borderBottomColor: c.primary, paddingBottom: 5 },
-  narrativeBody: { fontSize: 10.5, lineHeight: 1.6, color: '#222222', marginBottom: 12, textAlign: 'justify' },
-  bulletItem: { fontSize: 10.5, lineHeight: 1.5, color: '#333333', marginBottom: 6, paddingLeft: 10 },
+  narrativeTitle: { fontSize: 11.5, fontFamily: 'Helvetica-Bold', color: c.dark, marginBottom: 6, borderBottomWidth: 1, borderBottomColor: c.primary, paddingBottom: 4 },
+  narrativeBody: { fontSize: 9.5, lineHeight: 1.45, color: '#222222', marginBottom: 8, textAlign: 'justify' },
+  bulletItem: { fontSize: 9.5, lineHeight: 1.45, color: '#333333', marginBottom: 4, paddingLeft: 8 },
 
   // Footer
-  footer: { position: 'absolute', bottom: 25, left: 40, right: 40, fontSize: 7.5, color: 'grey', textAlign: 'center' },
+  footer: { position: 'absolute', bottom: 25, left: 35, right: 35, fontSize: 7.5, color: 'grey', textAlign: 'center' },
   pageNum: { position: 'absolute', bottom: 25, right: 40, fontSize: 8, color: 'grey' },
-  disclaimer: { fontSize: 8, color: c.grey, textAlign: 'center', fontStyle: 'italic', marginTop: 15, paddingHorizontal: 10 },
+  disclaimer: { fontSize: 7.5, color: c.grey, textAlign: 'center', fontStyle: 'italic', marginTop: 10, paddingHorizontal: 10 },
 });
 
 // ==========================================
@@ -204,9 +204,9 @@ export default function AssessmentPDF({ userData, discScores, hexacoScores, aiIn
         </View>
 
         {/* Summary box / Abstract */}
-        <View style={{ marginTop: 25, padding: 15, backgroundColor: c.light, borderRadius: 4 }}>
-          <Text style={{ fontSize: 10, fontFamily: 'Helvetica-Bold', marginBottom: 6, color: c.primary }}>Abstrak Eksekutif</Text>
-          <Text style={{ fontSize: 9.5, color: c.dark, lineHeight: 1.6, textAlign: 'justify' }}>
+        <View style={{ marginTop: 20, padding: 12, backgroundColor: c.light, borderRadius: 4 }}>
+          <Text style={{ fontSize: 9.5, fontFamily: 'Helvetica-Bold', marginBottom: 4, color: c.primary }}>Abstrak Eksekutif</Text>
+          <Text style={{ fontSize: 9, color: c.dark, lineHeight: 1.5, textAlign: 'justify' }}>
             {(() => {
               const fullDesc = aiInsight?.deskripsi_kepribadian_terintegrasi || aiInsight?.deskripsi_kepribadian || aiInsight?.gayaKerja || '';
               if (!fullDesc) return 'Deskripsi kepribadian terpadu belum tersedia. Silakan generate interpretasi AI.';
@@ -233,7 +233,7 @@ export default function AssessmentPDF({ userData, discScores, hexacoScores, aiIn
           <DiscPanel title="Grafik 2 — Pribadi (Core)" scores={discScores?.discLeast} />
           <DiscPanel title="Grafik 3 — Aktual (Composite)" scores={discScores?.discComposite} />
         </View>
-        <Text style={{ fontSize: 8, textAlign: 'center', color: c.grey, marginBottom: 15 }}>
+        <Text style={{ fontSize: 8, textAlign: 'center', color: c.grey, marginBottom: 12 }}>
           Pola Utama: {getDiscPatternName(discScores?.pattern)} ({discScores?.pattern || '-'})
         </Text>
 
@@ -249,7 +249,7 @@ export default function AssessmentPDF({ userData, discScores, hexacoScores, aiIn
             />
           ))}
           {/* Altruism */}
-          <View style={{ ...styles.hexBox, width: '100%' }}>
+          <View style={{ ...styles.hexBox, width: '100%', marginBottom: 0 }}>
             <View style={styles.hexFactorHeader}>
               <Text style={styles.hexFactorName}>Altruism (Interstitial)</Text>
               <Text style={[styles.hexPctBadge, { backgroundColor: '#e67e22' }]}>{Math.round(getHexacoPct(hexacoScores?.facetMeans?.['altr']))}%</Text>
@@ -269,11 +269,11 @@ export default function AssessmentPDF({ userData, discScores, hexacoScores, aiIn
           const validity = calculateValidityIndex(rawData || {}, { rawData, discScores, hexacoScores });
           const isSuspicious = validity.overallScore !== '-' && validity.overallScore < 60;
           return (
-            <View style={{ marginTop: 15, padding: 10, borderRadius: 4, backgroundColor: isSuspicious ? '#fee2e2' : '#dcfce7', borderWidth: 1, borderColor: isSuspicious ? '#f87171' : '#86efac' }}>
-              <Text style={{ fontSize: 10, fontFamily: 'Helvetica-Bold', color: isSuspicious ? '#b91c1c' : '#166534', marginBottom: 3 }}>
+            <View style={{ marginTop: 10, padding: 8, borderRadius: 4, backgroundColor: isSuspicious ? '#fee2e2' : '#dcfce7', borderWidth: 1, borderColor: isSuspicious ? '#f87171' : '#86efac' }}>
+              <Text style={{ fontSize: 9, fontFamily: 'Helvetica-Bold', color: isSuspicious ? '#b91c1c' : '#166534', marginBottom: 2 }}>
                 Status Validitas Pengerjaan: {validity.overallLabel} ({validity.overallScore}/100)
               </Text>
-              <Text style={{ fontSize: 9, color: isSuspicious ? '#991b1b' : '#14532d', lineHeight: 1.4, textAlign: 'justify' }}>
+              <Text style={{ fontSize: 8, color: isSuspicious ? '#991b1b' : '#14532d', lineHeight: 1.4, textAlign: 'justify' }}>
                 {isSuspicious 
                   ? "Sistem Peringatan: Respondensi terindikasi tidak valid (terlalu cepat / asal-asalan / inkonsisten). Hasil interpretasi di bawah ini mungkin TIDAK AKURAT dan tidak mencerminkan kondisi klien yang sebenarnya." 
                   : "Pengerjaan tes memenuhi standar konsistensi dan durasi minimum. Hasil dapat diinterpretasikan dengan keyakinan yang memadai."}
@@ -294,15 +294,15 @@ export default function AssessmentPDF({ userData, discScores, hexacoScores, aiIn
       {/* PAGE 3+ — DINAMIKA KEPRIBADIAN & REKOMENDASI                   */}
       {/* ============================================================ */}
       <Page size="A4" style={styles.page} wrap>
-        <Text style={{ position: 'absolute', top: 25, right: 40, fontSize: 8, color: c.grey, fontFamily: 'Helvetica-Bold' }} fixed>
+        <Text style={{ position: 'absolute', top: 25, right: 35, fontSize: 7.5, color: c.grey, fontFamily: 'Helvetica-Bold' }} fixed>
           Responden: {(userData?.nama || '-').toUpperCase()}
         </Text>
 
         <Image src="/logo.png" style={styles.watermark} alt="Watermark" />
 
-        <Text style={{ ...styles.mainTitle, fontSize: 13, marginBottom: 15 }}>DESKRIPSI KEPRIBADIAN</Text>
+        <Text style={{ ...styles.mainTitle, fontSize: 12, marginBottom: 10 }}>DESKRIPSI KEPRIBADIAN</Text>
 
-        <View style={{ marginBottom: 20 }}>
+        <View style={{ marginBottom: 12 }}>
           <Text style={styles.narrativeTitle}>1. Deskripsi Kepribadian Terintegrasi</Text>
           <Text style={styles.narrativeBody}>
             {aiInsight?.deskripsi_kepribadian_terintegrasi || aiInsight?.deskripsi_kepribadian || aiInsight?.gayaKerja || 'Deskripsi kepribadian terpadu belum tersedia. Silakan generate interpretasi AI.'}
@@ -310,7 +310,7 @@ export default function AssessmentPDF({ userData, discScores, hexacoScores, aiIn
         </View>
 
         {aiInsight?.kekuatan_utama && (
-          <View style={{ marginBottom: 20 }}>
+          <View style={{ marginBottom: 12 }}>
             <Text style={styles.narrativeTitle}>2. Kekuatan Utama</Text>
             {aiInsight.kekuatan_utama.map((k, i) => (
               <Text key={i} style={styles.bulletItem}>• {k}</Text>
@@ -319,7 +319,7 @@ export default function AssessmentPDF({ userData, discScores, hexacoScores, aiIn
         )}
 
         {aiInsight?.analisis_lingkungan_ideal && (
-           <View style={{ marginBottom: 20 }}>
+           <View style={{ marginBottom: 12 }}>
             <Text style={styles.narrativeTitle}>{aiInsight?.kekuatan_utama ? '3' : '2'}. Analisis Lingkungan Ideal</Text>
             <Text style={styles.narrativeBody}>
               <Text style={{ fontFamily: 'Helvetica-Bold' }}>Ekosistem Kerja: </Text>
@@ -334,7 +334,7 @@ export default function AssessmentPDF({ userData, discScores, hexacoScores, aiIn
 
         <Text style={styles.pageNum} render={({ pageNumber }) => (`Hal. ${pageNumber}`)} fixed />
 
-        <View style={{ marginBottom: 20 }}>
+        <View style={{ marginBottom: 12 }}>
           <Text style={styles.narrativeTitle}>{aiInsight?.analisis_lingkungan_ideal ? '4' : '3'}. Tantangan & Rekomendasi</Text>
           <Text style={styles.narrativeBody}>
             <Text style={{ fontFamily: 'Helvetica-Bold' }}>Area Friksi / Hambatan: </Text>
@@ -342,7 +342,7 @@ export default function AssessmentPDF({ userData, discScores, hexacoScores, aiIn
             {aiInsight?.tantangan_dan_faktor_penghambat?.hambatan_karakter_internal ? ` Terutama dalam konteks internal, ${aiInsight.tantangan_dan_faktor_penghambat.hambatan_karakter_internal}` : ''}
           </Text>
           
-          <Text style={{ ...styles.narrativeBody, marginTop: 8 }}>
+          <Text style={{ ...styles.narrativeBody, marginTop: 4 }}>
             <Text style={{ fontFamily: 'Helvetica-Bold' }}>Saran Pengembangan Strategis: </Text>
           </Text>
           {(aiInsight?.saran_pengembangan_spesifik || []).map((k, i) => (
@@ -354,31 +354,31 @@ export default function AssessmentPDF({ userData, discScores, hexacoScores, aiIn
         </View>
 
         {/* Closing */}
-        <View style={{ marginTop: 30, padding: 18, backgroundColor: c.light, borderRadius: 4 }}>
-          <Text style={{ fontSize: 9, color: c.grey, lineHeight: 1.5, textAlign: 'center', fontStyle: 'italic' }}>
+        <View style={{ marginTop: 15, padding: 12, backgroundColor: c.light, borderRadius: 4 }}>
+          <Text style={{ fontSize: 8, color: c.grey, lineHeight: 1.4, textAlign: 'center', fontStyle: 'italic' }}>
             Profil kepribadian bersifat dinamis dan dapat berkembang seiring waktu serta pengalaman hidup. Laporan ini hendaknya dipahami sebagai gambaran kecenderungan perilaku pada saat pengisian asesmen berlangsung, bukan sebagai penilaian mutlak terhadap kemampuan atau potensi seseorang.
           </Text>
         </View>
 
         {/* Signature */}
-        <View style={{ marginTop: 40, flexDirection: 'row', justifyContent: 'flex-end', paddingBottom: 25 }}>
+        <View style={{ marginTop: 25, flexDirection: 'row', justifyContent: 'flex-end', paddingBottom: 15 }}>
           <View style={{ width: '50%', alignItems: 'center' }}>
-            <Text style={{ fontSize: 9, color: c.dark, marginBottom: 15 }}>Sumenep, {formatDate(submittedAt)}</Text>
-            <Image src="/logo.png" style={{ width: 120, height: 26, marginBottom: 8 }} alt="Logo" />
-            <Text style={{ fontSize: 10, fontFamily: 'Helvetica-Bold', color: c.dark, marginBottom: 2 }}>Moh. Ilham, M.Si., CHA., C.Med.</Text>
-            <Text style={{ fontSize: 8, color: c.grey }}>Assessor / Konselor</Text>
+            <Text style={{ fontSize: 8, color: c.dark, marginBottom: 10 }}>Sumenep, {formatDate(submittedAt)}</Text>
+            <Image src="/logo.png" style={{ width: 100, height: 21, marginBottom: 6 }} alt="Logo" />
+            <Text style={{ fontSize: 9, fontFamily: 'Helvetica-Bold', color: c.dark, marginBottom: 2 }}>Moh. Ilham, M.Si., CHA., C.Med.</Text>
+            <Text style={{ fontSize: 7, color: c.grey }}>Assessor / Konselor</Text>
           </View>
         </View>
 
         {/* Premium Upsell Box - Last element */}
-        <View style={{ marginTop: 15, padding: 15, borderRadius: 8, borderWidth: 1, borderColor: '#3b82f6', backgroundColor: '#eff6ff' }}>
-          <Text style={{ fontSize: 11, fontFamily: 'Helvetica-Bold', color: '#1e40af', marginBottom: 6 }}>
+        <View style={{ marginTop: 5, padding: 10, borderRadius: 6, borderWidth: 1, borderColor: '#3b82f6', backgroundColor: '#eff6ff' }}>
+          <Text style={{ fontSize: 9.5, fontFamily: 'Helvetica-Bold', color: '#1e40af', marginBottom: 4 }}>
             Ingin Membedah Hasil Ini Lebih Dalam?
           </Text>
-          <Text style={{ fontSize: 10, color: '#1e3a8a', lineHeight: 1.5, marginBottom: 8, textAlign: 'justify' }}>
+          <Text style={{ fontSize: 8.5, color: '#1e3a8a', lineHeight: 1.4, marginBottom: 5, textAlign: 'justify' }}>
             Laporan ini hanya menunjukkan &ldquo;Siapa&rdquo; Anda. Melalui Sesi Konseling Premium, Psikolog Lentera Batin akan membedah &ldquo;Mengapa&rdquo; Anda merasakan kelelahan adaptasi, menemukan titik buta (blind spots) yang menghambat karir, serta menyusun strategi nyata untuk hubungan sosial dan asmara Anda.
           </Text>
-          <Text style={{ fontSize: 10, fontFamily: 'Helvetica-Bold', color: '#2563eb' }}>
+          <Text style={{ fontSize: 8.5, fontFamily: 'Helvetica-Bold', color: '#2563eb' }}>
             Hubungi Admin via WhatsApp: 0851-1777-8798
           </Text>
         </View>

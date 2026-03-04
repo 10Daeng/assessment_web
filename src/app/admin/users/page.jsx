@@ -3,6 +3,7 @@ import { useState, useEffect, useMemo } from 'react';
 import Link from 'next/link';
 import { calculateValidityIndex } from '@/utils/validityCheck';
 import { logger } from '@/utils/logger';
+import ExportSinglePDF from '@/components/ExportSinglePDF';
 
 function SortIcon({ sortBy, sortDir, field }) {
   if (sortBy !== field) return <span className="text-slate-600 ml-1">↕</span>;
@@ -408,30 +409,32 @@ export default function UsersPage() {
                               📄
                             </Link>
 
+                            <ExportSinglePDF sub={s} />
+
                             <button
-                              onClick={async () => {
-                                setRegenAiId(s.id);
-                                try {
-                                  const r = await fetch(`/api/admin/submissions/${s.id}/ai`, { 
-                                      method: 'POST', 
-                                      headers: { 'Content-Type': 'application/json' },
-                                      body: JSON.stringify({ force: true })
-                                  });
-                                  const j = await r.json();
-                                  if (j.success) {
-                                      triggerRefresh();
-                                  } else {
-                                      alert('Gagal menghasilkan AI: ' + j.error);
-                                  }
-                                } catch (_e) { alert('Kesalahan jaringan'); }
-                                setRegenAiId(null);
-                              }}
-                              disabled={regenAiId === s.id}
-                              className="disabled:opacity-50 text-xl px-2 py-1 bg-purple-500/10 hover:bg-purple-500/20 rounded-lg inline-block transition-all flex items-center justify-center"
-                              title={s.aiInsight ? "Regenerate AI Ulang" : "Generate AI Baru"}
-                            >
-                              {regenAiId === s.id ? '⏳' : (s.aiInsight ? '🔄' : '✨')}
-                            </button>
+                                onClick={async () => {
+                                  setRegenAiId(s.id);
+                                  try {
+                                    const r = await fetch(`/api/admin/submissions/${s.id}/ai`, { 
+                                        method: 'POST', 
+                                        headers: { 'Content-Type': 'application/json' },
+                                        body: JSON.stringify({ force: true })
+                                    });
+                                    const j = await r.json();
+                                    if (j.success) {
+                                        triggerRefresh();
+                                    } else {
+                                        alert('Gagal menghasilkan AI: ' + j.error);
+                                    }
+                                  } catch (_e) { alert('Kesalahan jaringan'); }
+                                  setRegenAiId(null);
+                                }}
+                                disabled={regenAiId === s.id}
+                                className="disabled:opacity-50 text-xl px-2 py-1 bg-purple-500/10 hover:bg-purple-500/20 rounded-lg inline-block transition-all flex items-center justify-center"
+                                title={s.aiInsight ? "Regenerate AI Ulang" : "Generate AI Baru"}
+                              >
+                                {regenAiId === s.id ? '⏳' : (s.aiInsight ? '🔄' : '✨')}
+                              </button>
 
                             <button
                               onClick={async () => {

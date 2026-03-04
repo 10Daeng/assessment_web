@@ -4,6 +4,7 @@ import Link from 'next/link';
 import dynamic from 'next/dynamic';
 import { getDiscPatternName } from '@/utils/scoring';
 import { logger } from '@/utils/logger';
+import ExportSinglePDF from '@/components/ExportSinglePDF';
 
 const BatchExportPDF = dynamic(() => import('@/components/BatchExportPDF'), { ssr: false });
 
@@ -173,7 +174,8 @@ export default function ReportsPage() {
                       <td className="px-4 py-4 text-slate-500 text-xs">
                         {sub.submittedAt ? new Date(sub.submittedAt).toLocaleString('id-ID', { timeZone: 'Asia/Jakarta', dateStyle: 'medium', timeStyle: 'short' }) + ' WIB' : '-'}
                       </td>
-                      <td className="px-6 py-4 text-right space-x-3">
+                      <td className="px-6 py-4 text-right flex items-center justify-end gap-3">
+                        <ExportSinglePDF sub={sub} />
                         <Link href={`/admin/reports/${sub.id}`} className="text-blue-400 hover:text-blue-300 text-xs hover:underline">
                           Lihat Laporan
                         </Link>
