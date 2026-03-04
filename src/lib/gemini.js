@@ -88,6 +88,7 @@ ${facetStr}
 3. Deskripsikan PERILAKU, bukan label metrik. Tulis seakan psikolog yang mengobservasi klien 1 tahun.
 4. deskripsi_kepribadian_terintegrasi HARUS 3-4 paragraf (300-400 kata). WAJIB narasi mengalir, TANPA bullet points.
 5. Gunakan "cenderung", "tampak", "berpotensi". Jika ada gap Publik vs Pribadi, analisis sebagai sumber kelelahan emosional.
+6. WAJIB menyebut SAAN NAMA KLIEN (${userData?.nama || 'individu ini'}) secara personal minimal 2-3 kali di dalam \`deskripsi_kepribadian_terintegrasi\` (contoh: "${userData?.nama || 'Individu'} adalah sosok yang...").
 
 ### OUTPUT WAJIB PERSIS SEPERTI STRUKTUR JSON INI (JANGAN UBAH ATAU TAMBAH KEY APAPUN):
 {
