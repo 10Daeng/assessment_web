@@ -211,7 +211,7 @@ export default function AssessmentPDF({ userData, discScores, hexacoScores, aiIn
         <View style={styles.discGrid}>
           <DiscPanel title="Grafik 1 — Publik (Mask)" scores={discScores?.discMost} />
           <DiscPanel title="Grafik 2 — Pribadi (Core)" scores={discScores?.discLeast} />
-          <DiscPanel title="Grafik 3 — Aktual (Composite)" scores={discScores?.discComposite} />
+          <DiscPanel title="Grafik 3 — Aktual" scores={discScores?.discComposite} />
         </View>
 
         <View style={styles.sectionHeaderRow}>
@@ -266,9 +266,18 @@ export default function AssessmentPDF({ userData, discScores, hexacoScores, aiIn
           </View>
         ) : null}
 
+        <View wrap={false} style={{ marginBottom: 15 }}>
+          <Text style={styles.narrativeTitle}>{aiInsight?.kekuatan_utama ? '3' : '2'}. Tantangan & Hambatan</Text>
+          <Text style={styles.narrativeBody}>
+            <Text style={{ fontFamily: 'Helvetica-Bold' }}>Area Friksi / Hambatan: </Text>
+            {aiInsight?.tantangan_dan_faktor_penghambat?.komunikasi_dan_pola_kerja || '-'} 
+            {aiInsight?.tantangan_dan_faktor_penghambat?.hambatan_karakter_internal ? ` ${aiInsight.tantangan_dan_faktor_penghambat.hambatan_karakter_internal}` : ''}
+          </Text>
+        </View>
+
         {aiInsight?.analisis_lingkungan_ideal ? (
            <View wrap={false} style={{ marginBottom: 15 }}>
-            <Text style={styles.narrativeTitle}>{aiInsight?.kekuatan_utama ? '3' : '2'}. Analisis Lingkungan Ideal</Text>
+            <Text style={styles.narrativeTitle}>{aiInsight?.kekuatan_utama ? '4' : '3'}. Analisis Lingkungan Ideal</Text>
             <Text style={styles.narrativeBody}>
               <Text style={{ fontFamily: 'Helvetica-Bold' }}>Ekosistem Kerja: </Text>
               {aiInsight.analisis_lingkungan_ideal.ekosistem_kerja}
@@ -281,20 +290,11 @@ export default function AssessmentPDF({ userData, discScores, hexacoScores, aiIn
         ) : null}
 
         <View wrap={false} style={{ marginBottom: 15 }}>
-          <Text style={styles.narrativeTitle}>{aiInsight?.analisis_lingkungan_ideal ? '4' : '3'}. Tantangan & Rekomendasi</Text>
-          <Text style={styles.narrativeBody}>
-            <Text style={{ fontFamily: 'Helvetica-Bold' }}>Area Friksi / Hambatan: </Text>
-            {aiInsight?.tantangan_dan_faktor_penghambat?.komunikasi_dan_pola_kerja || '-'} 
-            {aiInsight?.tantangan_dan_faktor_penghambat?.hambatan_karakter_internal ? ` ${aiInsight.tantangan_dan_faktor_penghambat.hambatan_karakter_internal}` : ''}
-          </Text>
-          
-          <Text style={{ ...styles.narrativeBody, marginTop: 10 }}>
-            <Text style={{ fontFamily: 'Helvetica-Bold' }}>Saran Pengembangan Strategis: </Text>
-          </Text>
+          <Text style={styles.narrativeTitle}>{aiInsight?.analisis_lingkungan_ideal ? '5' : '4'}. Saran Pengembangan Strategis</Text>
           {(aiInsight?.saran_pengembangan_spesifik || []).map((k, i) => (
              <Text key={i} style={styles.bulletItem}>• {k}</Text>
           ))}
-          {(!aiInsight?.saran_pengembangan_spesifik) ? (
+          {(!aiInsight?.saran_pengembangan_spesifik || aiInsight.saran_pengembangan_spesifik.length === 0) ? (
               <Text style={styles.narrativeBody}>Rekomendasi belum tersedia. Silakan generate interpretasi AI terlebih dahulu melalui panel admin.</Text>
           ) : null}
         </View>
@@ -319,13 +319,14 @@ export default function AssessmentPDF({ userData, discScores, hexacoScores, aiIn
         {/* Premium Upsell Box */}
         <View wrap={false} style={{ marginTop: 30, padding: 15, borderRadius: 8, borderWidth: 1, borderColor: '#3b82f6', backgroundColor: '#eff6ff' }}>
           <Text style={{ fontSize: 11, fontFamily: 'Helvetica-Bold', color: '#1e40af', marginBottom: 6 }}>
-            Ingin Membedah Hasil Ini Lebih Dalam?
+            Mari Pahami Diri dan Kuatkan Hati Lebih Dalam
           </Text>
           <Text style={{ fontSize: 10, color: '#1e3a8a', lineHeight: 1.5, marginBottom: 8, textAlign: 'justify' }}>
-            Laporan ini hanya menunjukkan "Siapa" Anda. Melalui Sesi Konseling Premium, Psikolog Lentera Batin akan membedah "Mengapa" Anda merasakan kelelahan adaptasi, menemukan titik buta (blind spots) yang menghambat karir, serta menyusun strategi nyata untuk hubungan sosial dan asmara Anda.
+            Laporan yang Anda pegang saat ini adalah peta tentang "Siapa" Anda. Namun, peta saja tidak cukup jika Anda merasa sedang tersesat atau mengalami kelelahan batin.{"\n\n"}
+            Di Lentera Batin, kami mengundang Anda untuk duduk bersama dalam Sesi Konseling Premium. Kita tidak hanya akan membaca angka hasil tes, tetapi juga membedah "Mengapa" Anda sering mengalami kelelahan adaptasi, menavigasi blind spots (titik buta) yang menghambat kemajuan karir, dan menata ulang strategi untuk kebahagiaan hubungan sosial serta asmara Anda.
           </Text>
           <Text style={{ fontSize: 10, fontFamily: 'Helvetica-Bold', color: '#2563eb' }}>
-            Hubungi Admin via WhatsApp: 0851-1777-8798
+            Mari temukan kembali kendali atas diri Anda. Hubungi Admin kami untuk reservasi jadwal via WhatsApp: 0851-1777-8798
           </Text>
         </View>
 
