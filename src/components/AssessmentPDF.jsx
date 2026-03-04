@@ -224,11 +224,9 @@ export default function AssessmentPDF({ userData, discScores, hexacoScores, aiIn
         <View style={styles.identityContainer}>
           <View style={styles.identityCol}>
             <IdRow label="Nama Lengkap" value={nameLabel} />
-            <IdRow label="Usia" value={userData?.usia ? `${userData.usia} tahun` : '-'} />
+            <IdRow label="Asal Instansi" value={userData?.instansi || '-'} />
           </View>
           <View style={styles.identityCol}>
-            <IdRow label="Email / NIK" value={userData?.email || '-'} />
-            <IdRow label="Asal Instansi" value={userData?.instansi || '-'} />
             <IdRow label="Pekerjaan / Jabatan" value={[userData?.pekerjaan, userData?.jabatan].filter(Boolean).join(' - ') || '-'} />
             <IdRow label="Tanggal Asesmen" value={formatDate(submittedAt)} />
           </View>
@@ -349,7 +347,7 @@ export default function AssessmentPDF({ userData, discScores, hexacoScores, aiIn
         {/* Signature */}
         <View style={{ marginTop: 40, flexDirection: 'row', justifyContent: 'flex-end', paddingBottom: 20 }}>
           <View style={{ width: '50%', alignItems: 'center' }}>
-            <Text style={{ fontSize: 9.5, color: c.dark, marginBottom: 15 }}>Sumenep, {formatDate(submittedAt)}</Text>
+            <Text style={{ fontSize: 9.5, color: c.dark, marginBottom: 15 }}>Sumenep, {formatDate(new Date())}</Text>
             <Image src="/logo.png" style={{ width: 120, height: 26, marginBottom: 8 }} alt="Logo" />
             <Text style={{ fontSize: 10.5, fontFamily: 'Helvetica-Bold', color: c.dark, marginBottom: 2 }}>Moh. Ilham, M.Si., CHA., C.Med.</Text>
             <Text style={{ fontSize: 8.5, color: c.grey }}>Assessor / Konselor</Text>
