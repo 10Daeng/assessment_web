@@ -285,101 +285,97 @@ export default function AssessmentPDF({ userData, discScores, hexacoScores, aiIn
 
       {/* ============================================================ */}
       {/* PAGE 2+ (WRAP) — DESKRIPSI AI & REKOMENDASI                  */}
-      {/* Dynamic Margins for alternating binding pages using render   */}
+      {/* Symmetrical margins (3cm left & right) for safe wrap binding */}
       {/* ============================================================ */}
-      <Page size="A4" wrap>
-        <View render={({ pageNumber }) => (
-          <View style={{
-            position: 'absolute', top: 0, left: 0, right: 0, bottom: 0,
-            paddingTop: 40, paddingBottom: 40,
-            paddingLeft: pageNumber % 2 !== 0 ? 85 : 40,
-            paddingRight: pageNumber % 2 !== 0 ? 40 : 85,
-          }}>
-            <Image src="/logo.png" style={styles.watermark} fixed alt="Watermark" />
-            
-            {/* The Header is only drawn at the very top of the deskripsi flow */}
-            {pageNumber === 2 && <Text style={styles.pageHeader}>DESKRIPSI KEPRIBADIAN</Text>}
+      <Page size="A4" style={{ paddingTop: 40, paddingBottom: 40, paddingLeft: 85, paddingRight: 85, backgroundColor: '#ffffff', fontFamily: 'Helvetica' }} wrap>
+        
+        <Image src="/logo.png" style={styles.watermark} fixed alt="Watermark" />
+        
+        <Text style={styles.pageHeader}>DESKRIPSI KEPRIBADIAN</Text>
 
-            <View style={{ marginBottom: 15 }}>
-              <Text style={{...styles.narrativeTitle, marginTop: pageNumber === 2 ? 0 : 12}}>1. Deskripsi Kepribadian Terintegrasi</Text>
-              <Text style={styles.narrativeBody}>
-                {aiInsight?.deskripsi_kepribadian_terintegrasi || aiInsight?.deskripsi_kepribadian || aiInsight?.gayaKerja || 'Deskripsi kepribadian terpadu belum tersedia. Silakan generate interpretasi AI.'}
-              </Text>
-            </View>
+        <View style={{ marginBottom: 15 }}>
+          <Text style={{...styles.narrativeTitle, marginTop: 0}}>1. Deskripsi Kepribadian Terintegrasi</Text>
+          <Text style={styles.narrativeBody}>
+            {aiInsight?.deskripsi_kepribadian_terintegrasi || aiInsight?.deskripsi_kepribadian || aiInsight?.gayaKerja || 'Deskripsi kepribadian terpadu belum tersedia. Silakan generate interpretasi AI.'}
+          </Text>
+        </View>
 
-            {aiInsight?.kekuatan_utama && (
-              <View style={{ marginBottom: 15 }}>
-                <Text style={styles.narrativeTitle}>2. Kekuatan Utama</Text>
-                {aiInsight.kekuatan_utama.map((k, i) => (
-                  <Text key={i} style={styles.bulletItem}>• {k}</Text>
-                ))}
-              </View>
-            )}
-
-            {aiInsight?.analisis_lingkungan_ideal && (
-               <View style={{ marginBottom: 15 }}>
-                <Text style={styles.narrativeTitle}>{aiInsight?.kekuatan_utama ? '3' : '2'}. Analisis Lingkungan Ideal</Text>
-                <Text style={styles.narrativeBody}>
-                  <Text style={{ fontFamily: 'Helvetica-Bold' }}>Ekosistem Kerja: </Text>
-                  {aiInsight.analisis_lingkungan_ideal.ekosistem_kerja}
-                </Text>
-                <Text style={styles.narrativeBody}>
-                  <Text style={{ fontFamily: 'Helvetica-Bold' }}>Kebutuhan Motivasi: </Text>
-                  {aiInsight.analisis_lingkungan_ideal.kebutuhan_motivasi}
-                </Text>
-              </View>
-            )}
-
-            <View style={{ marginBottom: 15 }}>
-              <Text style={styles.narrativeTitle}>{aiInsight?.analisis_lingkungan_ideal ? '4' : '3'}. Tantangan & Rekomendasi</Text>
-              <Text style={styles.narrativeBody}>
-                <Text style={{ fontFamily: 'Helvetica-Bold' }}>Area Friksi / Hambatan: </Text>
-                {aiInsight?.tantangan_dan_faktor_penghambat?.komunikasi_dan_pola_kerja || 'Belum dianalisis'} 
-                {aiInsight?.tantangan_dan_faktor_penghambat?.hambatan_karakter_internal ? ` Terutama dalam konteks internal, ${aiInsight.tantangan_dan_faktor_penghambat.hambatan_karakter_internal}` : ''}
-              </Text>
-              
-              <Text style={{ ...styles.narrativeBody, marginTop: 10 }}>
-                <Text style={{ fontFamily: 'Helvetica-Bold' }}>Saran Pengembangan Strategis: </Text>
-              </Text>
-              {(aiInsight?.saran_pengembangan_spesifik || []).map((k, i) => (
-                 <Text key={i} style={styles.bulletItem}>• {k}</Text>
-              ))}
-              {!aiInsight?.saran_pengembangan_spesifik && (
-                  <Text style={styles.narrativeBody}>Rekomendasi belum tersedia. Silakan generate interpretasi AI terlebih dahulu melalui panel admin.</Text>
-              )}
-            </View>
-
-            {/* Closing */}
-            <View style={{ marginTop: 25, padding: 15, backgroundColor: c.light, borderRadius: 4 }}>
-              <Text style={{ fontSize: 9, color: c.grey, lineHeight: 1.5, textAlign: 'center', fontStyle: 'italic' }}>
-                Profil kepribadian bersifat dinamis dan dapat berkembang seiring waktu serta pengalaman hidup. Laporan ini hendaknya dipahami sebagai gambaran kecenderungan perilaku pada saat pengisian asesmen berlangsung, bukan sebagai penilaian mutlak terhadap kemampuan atau potensi seseorang.
-              </Text>
-            </View>
-
-            {/* Signature */}
-            <View style={{ marginTop: 40, flexDirection: 'row', justifyContent: 'flex-end', paddingBottom: 20 }}>
-              <View style={{ width: '50%', alignItems: 'center' }}>
-                <Text style={{ fontSize: 9.5, color: c.dark, marginBottom: 15 }}>Sumenep, {formatDate(submittedAt)}</Text>
-                <Image src="/logo.png" style={{ width: 120, height: 26, marginBottom: 8 }} alt="Logo" />
-                <Text style={{ fontSize: 10.5, fontFamily: 'Helvetica-Bold', color: c.dark, marginBottom: 2 }}>Moh. Ilham, M.Si., CHA., C.Med.</Text>
-                <Text style={{ fontSize: 8.5, color: c.grey }}>Assessor / Konselor</Text>
-              </View>
-            </View>
-
-            {/* Premium Upsell Box */}
-            <View style={{ marginTop: 20, padding: 15, borderRadius: 8, borderWidth: 1, borderColor: '#3b82f6', backgroundColor: '#eff6ff' }}>
-              <Text style={{ fontSize: 11, fontFamily: 'Helvetica-Bold', color: '#1e40af', marginBottom: 6 }}>
-                Ingin Membedah Hasil Ini Lebih Dalam?
-              </Text>
-              <Text style={{ fontSize: 10, color: '#1e3a8a', lineHeight: 1.5, marginBottom: 8, textAlign: 'justify' }}>
-                Laporan ini hanya menunjukkan &ldquo;Siapa&rdquo; Anda. Melalui Sesi Konseling Premium, Psikolog Lentera Batin akan membedah &ldquo;Mengapa&rdquo; Anda merasakan kelelahan adaptasi, menemukan titik buta (blind spots) yang menghambat karir, serta menyusun strategi nyata untuk hubungan sosial dan asmara Anda.
-              </Text>
-              <Text style={{ fontSize: 10, fontFamily: 'Helvetica-Bold', color: '#2563eb' }}>
-                Hubungi Admin via WhatsApp: 0851-1777-8798
-              </Text>
-            </View>
+        {aiInsight?.kekuatan_utama ? (
+          <View style={{ marginBottom: 15 }}>
+            <Text style={styles.narrativeTitle}>2. Kekuatan Utama</Text>
+            {aiInsight.kekuatan_utama.map((k, i) => (
+              <Text key={i} style={styles.bulletItem}>• {k}</Text>
+            ))}
           </View>
-        )} />
+        ) : null}
+
+        {aiInsight?.analisis_lingkungan_ideal ? (
+           <View style={{ marginBottom: 15 }}>
+            <Text style={styles.narrativeTitle}>{aiInsight?.kekuatan_utama ? '3' : '2'}. Analisis Lingkungan Ideal</Text>
+            <Text style={styles.narrativeBody}>
+              <Text style={{ fontFamily: 'Helvetica-Bold' }}>Ekosistem Kerja: </Text>
+              {aiInsight.analisis_lingkungan_ideal.ekosistem_kerja}
+            </Text>
+            <Text style={styles.narrativeBody}>
+              <Text style={{ fontFamily: 'Helvetica-Bold' }}>Kebutuhan Motivasi: </Text>
+              {aiInsight.analisis_lingkungan_ideal.kebutuhan_motivasi}
+            </Text>
+          </View>
+        ) : null}
+
+        <View style={{ marginBottom: 15 }}>
+          <Text style={styles.narrativeTitle}>{aiInsight?.analisis_lingkungan_ideal ? '4' : '3'}. Tantangan & Rekomendasi</Text>
+          <Text style={styles.narrativeBody}>
+            <Text style={{ fontFamily: 'Helvetica-Bold' }}>Area Friksi / Hambatan: </Text>
+            {aiInsight?.tantangan_dan_faktor_penghambat?.komunikasi_dan_pola_kerja || 'Belum dianalisis'} 
+            {aiInsight?.tantangan_dan_faktor_penghambat?.hambatan_karakter_internal ? ` Terutama dalam konteks internal, ${aiInsight.tantangan_dan_faktor_penghambat.hambatan_karakter_internal}` : ''}
+          </Text>
+          
+          <Text style={{ ...styles.narrativeBody, marginTop: 10 }}>
+            <Text style={{ fontFamily: 'Helvetica-Bold' }}>Saran Pengembangan Strategis: </Text>
+          </Text>
+          {(aiInsight?.saran_pengembangan_spesifik || []).map((k, i) => (
+             <Text key={i} style={styles.bulletItem}>• {k}</Text>
+          ))}
+          {(!aiInsight?.saran_pengembangan_spesifik) ? (
+              <Text style={styles.narrativeBody}>Rekomendasi belum tersedia. Silakan generate interpretasi AI terlebih dahulu melalui panel admin.</Text>
+          ) : null}
+        </View>
+
+        <Text style={styles.disclaimer}>
+          *Laporan ini disusun berdasarkan hasil asesmen mandiri (self-report). Akurasi hasil sangat bergantung pada keterbukaan dan kejujuran dalam menjawab. Profil kepribadian bersifat dinamis dan dapat berkembang seiring waktu serta pengalaman hidup.
+        </Text>
+
+        {/* Closing */}
+        <View style={{ marginTop: 25, padding: 15, backgroundColor: '#fcfcfc', borderRadius: 4 }}>
+          <Text style={{ fontSize: 9, color: c.grey, lineHeight: 1.5, textAlign: 'center', fontStyle: 'italic' }}>
+            Profil kepribadian bersifat dinamis dan dapat berkembang seiring waktu serta pengalaman hidup. Laporan ini hendaknya dipahami sebagai gambaran kecenderungan perilaku pada saat pengisian asesmen berlangsung, bukan sebagai penilaian mutlak terhadap kemampuan atau potensi seseorang.
+          </Text>
+        </View>
+
+        {/* Signature */}
+        <View style={{ marginTop: 40, flexDirection: 'row', justifyContent: 'flex-end', paddingBottom: 20 }}>
+          <View style={{ width: '50%', alignItems: 'center' }}>
+            <Text style={{ fontSize: 9.5, color: c.dark, marginBottom: 15 }}>Sumenep, {formatDate(submittedAt)}</Text>
+            <Image src="/logo.png" style={{ width: 120, height: 26, marginBottom: 8 }} alt="Logo" />
+            <Text style={{ fontSize: 10.5, fontFamily: 'Helvetica-Bold', color: c.dark, marginBottom: 2 }}>Moh. Ilham, M.Si., CHA., C.Med.</Text>
+            <Text style={{ fontSize: 8.5, color: c.grey }}>Assessor / Konselor</Text>
+          </View>
+        </View>
+
+        {/* Premium Upsell Box */}
+        <View style={{ marginTop: 20, padding: 15, borderRadius: 8, borderWidth: 1, borderColor: '#3b82f6', backgroundColor: '#eff6ff' }}>
+          <Text style={{ fontSize: 11, fontFamily: 'Helvetica-Bold', color: '#1e40af', marginBottom: 6 }}>
+            Ingin Membedah Hasil Ini Lebih Dalam?
+          </Text>
+          <Text style={{ fontSize: 10, color: '#1e3a8a', lineHeight: 1.5, marginBottom: 8, textAlign: 'justify' }}>
+            Laporan ini hanya menunjukkan &ldquo;Siapa&rdquo; Anda. Melalui Sesi Konseling Premium, Psikolog Lentera Batin akan membedah &ldquo;Mengapa&rdquo; Anda merasakan kelelahan adaptasi, menemukan titik buta (blind spots) yang menghambat karir, serta menyusun strategi nyata untuk hubungan sosial dan asmara Anda.
+          </Text>
+          <Text style={{ fontSize: 10, fontFamily: 'Helvetica-Bold', color: '#2563eb' }}>
+            Hubungi Admin via WhatsApp: 0851-1777-8798
+          </Text>
+        </View>
+
         <View render={({ pageNumber }) => <FooterDynamic pageNumber={pageNumber} />} fixed />
       </Page>
     </Document>
