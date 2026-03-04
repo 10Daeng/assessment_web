@@ -17,9 +17,9 @@ const c = {
 // ==========================================
 // 85pt = 3 cm margin for binding (jilid)
 const styles = StyleSheet.create({
-  pageOdd: { paddingTop: 40, paddingBottom: 40, paddingLeft: 85, paddingRight: 40, fontFamily: 'Helvetica', backgroundColor: '#ffffff' },
-  pageEven: { paddingTop: 40, paddingBottom: 40, paddingLeft: 40, paddingRight: 85, fontFamily: 'Helvetica', backgroundColor: '#ffffff' },
-  pageTextWrap: { paddingTop: 40, paddingBottom: 40, paddingLeft: 85, paddingRight: 85, fontFamily: 'Helvetica', backgroundColor: '#ffffff' },
+  pageOdd: { paddingTop: 40, paddingBottom: 65, paddingLeft: 85, paddingRight: 40, fontFamily: 'Helvetica', backgroundColor: '#ffffff' },
+  pageEven: { paddingTop: 40, paddingBottom: 65, paddingLeft: 40, paddingRight: 85, fontFamily: 'Helvetica', backgroundColor: '#ffffff' },
+  pageWrap: { paddingTop: 40, paddingBottom: 65, paddingLeft: 60, paddingRight: 60, fontFamily: 'Helvetica', backgroundColor: '#ffffff' },
 
   // Fonts back to normal/readable size
   rahasia: { color: 'red', fontSize: 10, textAlign: 'right', fontFamily: 'Helvetica-Bold', marginBottom: 5 },
@@ -30,7 +30,7 @@ const styles = StyleSheet.create({
   hr: { borderBottomWidth: 1.5, borderBottomColor: c.primary, marginBottom: 15 },
   pageHeader: { fontSize: 16, fontFamily: 'Helvetica-Bold', color: c.primary, marginBottom: 12, borderBottomWidth: 1.5, borderBottomColor: c.primary, paddingBottom: 5, textTransform: 'uppercase' },
 
-  // Watermark for pages 2-4
+  // Watermark for pages 2+
   watermark: { position: 'absolute', top: '42%', left: '15%', width: '70%', opacity: 0.04 },
 
   // Section Header (Title + Right Text)
@@ -71,7 +71,8 @@ const styles = StyleSheet.create({
   narrativeBody: { fontSize: 10.5, lineHeight: 1.5, color: '#222222', marginBottom: 8, textAlign: 'justify' },
   bulletItem: { fontSize: 10.5, lineHeight: 1.5, color: '#333333', marginBottom: 4, paddingLeft: 10 },
 
-  // Footer & Page Numbers
+  // Footer (absolute positioned)
+  footerContainer: { position: 'absolute', bottom: 25, left: 60, right: 60, flexDirection: 'row', justifyContent: 'space-between' },
   footerText: { fontSize: 8, color: c.grey, fontFamily: 'Helvetica-Bold' },
   disclaimer: { fontSize: 8.5, color: c.grey, textAlign: 'justify', fontStyle: 'italic', marginTop: 15 },
 });
@@ -172,46 +173,16 @@ export default function AssessmentPDF({ userData, discScores, hexacoScores, aiIn
   const validityColor = isSuspicious ? '#b91c1c' : '#166534';
   const nameLabel = (userData?.nama || '-').toUpperCase();
 
-  // Footer Components to handle alternating pages correctly within `render` so we can check pageNumber
-  const FooterDynamic = ({ pageNumber }) => {
-    const isOdd = pageNumber % 2 !== 0;
-    
-    if (pageNumber === 1) {
-      return (
-        <View style={{ position: 'absolute', bottom: 20, left: 85, right: 40, flexDirection: 'row', justifyContent: 'flex-end' }}>
-          <Text style={styles.footerText}>Hal. 1</Text>
-        </View>
-      );
-    }
-
-    if (isOdd) {
-      return (
-        <View style={{ position: 'absolute', bottom: 20, left: 85, right: 40, flexDirection: 'row', justifyContent: 'space-between' }}>
-          <Text style={styles.footerText}>{nameLabel}</Text>
-          <Text style={styles.footerText}>Hal. {pageNumber}</Text>
-        </View>
-      );
-    }
-
-    return (
-      <View style={{ position: 'absolute', bottom: 20, left: 40, right: 85, flexDirection: 'row', justifyContent: 'space-between' }}>
-        <Text style={styles.footerText}>Hal. {pageNumber}</Text>
-        <Text style={styles.footerText}>{nameLabel}</Text>
-      </View>
-    );
-  };
-
   return (
     <Document>
       {/* ============================================================ */}
-      {/* PAGE 1 (ODD) — IDENTITAS, DISC, HEXACO                       */}
-      {/* L: 3cm (85pt), R: 40pt                                       */}
+      {/* PAGE 1 — IDENTITAS, DISC, HEXACO (TANPA FOOTER)              */}
       {/* ============================================================ */}
       <Page size="A4" style={styles.pageOdd}>
         <View style={{ textAlign: 'center', marginBottom: 10 }}>
           <Text style={styles.rahasia}>SANGAT RAHASIA</Text>
           <Text style={styles.lembaga}>Lembaga Konseling dan Psikoterapi Islam</Text>
-          <Image src="/logo.png" style={styles.logo} alt="Logo" />
+          <Image src="/logo.png" style={styles.logo} />
           <Text style={styles.address}>Jalan Potre Koneng II No. 31, Kolor, Sumenep 69417 | www.lenterabatin.co.id</Text>
         </View>
         <View style={styles.hr} />
@@ -245,7 +216,7 @@ export default function AssessmentPDF({ userData, discScores, hexacoScores, aiIn
 
         <View style={styles.sectionHeaderRow}>
           <Text style={styles.sectionTitle}>Profil Karakter</Text>
-          <Text style={{...styles.sectionRightText, color: validityColor}}>Status Validitas Pengerjaan: {validity.overallLabel} ({validity.overallScore}/100)</Text>
+          <Text style={{...styles.sectionRightText, color: validityColor}}>Status Validitas: {validity.overallLabel} ({validity.overallScore}/100)</Text>
         </View>
 
         <View style={styles.hexGrid}>
@@ -267,24 +238,24 @@ export default function AssessmentPDF({ userData, discScores, hexacoScores, aiIn
           </View>
         </View>
 
+        {/* Disclaimer Halaman 1 */}
         <Text style={styles.disclaimer}>
           *Laporan ini disusun berdasarkan hasil asesmen mandiri (self-report). Akurasi hasil sangat bergantung pada keterbukaan dan kejujuran dalam menjawab. Profil kepribadian bersifat dinamis dan dapat berkembang seiring waktu serta pengalaman hidup.
         </Text>
-
-        <View render={({ pageNumber }) => <FooterDynamic pageNumber={pageNumber} />} fixed />
+        
+        {/* TIDAK ADA FOOTER DI HALAMAN 1 */}
       </Page>
 
       {/* ============================================================ */}
-      {/* PAGE 2+ (WRAP) — DESKRIPSI AI & REKOMENDASI                  */}
-      {/* Symmetrical margins (3cm left & right) for safe wrap binding */}
+      {/* PAGE 2 & 3 — DESKRIPSI AI (MENGGUNAKAN WRAP)                 */}
       {/* ============================================================ */}
-      <Page size="A4" style={{ paddingTop: 40, paddingBottom: 40, paddingLeft: 85, paddingRight: 85, backgroundColor: '#ffffff', fontFamily: 'Helvetica' }} wrap>
+      <Page size="A4" style={styles.pageWrap} wrap>
         
-        <Image src="/logo.png" style={styles.watermark} fixed alt="Watermark" />
+        <Image src="/logo.png" style={styles.watermark} fixed />
         
         <Text style={styles.pageHeader}>DESKRIPSI KEPRIBADIAN</Text>
 
-        <View style={{ marginBottom: 15 }}>
+        <View wrap={false} style={{ marginBottom: 15 }}>
           <Text style={{...styles.narrativeTitle, marginTop: 0}}>1. Deskripsi Kepribadian Terintegrasi</Text>
           <Text style={styles.narrativeBody}>
             {aiInsight?.deskripsi_kepribadian_terintegrasi || aiInsight?.deskripsi_kepribadian || aiInsight?.gayaKerja || 'Deskripsi kepribadian terpadu belum tersedia. Silakan generate interpretasi AI.'}
@@ -292,7 +263,7 @@ export default function AssessmentPDF({ userData, discScores, hexacoScores, aiIn
         </View>
 
         {aiInsight?.kekuatan_utama ? (
-          <View style={{ marginBottom: 15 }}>
+          <View wrap={false} style={{ marginBottom: 15 }}>
             <Text style={styles.narrativeTitle}>2. Kekuatan Utama</Text>
             {aiInsight.kekuatan_utama.map((k, i) => (
               <Text key={i} style={styles.bulletItem}>• {k}</Text>
@@ -301,7 +272,7 @@ export default function AssessmentPDF({ userData, discScores, hexacoScores, aiIn
         ) : null}
 
         {aiInsight?.analisis_lingkungan_ideal ? (
-           <View style={{ marginBottom: 15 }}>
+           <View wrap={false} style={{ marginBottom: 15 }}>
             <Text style={styles.narrativeTitle}>{aiInsight?.kekuatan_utama ? '3' : '2'}. Analisis Lingkungan Ideal</Text>
             <Text style={styles.narrativeBody}>
               <Text style={{ fontFamily: 'Helvetica-Bold' }}>Ekosistem Kerja: </Text>
@@ -314,12 +285,12 @@ export default function AssessmentPDF({ userData, discScores, hexacoScores, aiIn
           </View>
         ) : null}
 
-        <View style={{ marginBottom: 15 }}>
+        <View wrap={false} style={{ marginBottom: 15 }}>
           <Text style={styles.narrativeTitle}>{aiInsight?.analisis_lingkungan_ideal ? '4' : '3'}. Tantangan & Rekomendasi</Text>
           <Text style={styles.narrativeBody}>
             <Text style={{ fontFamily: 'Helvetica-Bold' }}>Area Friksi / Hambatan: </Text>
-            {aiInsight?.tantangan_dan_faktor_penghambat?.komunikasi_dan_pola_kerja || 'Belum dianalisis'} 
-            {aiInsight?.tantangan_dan_faktor_penghambat?.hambatan_karakter_internal ? ` Terutama dalam konteks internal, ${aiInsight.tantangan_dan_faktor_penghambat.hambatan_karakter_internal}` : ''}
+            {aiInsight?.tantangan_dan_faktor_penghambat?.komunikasi_dan_pola_kerja || '-'} 
+            {aiInsight?.tantangan_dan_faktor_penghambat?.hambatan_karakter_internal ? ` ${aiInsight.tantangan_dan_faktor_penghambat.hambatan_karakter_internal}` : ''}
           </Text>
           
           <Text style={{ ...styles.narrativeBody, marginTop: 10 }}>
@@ -333,41 +304,54 @@ export default function AssessmentPDF({ userData, discScores, hexacoScores, aiIn
           ) : null}
         </View>
 
-        <Text style={styles.disclaimer}>
-          *Laporan ini disusun berdasarkan hasil asesmen mandiri (self-report). Akurasi hasil sangat bergantung pada keterbukaan dan kejujuran dalam menjawab. Profil kepribadian bersifat dinamis dan dapat berkembang seiring waktu serta pengalaman hidup.
-        </Text>
+        {/* Footer Halaman Narasi */}
+        <View fixed style={styles.footerContainer}>
+          <Text render={({ pageNumber }) => `Hal. ${pageNumber}`} style={styles.footerText} />
+          <Text style={styles.footerText}>{nameLabel}</Text>
+        </View>
+      </Page>
 
-        {/* Closing */}
-        <View style={{ marginTop: 25, padding: 15, backgroundColor: '#fcfcfc', borderRadius: 4 }}>
+      {/* ============================================================ */}
+      {/* PAGE TERAKHIR — TANDA TANGAN & UPSELL PREMIUM                */}
+      {/* ============================================================ */}
+      <Page size="A4" style={styles.pageWrap}>
+        
+        {/* Teks Penutup */}
+        <View style={{ marginTop: 20, padding: 15, backgroundColor: '#fcfcfc', borderRadius: 4 }}>
           <Text style={{ fontSize: 9, color: c.grey, lineHeight: 1.5, textAlign: 'center', fontStyle: 'italic' }}>
             Profil kepribadian bersifat dinamis dan dapat berkembang seiring waktu serta pengalaman hidup. Laporan ini hendaknya dipahami sebagai gambaran kecenderungan perilaku pada saat pengisian asesmen berlangsung, bukan sebagai penilaian mutlak terhadap kemampuan atau potensi seseorang.
           </Text>
         </View>
 
-        {/* Signature */}
+        {/* Signature Box */}
         <View style={{ marginTop: 40, flexDirection: 'row', justifyContent: 'flex-end', paddingBottom: 20 }}>
           <View style={{ width: '50%', alignItems: 'center' }}>
             <Text style={{ fontSize: 9.5, color: c.dark, marginBottom: 15 }}>Sumenep, {formatDate(new Date())}</Text>
-            <Image src="/logo.png" style={{ width: 120, height: 26, marginBottom: 8 }} alt="Logo" />
+            <Image src="/logo.png" style={{ width: 120, height: 26, marginBottom: 8 }} />
             <Text style={{ fontSize: 10.5, fontFamily: 'Helvetica-Bold', color: c.dark, marginBottom: 2 }}>Moh. Ilham, M.Si., CHA., C.Med.</Text>
             <Text style={{ fontSize: 8.5, color: c.grey }}>Assessor / Konselor</Text>
           </View>
         </View>
 
         {/* Premium Upsell Box */}
-        <View style={{ marginTop: 20, padding: 15, borderRadius: 8, borderWidth: 1, borderColor: '#3b82f6', backgroundColor: '#eff6ff' }}>
+        <View style={{ marginTop: 30, padding: 15, borderRadius: 8, borderWidth: 1, borderColor: '#3b82f6', backgroundColor: '#eff6ff' }}>
           <Text style={{ fontSize: 11, fontFamily: 'Helvetica-Bold', color: '#1e40af', marginBottom: 6 }}>
             Ingin Membedah Hasil Ini Lebih Dalam?
           </Text>
           <Text style={{ fontSize: 10, color: '#1e3a8a', lineHeight: 1.5, marginBottom: 8, textAlign: 'justify' }}>
-            Laporan ini hanya menunjukkan &ldquo;Siapa&rdquo; Anda. Melalui Sesi Konseling Premium, Psikolog Lentera Batin akan membedah &ldquo;Mengapa&rdquo; Anda merasakan kelelahan adaptasi, menemukan titik buta (blind spots) yang menghambat karir, serta menyusun strategi nyata untuk hubungan sosial dan asmara Anda.
+            Laporan ini hanya menunjukkan "Siapa" Anda. Melalui Sesi Konseling Premium, Psikolog Lentera Batin akan membedah "Mengapa" Anda merasakan kelelahan adaptasi, menemukan titik buta (blind spots) yang menghambat karir, serta menyusun strategi nyata untuk hubungan sosial dan asmara Anda.
           </Text>
           <Text style={{ fontSize: 10, fontFamily: 'Helvetica-Bold', color: '#2563eb' }}>
             Hubungi Admin via WhatsApp: 0851-1777-8798
           </Text>
         </View>
 
-        <View render={({ pageNumber }) => <FooterDynamic pageNumber={pageNumber} />} fixed />
+        {/* Footer Halaman Terakhir */}
+        <View fixed style={styles.footerContainer}>
+          <Text render={({ pageNumber }) => `Hal. ${pageNumber}`} style={styles.footerText} />
+          <Text style={styles.footerText}>{nameLabel}</Text>
+        </View>
+
       </Page>
     </Document>
   );
