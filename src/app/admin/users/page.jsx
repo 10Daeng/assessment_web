@@ -288,7 +288,7 @@ export default function UsersPage() {
                   Nama <SortIcon sortBy={sortBy} sortDir={sortDir} field="nama" />
                 </th>
                 <th className="px-5 py-4 font-semibold tracking-wider cursor-pointer hover:text-white" onClick={() => toggleSort('email')}>
-                  Email / NIK <SortIcon sortBy={sortBy} sortDir={sortDir} field="email" />
+                  Email / NIK / Telp <SortIcon sortBy={sortBy} sortDir={sortDir} field="email" />
                 </th>
                 <th className="px-5 py-4 font-semibold tracking-wider cursor-pointer hover:text-white" onClick={() => toggleSort('submit')}>
                   Tgl Submit <SortIcon sortBy={sortBy} sortDir={sortDir} field="submit" />
@@ -297,7 +297,7 @@ export default function UsersPage() {
                   Usia <SortIcon sortBy={sortBy} sortDir={sortDir} field="usia" />
                 </th>
                 <th className="px-5 py-4 font-semibold tracking-wider cursor-pointer hover:text-white" onClick={() => toggleSort('instansi')}>
-                  Instansi <SortIcon sortBy={sortBy} sortDir={sortDir} field="instansi" />
+                  Instansi/Sekolah <SortIcon sortBy={sortBy} sortDir={sortDir} field="instansi" />
                 </th>
                 <th className="px-5 py-4 font-semibold tracking-wider cursor-pointer hover:text-white" onClick={() => toggleSort('pekerjaan')}>
                   Pekerjaan <SortIcon sortBy={sortBy} sortDir={sortDir} field="pekerjaan" />
@@ -333,7 +333,8 @@ export default function UsersPage() {
                         )}
                       </td>
                       <td className="px-5 py-4 text-slate-400 text-xs truncate max-w-[130px]" title={s.userData?.email || '-'}>
-                        {s.userData?.email || '-'}
+                        <div>{s.userData?.email || '-'}</div>
+                        {s.userData?.noTelepon && <div className="text-slate-500 mt-0.5">{s.userData?.noTelepon}</div>}
                       </td>
                       <td className="px-5 py-4 text-slate-400 text-xs truncate max-w-[100px]">
                         {s.submittedAt ? new Date(s.submittedAt).toLocaleDateString('id-ID', {day: '2-digit', month: 'short', year: 'numeric'}) : '-'}

@@ -20,6 +20,7 @@ model Submission {
   instansi  String?
   pekerjaan String?
   jabatan   String?
+  noTelepon String?
 
   // DISC Scores (Bagian 2: Profil Gaya Kerja)
   discMostD      Int @default(0)
@@ -72,6 +73,7 @@ model DeletedSubmission {
   instansi  String?
   pekerjaan String?
   jabatan   String?
+  noTelepon String?
 
   discMostD      Int @default(0)
   discMostI      Int @default(0)
@@ -113,4 +115,122 @@ model ChatHistory {
   messages       Json     @default("[]")
   createdAt      DateTime @default(now())
   updatedAt      DateTime @default(now()) @updatedAt
+}
+
+// --- AaaS / Premium Assessment Hub Models ---
+
+model Organization {
+  id        String   @id @default(cuid())
+  name      String
+  email     String?
+  phone     String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  vouchers  Voucher[]
+}
+
+model Package {
+  id          String   @id @default(cuid())
+  name        String   // e.g., "Paket Reguler"
+  description String?  
+  price       Int      // Price for B2C (Personal) use
+  isActive    Boolean  @default(true)
+  intent      String   @default("GENERAL") // GENERAL, RECRUITMENT, ACADEMIC, GRAPHOLOGY
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  vouchers    Voucher[]
+  sessions    AssessmentSession[]
+  modules     PackageModule[]
+}
+
+model Module {
+  id          String   @id @default(cuid())
+  name        String   // e.g., "DISC", "Career Interest"
+  description String?
+  aiPrompt    String?  @db.Text // Specific AI instruction for this module
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  packages    PackageModule[]
+  results     ModuleResult[]
+}
+
+model PackageModule {
+  id        String  @id @default(cuid())
+  packageId String
+  moduleId  String
+  order     Int     @default(0) // determines the sequence of tests
+
+  package   Package @relation(fields: [packageId], references: [id])
+  module    Module  @relation(fields: [moduleId], references: [id])
+
+  @@unique([packageId, moduleId])
+}
+
+model Voucher {
+  id             String   @id @default(cuid())
+  code           String   @unique
+  organizationId String?
+  packageId      String
+  
+  quota          Int      @default(1)
+  usedCount      Int      @default(0)
+  expiresAt      DateTime?
+  isActive       Boolean  @default(true)
+  
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  organization   Organization? @relation(fields: [organizationId], references: [id])
+  package        Package       @relation(fields: [packageId], references: [id])
+  sessions       AssessmentSession[]
+}
+
+model AssessmentSession {
+  id               String   @id @default(cuid())
+  participantName  String
+  participantEmail String
+  participantAge   Int?
+  participantMetadata Json? // Stores dynamic fields from custom Identity forms
+  
+  packageId        String
+  voucherId        String?
+  
+  status           String   // e.g., "ONGOING", "COMPLETED"
+  paymentStatus    String   // e.g., "UNPAID", "PAID_VOUCHER", "PAID_DIRECT"
+  
+  startedAt        DateTime @default(now())
+  completedAt      DateTime?
+
+  package          Package  @relation(fields: [packageId], references: [id])
+  voucher          Voucher? @relation(fields: [voucherId], references: [id])
+  
+  moduleResults    ModuleResult[]
+  finalReport      FinalReport?
+}
+
+model ModuleResult {
+  id          String   @id @default(cuid())
+  sessionId   String
+  moduleId    String
+  rawScore    Json     // Stores results independently (e.g., DISC scores, Career choices)
+  completedAt DateTime @default(now())
+
+  session     AssessmentSession @relation(fields: [sessionId], references: [id])
+  module      Module            @relation(fields: [moduleId], references: [id])
+
+  @@unique([sessionId, moduleId])
+}
+
+model FinalReport {
+  id          String   @id @default(cuid())
+  sessionId   String   @unique
+  reportData  Json     // The aggregated JSON from all ModuleResults processed by AI
+  pdfUrl      String?
+  createdAt   DateTime @default(now())
+
+  session     AssessmentSession @relation(fields: [sessionId], references: [id])
 }

@@ -15,7 +15,7 @@ export async function addSubmission(data) {
   const result = await sql`
     INSERT INTO "Submission" (
       id, "submittedAt",
-      nama, email, usia, instansi, pekerjaan, jabatan,
+      nama, email, usia, instansi, pekerjaan, jabatan, "noTelepon",
       "discMostD", "discMostI", "discMostS", "discMostC",
       "discLeastD", "discLeastI", "discLeastS", "discLeastC",
       "discCompositeD", "discCompositeI", "discCompositeS", "discCompositeC",
@@ -30,6 +30,7 @@ export async function addSubmission(data) {
       ${userData?.instansi || null}, 
       ${userData?.pekerjaan || null}, 
       ${userData?.jabatan || null},
+      ${userData?.noTelepon || null},
       ${discScores?.discMost?.D || 0}, ${discScores?.discMost?.I || 0}, 
       ${discScores?.discMost?.S || 0}, ${discScores?.discMost?.C || 0},
       ${discScores?.discLeast?.D || 0}, ${discScores?.discLeast?.I || 0}, 
@@ -147,6 +148,7 @@ function transformSubmission(sub) {
       instansi: sub.instansi,
       pekerjaan: sub.pekerjaan,
       jabatan: sub.jabatan,
+      noTelepon: sub.noTelepon,
     },
     discScores: {
       discMost: { D: sub.discMostD, I: sub.discMostI, S: sub.discMostS, C: sub.discMostC },

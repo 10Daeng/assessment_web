@@ -7,6 +7,7 @@ import { logger } from '@/utils/logger';
 export default function AdminDashboard() {
   const [allData, setAllData] = useState([]);
   const [dupCount, setDupCount] = useState(0);
+  const [aaasStats, setAaasStats] = useState(null);
   const [loading, setLoading] = useState(true);
   const [dateFrom, setDateFrom] = useState('');
   const [dateTo, setDateTo] = useState('');
@@ -14,14 +15,21 @@ export default function AdminDashboard() {
   useEffect(() => {
     async function load() {
       try {
-        const [subRes, dupRes] = await Promise.all([
-          fetch('/api/admin/submissions?sortBy=submittedAt&sortDir=desc'),
-          fetch('/api/admin/submissions?type=duplicates')
+        const [subRes, dupRes, aaasRes] = await Promise.all([
+           fetch('/api/admin/submissions?sortBy=submittedAt&sortDir=desc'),
+           fetch('/api/admin/submissions?type=duplicates'),
+           fetch('/api/admin/aaas-stats')
         ]);
         const subData = await subRes.json();
         const dupData = await dupRes.json();
+        const aaasData = await aaasRes.json();
+
         setAllData(subData.data || []);
         setDupCount((dupData.data || []).length);
+        if (aaasData.success) {
+           setAaasStats(aaasData);
+        }
+
       } catch (e) {
         logger.error(e);
       }
@@ -75,14 +83,13 @@ export default function AdminDashboard() {
             <p className="text-4xl font-extrabold text-white">{stats.filtered}</p>
           </div>
         )}
-        <div className="bg-gradient-to-br from-amber-600/20 to-amber-800/10 border border-amber-500/20 rounded-2xl p-6">
-          <p className="text-amber-400 text-xs font-bold uppercase tracking-widest mb-2">Data Ganda</p>
-          <p className="text-4xl font-extrabold text-white">{stats.duplicates}</p>
-          {stats.duplicates > 0 && (
-            <Link href="/admin/duplicates" className="text-xs text-amber-400 hover:underline mt-2 inline-block">
-              Lihat detail →
-            </Link>
-          )}
+        <div className="bg-gradient-to-br from-amber-600/20 to-amber-800/10 border border-amber-500/20 rounded-2xl p-6 relative overflow-hidden">
+          <p className="text-amber-400 text-xs font-bold uppercase tracking-widest mb-2">Sesi Premium Hub</p>
+          <div className="text-4xl font-extrabold text-white flex items-baseline gap-2">
+            {aaasStats ? aaasStats.stats.totalSessions : 0}
+            <span className="text-sm font-medium text-slate-400 font-sans tracking-normal">({aaasStats ? aaasStats.stats.completedSessions : 0} Selesai)</span>
+          </div>
+          <p className="text-amber-300 text-[10px] font-bold mt-2 uppercase">Voucher Aktif: {aaasStats ? aaasStats.stats.activeVouchers : 0}</p>
         </div>
       </div>
 
@@ -194,6 +201,56 @@ export default function AdminDashboard() {
                     </tr>
                   );
                 })}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </div>
+
+      {/* AaaS Premium Hub Latest Table */}
+      <div className="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden mt-8">
+        <div className="px-6 py-4 border-b border-slate-800 flex items-center justify-between">
+          <h2 className="font-semibold text-white">
+            Premium Hub (AaaS) Terbaru
+          </h2>
+          <Link href="/admin/premium-reports" className="text-xs text-amber-400 hover:underline">
+            Kelola AaaS →
+          </Link>
+        </div>
+        {!aaasStats || !aaasStats.recentSessions || aaasStats.recentSessions.length === 0 ? (
+          <div className="p-12 text-center text-slate-500">
+            <p className="text-sm">Belum ada sesi Premium Asesmen yang terdaftar.</p>
+          </div>
+        ) : (
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="text-slate-400 text-xs uppercase tracking-wider border-b border-slate-800">
+                  <th className="text-left px-4 py-3">ID Sesi</th>
+                  <th className="text-left px-4 py-3">Nama Partisipan</th>
+                  <th className="text-left px-4 py-3">Paket</th>
+                  <th className="text-left px-6 py-3">Status</th>
+                  <th className="text-left px-6 py-3">Tanggal Mulai</th>
+                </tr>
+              </thead>
+              <tbody>
+                {aaasStats.recentSessions.map(sess => (
+                  <tr key={sess.id} className="border-b border-slate-800/50 hover:bg-slate-800/30 transition-colors">
+                    <td className="px-4 py-4"><span className="text-slate-500 font-mono text-[10px]">{sess.id.substring(0, 8)}</span></td>
+                    <td className="px-4 py-4 text-white font-medium">{sess.participantName}</td>
+                    <td className="px-4 py-4 text-slate-400 text-xs">{sess.package?.name || '-'}</td>
+                    <td className="px-6 py-4">
+                      {sess.status === 'COMPLETED' ? (
+                        <span className="bg-emerald-500/10 text-emerald-400 text-[10px] px-2 py-0.5 rounded-full border border-emerald-500/20 font-bold">SELESAI</span>
+                      ) : (
+                        <span className="bg-amber-500/10 text-amber-400 text-[10px] px-2 py-0.5 rounded-full border border-amber-500/20 font-bold">ONGOING</span>
+                      )}
+                    </td>
+                    <td className="px-6 py-4 text-slate-500 text-xs">
+                      {sess.startedAt ? new Date(sess.startedAt).toLocaleString('id-ID', { timeZone: 'Asia/Jakarta', dateStyle: 'medium', timeStyle: 'short' }) + ' WIB' : '-'}
+                    </td>
+                  </tr>
+                ))}
               </tbody>
             </table>
           </div>

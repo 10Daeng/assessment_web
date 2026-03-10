@@ -5,6 +5,7 @@ import { usePathname } from 'next/navigation';
 
 const navItems = [
   { href: '/admin', label: 'Dashboard', icon: '📊' },
+  { href: '/admin/vouchers', label: 'Voucher & Paket AaaS', icon: '🎟️' },
   { href: '/admin/users', label: 'Data Klien / Identitas', icon: '👤' },
   { href: '/admin/disc', label: 'Hasil DISC', icon: '🎯' },
   { href: '/admin/hexaco', label: 'Hasil HEXACO', icon: '🧬' },

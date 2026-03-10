@@ -4,6 +4,7 @@ export default function PersonalInfo({ onSubmit }) {
   const [formData, setFormData] = useState({
     nama: '',
     email: '',
+    noTelepon: '',
     usia: '',
     instansi: '',
     pekerjaan: '',
@@ -40,20 +41,21 @@ export default function PersonalInfo({ onSubmit }) {
             />
           </div>
 
-          <div className="grid grid-cols-3 gap-4">
-            <div className="col-span-2">
-              <label className="block text-sm font-semibold text-slate-700 mb-2" htmlFor="email">Email</label>
-              <input
-                type="email"
-                name="email"
-                id="email"
-                required
-                value={formData.email}
-                onChange={handleChange}
-                placeholder="e.g. user@example.com"
-                className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all outline-none bg-slate-50 focus:bg-white"
-              />
-            </div>
+          <div>
+            <label className="block text-sm font-semibold text-slate-700 mb-2" htmlFor="email">Email</label>
+            <input
+              type="email"
+              name="email"
+              id="email"
+              required
+              value={formData.email}
+              onChange={handleChange}
+              placeholder="e.g. user@example.com"
+              className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all outline-none bg-slate-50 focus:bg-white"
+            />
+          </div>
+
+          <div className="grid grid-cols-2 gap-4">
             <div>
               <label className="block text-sm font-semibold text-slate-700 mb-2" htmlFor="usia">Usia</label>
               <input 
@@ -67,17 +69,30 @@ export default function PersonalInfo({ onSubmit }) {
                 className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all outline-none bg-slate-50 focus:bg-white"
               />
             </div>
+            <div>
+              <label className="block text-sm font-semibold text-slate-700 mb-2" htmlFor="noTelepon">No. Telepon (WA)</label>
+              <input 
+                type="tel" 
+                name="noTelepon" 
+                id="noTelepon"
+                required
+                value={formData.noTelepon}
+                onChange={handleChange}
+                placeholder="e.g. 0812xxxx"
+                className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all outline-none bg-slate-50 focus:bg-white"
+              />
+            </div>
           </div>
 
           <div>
-            <label className="block text-sm font-semibold text-slate-700 mb-2" htmlFor="instansi">Asal Instansi</label>
+            <label className="block text-sm font-semibold text-slate-700 mb-2" htmlFor="instansi">Asal Instansi / Sekolah / Perguruan Tinggi</label>
             <input 
               type="text" 
               name="instansi" 
               id="instansi"
               value={formData.instansi}
               onChange={handleChange}
-              placeholder="e.g. PT Lentera Batin Indonesia"
+              placeholder="e.g. PT Lentera Batin / SMA 1 / Univ X"
               className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all outline-none bg-slate-50 focus:bg-white"
             />
           </div>
