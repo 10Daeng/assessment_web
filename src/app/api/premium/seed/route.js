@@ -35,6 +35,30 @@ export async function GET() {
     });
 
     // 2. Upsert Packages
+    const pkgBasic = await prisma.package.upsert({
+      where: { id: 'pkg-basic' },
+      update: { intent: 'GENERAL', price: 50000 },
+      create: {
+        id: 'pkg-basic',
+        name: 'Paket Basic',
+        description: 'Gaya Kerja (DISC)',
+        price: 50000,
+        intent: 'GENERAL',
+      },
+    });
+
+    const pkgReguler = await prisma.package.upsert({
+      where: { id: 'pkg-reguler' },
+      update: { intent: 'GENERAL', price: 150000 },
+      create: {
+        id: 'pkg-reguler',
+        name: 'Paket Reguler',
+        description: 'Kepribadian Eksekutif (DISC + HEXACO)',
+        price: 150000,
+        intent: 'GENERAL',
+      },
+    });
+
     const pkgRekrutmen = await prisma.package.upsert({
       where: { id: 'pkg-rekrutmen' },
       update: { intent: 'RECRUITMENT' },
@@ -47,32 +71,25 @@ export async function GET() {
       },
     });
 
-    const pkgAkademik = await prisma.package.upsert({
-      where: { id: 'pkg-akademik' },
-      update: { intent: 'ACADEMIC' },
-      create: {
-        id: 'pkg-akademik',
-        name: 'Paket Penjurusan Kampus',
-        description: 'Pemetaan minat bakat dan potensi akademik pelajar.',
-        price: 100000,
-        intent: 'ACADEMIC',
-      },
-    });
-
-    const pkgGrafologi = await prisma.package.upsert({
-      where: { id: 'pkg-grafologi' },
-      update: { intent: 'GRAPHOLOGY' },
-      create: {
-        id: 'pkg-grafologi',
-        name: 'Analisa Tulisan Tangan (Grafologi)',
-        description: 'Pemetaan psikologis berbasis tulisan tangan asli.',
-        price: 350000,
-        intent: 'GRAPHOLOGY',
-      },
-    });
-
     // 3. Link Modules to Packages
     await prisma.$transaction([
+      // Basic (DISC)
+      prisma.packageModule.upsert({
+        where: { packageId_moduleId: { packageId: pkgBasic.id, moduleId: modDisc.id }},
+        update: { order: 1 },
+        create: { packageId: pkgBasic.id, moduleId: modDisc.id, order: 1 }
+      }),
+      // Reguler (DISC, HEXACO)
+      prisma.packageModule.upsert({
+        where: { packageId_moduleId: { packageId: pkgReguler.id, moduleId: modDisc.id }},
+        update: { order: 1 },
+        create: { packageId: pkgReguler.id, moduleId: modDisc.id, order: 1 }
+      }),
+      prisma.packageModule.upsert({
+        where: { packageId_moduleId: { packageId: pkgReguler.id, moduleId: modHexaco.id }},
+        update: { order: 2 },
+        create: { packageId: pkgReguler.id, moduleId: modHexaco.id, order: 2 }
+      }),
       // Rekrutmen (DISC, HEXACO, ESSAY)
       prisma.packageModule.upsert({
         where: { packageId_moduleId: { packageId: pkgRekrutmen.id, moduleId: modDisc.id }},
