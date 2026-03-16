@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
+import Script from 'next/script';
 
 export default function DirectBookingPage() {
   const router = useRouter();
@@ -57,14 +58,63 @@ export default function DirectBookingPage() {
     }
   };
 
+  const handleCheckout = async (e) => {
+    e.preventDefault();
+    if (!userInfo.name || !userInfo.email) {
+      setErrorMsg('Mohon lengkapi data diri untuk melanjutkan pembayaran.');
+      return;
+    }
+
+    setIsCheckoutLoading(true);
+    setErrorMsg('');
+
+    try {
+      const res = await fetch('/api/premium/checkout', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ packageId: selectedPkg, userInfo })
+      });
+      
+      const data = await res.json();
+      
+      if (!res.ok) {
+        throw new Error(data.message || 'Gagal membuat transaksi.');
+      }
+
+      // Trigger Snap Popup
+      window.snap.pay(data.token, {
+        onSuccess: function(result){
+          // Cukup redirect ke session runner
+          router.push(`/premium/assessment/${data.sessionId}`);
+        },
+        onPending: function(result){
+          alert('Pembayaran tertunda. Silakan selesaikan pembayaran Anda.');
+        },
+        onError: function(result){
+          alert('Pembayaran gagal! Silakan coba lagi.');
+        },
+        onClose: function(){
+          alert('Popup ditutup tanpa menyelesaikan pembayaran.');
+        }
+      });
+      
+    } catch (err) {
+      setErrorMsg(err.message);
+    } finally {
+      setIsCheckoutLoading(false);
+    }
+  };
+
   const getWaLink = () => {
     const text = `Halo Admin Lentera Batin, saya ingin membeli akses tes mandiri untuk paket: ${selectedPkg === 'pkg-basic' ? 'Basic (Gaya Kerja)' : 'Reguler (Kepribadian Eksekutif)'}. Mohon info pembayarannya.`;
     return `https://wa.me/6285117778798?text=${encodeURIComponent(text)}`;
   };
 
   return (
+    <>
+    <Script src="https://app.sandbox.midtrans.com/snap/snap.js" data-client-key={process.env.NEXT_PUBLIC_MIDTRANS_CLIENT_KEY} strategy="lazyOnload" />
     <div className="min-h-screen bg-slate-50 flex items-center justify-center p-4 font-sans">
-      <div className="max-w-4xl w-full grid grid-cols-1 md:grid-cols-2 gap-8 bg-white p-8 md:p-12 rounded-3xl shadow-lg border border-slate-100 animate-in fade-in duration-500">
+      <div className="max-w-5xl w-full grid grid-cols-1 md:grid-cols-2 gap-8 bg-white p-8 md:p-12 rounded-3xl shadow-lg border border-slate-100 animate-in fade-in duration-500">
         
         {/* Left Col: Package Selection & WA Buy */}
         <div className="pr-0 md:pr-8 border-r-0 md:border-r border-slate-100">
@@ -130,40 +180,55 @@ export default function DirectBookingPage() {
               </div>
             </div>
 
-            <div className="pt-4 border-t border-slate-100">
-              <label className="block text-sm font-bold text-slate-700 mb-2">Kode Voucher *</label>
-              <input 
-                type="text" 
-                value={voucherCode} 
-                onChange={e => setVoucherCode(e.target.value.toUpperCase())} 
-                required 
-                className="w-full px-4 py-3 border-2 border-slate-200 rounded-xl outline-none focus:border-blue-500 font-mono text-center tracking-widest uppercase mb-2" 
-                placeholder="XXXX-YYYY-ZZZZ" 
-              />
-              <p className="text-xs text-slate-400 text-center mb-6">Contoh demo: DEMO-REGULER-26</p>
+            <div className="mt-6 flex flex-col sm:flex-row gap-4">
+               {/* PILIHAN 1: BAYAR LANGSUNG (MIDTRANS) */}
+               <div className="flex-1 bg-blue-50/50 p-4 border border-blue-100 rounded-2xl">
+                  <h3 className="text-sm font-bold text-slate-800 mb-1">Belum punya Voucher?</h3>
+                  <p className="text-xs text-slate-500 mb-3">Bayar otomatis sekarang pakai QRIS / Transfer / E-Wallet.</p>
+                  <button 
+                    onClick={handleCheckout} 
+                    type="button"
+                    disabled={isCheckoutLoading}
+                    className="w-full bg-blue-600 text-white font-bold py-3 rounded-xl hover:bg-blue-700 transition flex justify-center items-center h-12 text-sm shadow-md"
+                  >
+                    {isCheckoutLoading ? (
+                      <div className="w-5 h-5 border-2 border-blue-300 border-t-white rounded-full animate-spin"></div>
+                    ) : (
+                      'Bayar Instan & Mulai'
+                    )}
+                  </button>
+               </div>
 
-              {errorMsg && (
-                <div className="mb-4 p-3 bg-rose-50 border border-rose-200 text-rose-600 text-sm rounded-xl text-center">
-                  {errorMsg}
-                </div>
-              )}
-
-              <button 
-                type="submit" 
-                disabled={isChecking}
-                className="w-full bg-slate-800 text-white font-bold py-3.5 rounded-xl hover:bg-slate-900 transition flex justify-center items-center h-12"
-              >
-                {isChecking ? (
-                   <div className="w-5 h-5 border-2 border-slate-400 border-t-white rounded-full animate-spin"></div>
-                ) : (
-                  'Validasi & Mulai Asesmen'
-                )}
-              </button>
+               {/* PILIHAN 2: PAKAI VOUCHER */}
+               <div className="flex-1 bg-slate-50 p-4 border border-slate-200 rounded-2xl">
+                  <h3 className="text-sm font-bold text-slate-800 mb-1">Punya Voucher?</h3>
+                  <p className="text-xs text-slate-500 mb-2">Tukarkan token dari instansi / HRD Anda.</p>
+                  <input 
+                    type="text" 
+                    value={voucherCode} 
+                    onChange={e => setVoucherCode(e.target.value.toUpperCase())} 
+                    className="w-full px-4 py-2 border-2 border-slate-200 rounded-xl outline-none focus:border-slate-400 font-mono tracking-widest uppercase mb-3 text-sm" 
+                    placeholder="XXXX-YYYY-ZZZZ" 
+                  />
+                  <button 
+                    onClick={handleApplyVoucher}
+                    type="button" 
+                    disabled={isChecking}
+                    className="w-full bg-slate-800 text-white font-bold py-3 rounded-xl hover:bg-slate-900 transition flex justify-center items-center h-12 text-sm"
+                  >
+                    {isChecking ? (
+                      <div className="w-5 h-5 border-2 border-slate-500 border-t-white rounded-full animate-spin"></div>
+                    ) : (
+                      'Klaim Kode & Mulai'
+                    )}
+                  </button>
+               </div>
             </div>
           </form>
         </div>
 
       </div>
     </div>
+    </>
   );
 }
