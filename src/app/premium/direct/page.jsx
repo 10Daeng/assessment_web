@@ -1,11 +1,11 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import Script from 'next/script';
 
-export default function DirectBookingPage() {
+function DirectBookingContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const defaultPkg = searchParams.get('pkg') || 'pkg-basic';
@@ -13,6 +13,7 @@ export default function DirectBookingPage() {
   const [selectedPkg, setSelectedPkg] = useState(defaultPkg);
   const [voucherCode, setVoucherCode] = useState('');
   const [isChecking, setIsChecking] = useState(false);
+  const [isCheckoutLoading, setIsCheckoutLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
 
   // Setup form user info
@@ -224,11 +225,20 @@ export default function DirectBookingPage() {
                   </button>
                </div>
             </div>
+            {errorMsg && <p className="text-red-500 text-xs mt-2">{errorMsg}</p>}
           </form>
         </div>
 
       </div>
     </div>
     </>
+  );
+}
+
+export default function DirectBookingPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen flex items-center justify-center">Loading...</div>}>
+      <DirectBookingContent />
+    </Suspense>
   );
 }
