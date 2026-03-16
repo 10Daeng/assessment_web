@@ -1,4 +1,5 @@
 import Image from 'next/image';
+import Link from 'next/link';
 
 export default function Landing({ onStart }) {
   return (
@@ -56,12 +57,27 @@ export default function Landing({ onStart }) {
           </div>
         </div>
 
-        <button 
-          onClick={onStart}
-          className="bg-gradient-to-r from-orange-500 to-teal-600 hover:from-orange-600 hover:to-teal-700 text-white font-semibold py-4 px-12 rounded-full text-lg shadow-xl shadow-orange-500/20 hover:shadow-orange-500/30 hover:-translate-y-1 transition-all duration-300 w-full sm:w-auto"
-        >
-          Mulai Asesmen
-        </button>
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+          <button 
+            onClick={onStart}
+            className="bg-gradient-to-r from-orange-500 to-teal-600 hover:from-orange-600 hover:to-teal-700 text-white font-semibold py-4 px-10 rounded-full text-lg shadow-xl shadow-orange-500/20 hover:shadow-orange-500/30 hover:-translate-y-1 transition-all duration-300 w-full sm:w-auto"
+          >
+            Mulai Asesmen Gratis
+          </button>
+          
+          <Link 
+            href="/premium"
+            className="group flex items-center justify-center gap-2 bg-white border-2 border-slate-200 hover:border-blue-500 text-slate-700 hover:text-blue-600 font-semibold py-4 px-10 rounded-full text-lg transition-all duration-300 w-full sm:w-auto"
+          >
+            <span className="relative">
+              Eksplor Paket Premium
+              <span className="absolute -top-4 -right-6 bg-blue-500 text-white text-[10px] px-1.5 py-0.5 rounded-full animate-pulse">NEW</span>
+            </span>
+            <svg className="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+            </svg>
+          </Link>
+        </div>
         
         <p className="text-[11px] text-slate-400 mt-6">
           ⏱ Dibutuhkan waktu sekitar 10–15 menit untuk menyelesaikan seluruh tes.
