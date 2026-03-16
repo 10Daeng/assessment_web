@@ -1,8 +1,7 @@
 import { NextResponse } from 'next/server';
-import { PrismaClient } from '@prisma/client';
+import prisma from '@/lib/prisma';
 import { coreApi } from '@/lib/midtrans';
 
-const prisma = new PrismaClient();
 
 export async function POST(req) {
   try {
@@ -52,6 +51,6 @@ export async function POST(req) {
     console.error('Midtrans Webhook Error:', error);
     return NextResponse.json({ message: 'Error processing webhook' }, { status: 500 });
   } finally {
-    await prisma.$disconnect();
+    /* await prisma.$disconnect(); */
   }
 }

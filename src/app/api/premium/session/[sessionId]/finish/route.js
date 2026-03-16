@@ -1,7 +1,6 @@
 import { NextResponse } from 'next/server';
-import { PrismaClient } from '@prisma/client';
+import prisma from '@/lib/prisma';
 
-const prisma = new PrismaClient();
 
 export async function POST(req, { params }) {
   try {
@@ -78,6 +77,6 @@ export async function POST(req, { params }) {
     console.error('Finalize session error:', error);
     return NextResponse.json({ message: 'Terjadi kesalahan sistem.' }, { status: 500 });
   } finally {
-    await prisma.$disconnect();
+    /* await prisma.$disconnect(); */
   }
 }

@@ -1,7 +1,6 @@
 import { NextResponse } from 'next/server';
-import { PrismaClient } from '@prisma/client';
+import prisma from '@/lib/prisma';
 
-const prisma = new PrismaClient();
 
 // GET all vouchers (with package info)
 export async function GET(req) {
@@ -21,7 +20,7 @@ export async function GET(req) {
     console.error('Fetch vouchers error:', error);
     return NextResponse.json({ message: 'Terjadi kesalahan mengambil data voucher' }, { status: 500 });
   } finally {
-    await prisma.$disconnect();
+    /* await prisma.$disconnect(); */
   }
 }
 
@@ -61,7 +60,7 @@ export async function POST(req) {
     console.error('Create voucher error:', error);
     return NextResponse.json({ message: 'Gagal membuat voucher' }, { status: 500 });
   } finally {
-    await prisma.$disconnect();
+    /* await prisma.$disconnect(); */
   }
 }
 
@@ -88,6 +87,6 @@ export async function PUT(req) {
     console.error('Update voucher error:', error);
     return NextResponse.json({ message: 'Gagal mengubah voucher' }, { status: 500 });
   } finally {
-    await prisma.$disconnect();
+    /* await prisma.$disconnect(); */
   }
 }

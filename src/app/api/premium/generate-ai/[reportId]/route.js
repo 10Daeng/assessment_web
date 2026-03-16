@@ -1,9 +1,8 @@
 import { NextResponse } from 'next/server';
-import { PrismaClient } from '@prisma/client';
+import prisma from '@/lib/prisma';
 import { buildAaasPrompt } from '@/utils/aaasPromptBuilder';
 import { logger } from '@/utils/logger';
 
-const prisma = new PrismaClient();
 
 // Helper to extract JSON from messy AI string
 function extractJSON(text) {

@@ -1,7 +1,6 @@
 import { NextResponse } from 'next/server';
-import { PrismaClient } from '@prisma/client';
+import prisma from '@/lib/prisma';
 
-const prisma = new PrismaClient();
 
 export async function GET() {
   try {
@@ -34,6 +33,6 @@ export async function GET() {
     console.error('Fetch AaaS stats error:', error);
     return NextResponse.json({ message: 'Terjadi kesalahan sistem.' }, { status: 500 });
   } finally {
-    await prisma.$disconnect();
+    /* await prisma.$disconnect(); */
   }
 }
