@@ -4,18 +4,23 @@ import { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import Landing from '@/components/Landing';
+import PremiumSection from '@/components/PremiumSection';
 import PersonalInfo from '@/components/PersonalInfo';
 import DiscTest from '@/components/DiscTest';
 import HexacoTest from '@/components/HexacoTest';
 import { calculateDiscScores, calculateHexacoScores } from '@/utils/scoring';
 import { logger } from '@/utils/logger';
+import Script from 'next/script';
 
 export default function Home() {
-  const [step, setStep] = useState(0); 
+  const [step, setStep] = useState(0);
   const [userData, setUserData] = useState({});
   const [finalScores, setFinalScores] = useState({ disc: null, hexaco: null });
   const [isProcessing, setIsProcessing] = useState(false);
   const [startTime, setStartTime] = useState(null);
+  const [selectedPkg, setSelectedPkg] = useState('pkg-basic');
+  const [isCheckoutLoading, setIsCheckoutLoading] = useState(false);
+  const [showPremium, setShowPremium] = useState(false);
 
   const handleStart = () => {
     setStartTime(Date.now());
@@ -102,10 +107,23 @@ export default function Home() {
       </header>
 
       <div className="pt-8 pb-16">
-        {step === 0 && <Landing onStart={handleStart} />}
-        {step === 1 && <PersonalInfo onSubmit={handleInfoSubmit} />}
-        {step === 2 && <DiscTest onComplete={handleDiscComplete} />}
-        {step === 3 && <HexacoTest onComplete={handleHexacoComplete} />}
+        {showPremium ? (
+          <PremiumSection
+            onBack={() => setShowPremium(false)}
+            onFreeAssessment={handleStart}
+            selectedPkg={selectedPkg}
+            setSelectedPkg={setSelectedPkg}
+            isCheckoutLoading={isCheckoutLoading}
+            setIsCheckoutLoading={setIsCheckoutLoading}
+          />
+        ) : (
+          <>
+            {step === 0 && <Landing onStart={handleStart} onPremium={() => setShowPremium(true)} />}
+            {step === 1 && <PersonalInfo onSubmit={handleInfoSubmit} />}
+            {step === 2 && <DiscTest onComplete={handleDiscComplete} />}
+            {step === 3 && <HexacoTest onComplete={handleHexacoComplete} />}
+          </>
+        )}
         
         {step === 4 && isProcessing && (
           <div className="flex flex-col items-center justify-center min-h-[60vh] text-center animate-in fade-in zoom-in duration-500">
