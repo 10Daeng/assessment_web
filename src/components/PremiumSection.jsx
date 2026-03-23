@@ -20,6 +20,21 @@ const PACKAGES = [
     features: ['24 Pertanyaan DISC', '100 Pertanyaan HEXACO', 'Analisis Mendalam', 'Laporan PDF Lengkap'],
     highlight: 'Paling Populer',
     popular: true
+  },
+  {
+    id: 'pkg-grafologi',
+    name: 'Paket Grafologi',
+    description: 'Asesmen Self-Psikotes & Self Report Test dengan Analisis Grafologi',
+    price: 350000,
+    features: [
+      'Analisis Tulisan Tangan (Grafologi)',
+      '24 Pertanyaan DISC',
+      '100 Pertanyaan HEXACO',
+      'Self Report Test',
+      'Analisis Mendalam',
+      'Laporan PDF Lengkap'
+    ],
+    highlight: 'Spesial'
   }
 ];
 

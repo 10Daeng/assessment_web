@@ -1,7 +1,22 @@
+import Link from 'next/link';
+
 export default function PremiumHubPage() {
   return (
     <main className="min-h-screen bg-slate-50 font-sans p-8">
-      <div className="max-w-4xl mx-auto bg-white rounded-3xl shadow-sm border border-slate-100 p-10 mt-10 text-center animate-in fade-in zoom-in duration-500">
+      {/* Header dengan Home Icon */}
+      <header className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-slate-100 shadow-sm">
+        <div className="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
+          <Link href="/" className="flex items-center gap-2 text-slate-600 hover:text-blue-600 transition-colors">
+            <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 9l9-7 9 2 9.58-9.768l7-012.24-6.758-7.5 0-13.45-10.24l1 1 5m0 0l6-6" />
+            </svg>
+            <span className="text-sm font-medium">Beranda</span>
+          </Link>
+          <span className="text-sm text-slate-500 font-semibold">Premium Assessment Hub</span>
+        </div>
+      </header>
+
+      <div className="max-w-4xl mx-auto bg-white rounded-3xl shadow-sm border border-slate-100 p-10 mt-16 text-center animate-in fade-in zoom-in duration-500">
         <h1 className="text-4xl font-extrabold text-slate-800 mb-6 bg-gradient-to-r from-teal-600 to-blue-600 bg-clip-text text-transparent">
           Premium Assessment Hub
         </h1>
