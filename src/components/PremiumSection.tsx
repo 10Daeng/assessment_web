@@ -3,42 +3,71 @@
 import { useState } from 'react';
 import Script from 'next/script';
 
-const PACKAGES = [
-  {
-    id: 'pkg-basic',
-    name: 'Paket Basic',
-    description: 'Gaya Kerja (DISC)',
-    price: 50000,
-    features: ['24 Pertanyaan DISC', 'Gaya Kerja Dasar', 'Laporan PDF'],
-    highlight: 'Terjangkau'
-  },
-  {
-    id: 'pkg-reguler',
-    name: 'Paket Reguler',
-    description: 'Kepribadian Eksekutif (DISC + HEXACO)',
-    price: 150000,
-    features: ['24 Pertanyaan DISC', '100 Pertanyaan HEXACO', 'Analisis Mendalam', 'Laporan PDF Lengkap'],
-    highlight: 'Paling Populer',
-    popular: true
-  },
-  {
-    id: 'pkg-grafologi',
-    name: 'Paket Grafologi',
-    description: 'Asesmen Self-Psikotes & Self Report Test dengan Analisis Grafologi',
-    price: 350000,
-    features: [
-      'Analisis Tulisan Tangan (Grafologi)',
-      '24 Pertanyaan DISC',
-      '100 Pertanyaan HEXACO',
-      'Self Report Test',
-      'Analisis Mendalam',
-      'Laporan PDF Lengkap'
-    ],
-    highlight: 'Spesial'
-  }
-];
+const PACKAGES = {
+  psikometri: [
+    {
+      id: 'pkg-psiko-basic',
+      name: 'Gambaran Diri - Basic Profiling',
+      description: 'Asesmen DISC fundamental untuk memetakan gaya kerja dasar',
+      price: 150000,
+      features: ['24 Pertanyaan DISC', 'Gaya Kerja Dasar', 'Laporan PDF'],
+      intent: 'PSYCHOLOGY',
+      highlight: 'Terjangkau'
+    },
+    {
+      id: 'pkg-psiko-comprehensive',
+      name: 'Gambaran Diri - Comprehensive Profile',
+      description: 'Profil kepribadian lengkap dengan DISC dan HEXACO plus konseling',
+      price: 300000,
+      features: ['24 Pertanyaan DISC', '100 Pertanyaan HEXACO', 'Analisis Mendalam', 'Laporan PDF Lengkap'],
+      intent: 'PSYCHOLOGY',
+      highlight: 'Paling Populer',
+      popular: true
+    },
+    {
+      id: 'pkg-psiko-executive',
+      name: 'Gambaran Diri - Executive Profile',
+      description: 'Profil kepribadian eksekutif dengan analisis mendalam dan rekomendasi karier',
+      price: 500000,
+      features: ['24 Pertanyaan DISC', '100 Pertanyaan HEXACO', 'Self Report Test', 'Analisis Eksekutif'],
+      intent: 'PSYCHOLOGY',
+      highlight: 'Premium'
+    }
+  ],
+  grafologi: [
+    {
+      id: 'pkg-grafologi-brief',
+      name: 'Gambaran Diri - Grafologi Brief',
+      description: 'Analisis grafologi dasar untuk pemetaan kepribadian singkat',
+      price: 200000,
+      features: ['Analisis Grafologi', '24 Pertanyaan DISC', 'Laporan PDF'],
+      intent: 'GRAPHOLOGY',
+      highlight: 'Dasar'
+    },
+    {
+      id: 'pkg-grafologi-indepth',
+      name: 'Gambaran Diri - In-Depth Graphology',
+      description: 'Analisis grafologi mendalam dengan DISC dan HEXACO untuk pemetaan kepribadian komprehensif',
+      price: 350000,
+      features: ['Analisis Grafologi', '24 Pertanyaan DISC', '100 Pertanyaan HEXACO', 'Analisis Mendalam', 'Laporan PDF Lengkap'],
+      intent: 'GRAPHOLOGY',
+      highlight: 'Populer',
+      popular: true
+    },
+    {
+      id: 'pkg-grafologi-advanced',
+      name: 'Gambaran Diri - Advanced Grapho-Analysis',
+      description: 'Analisis grafologi tingkat lanjut dengan DISC, HEXACO, dan Self Report Test',
+      price: 550000,
+      features: ['Analisis Grafologi Lanjut', '24 Pertanyaan DISC', '100 Pertanyaan HEXACO', 'Self Report Test', 'Analisis Komplit'],
+      intent: 'GRAPHOLOGY',
+      highlight: 'Komplit'
+    }
+  ]
+};
 
 export default function PremiumSection({ onBack, onFreeAssessment, selectedPkg, setSelectedPkg, isCheckoutLoading, setIsCheckoutLoading }) {
+  const [selectedCategory, setSelectedCategory] = useState('psikometri');
   const [userInfo, setUserInfo] = useState({ name: '', email: '' });
   const [voucherCode, setVoucherCode] = useState('');
   const [isChecking, setIsChecking] = useState(false);
@@ -125,10 +154,14 @@ export default function PremiumSection({ onBack, onFreeAssessment, selectedPkg, 
   };
 
   const getWaLink = () => {
-    const pkgName = PACKAGES.find(p => p.id === selectedPkg)?.name || 'Paket Premium';
+    const allPackages = [...PACKAGES.psikometri, ...PACKAGES.grafologi];
+    const pkg = allPackages.find(p => p.id === selectedPkg);
+    const pkgName = pkg?.name || 'Paket Premium';
     const text = `Halo Admin Lentera Batin, saya ingin membeli akses tes mandiri untuk paket: ${pkgName}. Mohon info pembayarannya.`;
     return `https://wa.me/6285117778798?text=${encodeURIComponent(text)}`;
   };
+
+  const currentPackages = selectedCategory === 'psikometri' ? PACKAGES.psikometri : PACKAGES.grafologi;
 
   return (
     <>
@@ -150,19 +183,52 @@ export default function PremiumSection({ onBack, onFreeAssessment, selectedPkg, 
           <p className="text-slate-500 text-lg max-w-2xl mx-auto leading-relaxed">
             Dapatkan laporan asesmen mendalam dengan AI-driven insights dan rekomendasi personal.
           </p>
+
+        {/* Category Selection */}
+        <div className="flex justify-center gap-4 mb-8">
+          <button
+            onClick={() => {
+              setSelectedCategory('psikometri');
+              setSelectedPkg('pkg-psiko-basic');
+            }}
+            className={`flex-1 px-6 py-3 rounded-xl font-medium transition-all ${
+              selectedCategory === 'psikometri'
+                ? 'bg-blue-600 text-white'
+                : 'bg-slate-200 text-slate-700 hover:bg-slate-300'
+            }`}
+          >
+            🧠 Metodologi Psikotes
+          </button>
+          <button
+            onClick={() => {
+              setSelectedCategory('grafologi');
+              setSelectedPkg('pkg-grafologi-brief');
+            }}
+            className={`flex-1 px-6 py-3 rounded-xl font-medium transition-all ${
+              selectedCategory === 'grafologi'
+                ? 'bg-teal-600 text-white'
+                : 'bg-slate-200 text-slate-700 hover:bg-slate-300'
+            }`}
+          >
+            🖊 Analisis Grafologi
+          </button>
         </div>
 
         {/* Package Selection */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10">
-          {PACKAGES.map((pkg) => (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-10">
+          {currentPackages.map((pkg) => (
             <div
               key={pkg.id}
               onClick={() => setSelectedPkg(pkg.id)}
-              className={`relative p-8 rounded-3xl border-2 cursor-pointer transition-all ${
+              className={`relative p-6 rounded-3xl border-2 cursor-pointer transition-all ${
                 selectedPkg === pkg.id
                   ? pkg.popular
                     ? 'border-indigo-600 bg-indigo-50 ring-4 ring-indigo-200'
-                    : 'border-blue-600 bg-blue-50 ring-4 ring-blue-200'
+                    : pkg.highlight === 'Komplit'
+                      ? 'border-purple-600 bg-purple-50 ring-4 ring-purple-200'
+                      : pkg.highlight === 'Premium'
+                        ? 'border-amber-600 bg-amber-50 ring-4 ring-amber-200'
+                        : 'border-blue-600 bg-blue-50 ring-4 ring-blue-200'
                   : 'border-slate-200 hover:border-slate-300 hover:shadow-lg'
               }`}
             >
@@ -178,17 +244,20 @@ export default function PremiumSection({ onBack, onFreeAssessment, selectedPkg, 
                 </div>
               )}
 
-              <h3 className="text-2xl font-bold text-slate-800 mb-2">{pkg.name}</h3>
-              <p className="text-slate-500 text-sm mb-4">{pkg.description}</p>
-
-              <div className="text-4xl font-extrabold text-slate-800 mb-6">
-                Rp {(pkg.price / 1000).toLocaleString('id-ID')}
+              <div className="flex items-start justify-between mb-3">
+                <div>
+                  <h3 className="text-lg font-bold text-slate-800 mb-1">{pkg.name}</h3>
+                  <p className="text-slate-500 text-sm">{pkg.description}</p>
+                </div>
+                <div className="text-2xl font-extrabold text-slate-800">
+                  Rp {(pkg.price / 1000).toLocaleString('id-ID')}
+                </div>
               </div>
 
-              <ul className="space-y-3 mb-6">
+              <ul className="space-y-2 mb-4">
                 {pkg.features.map((feature, idx) => (
                   <li key={idx} className="flex items-start gap-2 text-slate-600 text-sm">
-                    <svg className="w-5 h-5 text-green-500 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <svg className="w-4 h-4 text-green-500 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                     </svg>
                     {feature}
@@ -202,7 +271,11 @@ export default function PremiumSection({ onBack, onFreeAssessment, selectedPkg, 
                   selectedPkg === pkg.id
                     ? pkg.popular
                       ? 'bg-indigo-600 text-white'
-                      : 'bg-blue-600 text-white'
+                      : pkg.highlight === 'Komplit'
+                        ? 'bg-purple-600 text-white'
+                        : pkg.highlight === 'Premium'
+                          ? 'bg-amber-600 text-white'
+                          : 'bg-blue-600 text-white'
                     : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
                 }`}
               >
@@ -282,7 +355,7 @@ export default function PremiumSection({ onBack, onFreeAssessment, selectedPkg, 
                   <>
                     Bayar Sekarang &rarr;
                     <span className="text-sm font-normal opacity-90">
-                      (Rp {(PACKAGES.find(p => p.id === selectedPkg)?.price / 1000).toLocaleString('id-ID')})
+                      (Rp {(currentPackages.find(p => p.id === selectedPkg)?.price / 1000).toLocaleString('id-ID')})
                     </span>
                   </>
                 )}
@@ -361,6 +434,7 @@ export default function PremiumSection({ onBack, onFreeAssessment, selectedPkg, 
           </button>
         </div>
       </div>
+    </div>
     </>
   );
 }
