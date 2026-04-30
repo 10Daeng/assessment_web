@@ -116,6 +116,20 @@ model ChatHistory {
   updatedAt      DateTime @default(now()) @updatedAt
 }
 
+// --- User Authentication Model ---
+
+model User {
+  id            String    @id @default(cuid())
+  email         String    @unique
+  passwordHash  String?
+  googleId      String?   @unique
+  emailVerified Boolean   @default(false)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  sessions      AssessmentSession[]
+}
+
 // --- AaaS / Premium Assessment Hub Models ---
 
 model Organization {
@@ -194,21 +208,25 @@ model AssessmentSession {
   participantEmail String
   participantAge   Int?
   participantMetadata Json? // Stores dynamic fields from custom Identity forms
-  
+  userId           String?  // Optional: Link to registered user (backward compatible)
+
   packageId        String
   voucherId        String?
-  
+
   status           String   // e.g., "ONGOING", "COMPLETED"
   paymentStatus    String   // e.g., "UNPAID", "PAID_VOUCHER", "PAID_DIRECT"
-  
+
   startedAt        DateTime @default(now())
   completedAt      DateTime?
 
+  user             User?     @relation(fields: [userId], references: [id])
   package          Package  @relation(fields: [packageId], references: [id])
   voucher          Voucher? @relation(fields: [voucherId], references: [id])
-  
+
   moduleResults    ModuleResult[]
   finalReport      FinalReport?
+
+  @@index([userId])
 }
 
 model ModuleResult {

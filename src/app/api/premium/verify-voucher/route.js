@@ -1,18 +1,41 @@
 import { NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
+import { paymentRateLimit } from '@/lib/rateLimit';
+import { sanitizeUserData } from '@/lib/sanitize';
+import { logger } from '@/utils/logger';
 
 
 export async function POST(req) {
   try {
     const { code, packageId, userInfo } = await req.json();
 
-    if (!code || !packageId || !userInfo?.name || !userInfo?.email) {
-      return NextResponse.json({ message: 'Data tidak lengkap.' }, { status: 400 });
+    // Apply rate limiting
+    const limitCheck = paymentRateLimit(req);
+    if (limitCheck) {
+      return NextResponse.json(
+        { message: limitCheck.error, retryAfter: limitCheck.retryAfter },
+        { status: 429, headers: { 'Retry-After': limitCheck.retryAfter.toString() } }
+      );
+    }
+
+    // Validate and sanitize user input
+    const sanitizationResult = sanitizeUserData(userInfo);
+
+    if (!sanitizationResult.isValid) {
+      return NextResponse.json(
+        { message: 'Data input tidak valid.', errors: sanitizationResult.errors },
+        { status: 400 }
+      );
+    }
+
+    if (!code || !packageId) {
+      return NextResponse.json({ message: 'Code dan package ID diperlukan.' }, { status: 400 });
     }
 
     // 1. Verify Voucher
+    const sanitizedUser = sanitizationResult.sanitized;
     const voucher = await prisma.voucher.findUnique({
-      where: { code: code.toUpperCase() },
+      where: { code: code.toUpperCase().trim() },
       include: { package: true }
     });
 
@@ -49,9 +72,9 @@ export async function POST(req) {
       // Create Assessment Session
       const session = await tx.assessmentSession.create({
         data: {
-          participantName: userInfo.name,
-          participantEmail: userInfo.email,
-          participantAge: userInfo.age ? parseInt(userInfo.age) : null,
+          participantName: sanitizedUser.name,
+          participantEmail: sanitizedUser.email,
+          participantAge: sanitizedUser.age,
           packageId: voucher.packageId,
           voucherId: voucher.id,
           status: 'ONGOING',
@@ -70,9 +93,7 @@ export async function POST(req) {
     });
 
   } catch (error) {
-    console.error('Voucher verification error:', error);
+    logger.error('[Verify Voucher] Error:', error);
     return NextResponse.json({ message: 'Terjadi kesalahan sistem.' }, { status: 500 });
-  } finally {
-    /* await prisma.$disconnect(); */
   }
 }

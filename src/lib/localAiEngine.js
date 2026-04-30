@@ -6,8 +6,8 @@ import { getDiscPatternName } from '@/utils/scoring';
 // =========================================
 // LOCAL AI ENGINE - FULL INSIGHT GENERATOR
 // =========================================
-// Generates output IDENTICAL to Claude/z.ai schema, using 100% local dictionaries.
-// Used as fallback when z.ai API is unavailable.
+// Generates output IDENTICAL to Claude/xAI schema, using 100% local dictionaries.
+// Used as fallback when xAI API is unavailable.
 
 function getLevel(mean) {
   if (mean >= 4.2) return 'very_high';
@@ -73,7 +73,7 @@ function getHexacoRoles(factorMeans) {
 // =========================================
 // MASTER: Generate Local AI Insight
 // =========================================
-// Output schema IDENTICAL to Claude/z.ai
+// Output schema IDENTICAL to Claude/xAI
 export function generateLocalAiInsight(discPattern, factorMeans, facetMeans, discScores, userData = {}) {
   const fm = factorMeans || {};
   const fac = facetMeans || {};
@@ -325,7 +325,7 @@ export function generateLocalAiInsight(discPattern, factorMeans, facetMeans, dis
   // Batasi 3-5 poin
   const ringkasan_kepribadian = ringkasan_poin.slice(0, 5).join(' ');
 
-  // === RETURN: Same schema as Claude/z.ai ===
+  // === RETURN: Same schema as Claude/xAI ===
   return {
     arketipe_personal: arketipe,
     deskripsi_kepribadian_terintegrasi: deskripsi.trim(),

@@ -54,30 +54,32 @@ Gaya Bahasa:
 - Berikan format paragraf yang rapi atau bullet-points agar mudah dibaca.
 - JANGAN BERFORMAT JSON. Menjawablah layaknya asisten ngobrol/chat.`;
 
-    const zaiKey = process.env.ZAI_API_KEY;
+    const xaiKey = process.env.XAI_API_KEY;
     const geminiKey = process.env.GEMINI_API_KEY;
 
     let reply = '';
 
-    if (zaiKey) {
-        // Claude Sonnet via Z.AI
-        const response = await fetch('https://api.z.ai/api/anthropic/v1/messages', {
+    if (xaiKey) {
+        // Grok via xAI
+        const payload = {
+            model: 'grok-2-latest',
+            max_tokens: 2500,
+            messages: [
+                { role: 'system', content: systemPrompt },
+                ...messages
+            ]
+        };
+        const response = await fetch('https://api.x.ai/v1/chat/completions', {
             method: 'POST',
             headers: {
-                'Authorization': `Bearer ${zaiKey}`,
-                'Content-Type': 'application/json',
-                'anthropic-version': '2023-06-01'
+                'Authorization': `Bearer ${xaiKey}`,
+                'Content-Type': 'application/json'
             },
-            body: JSON.stringify({
-                model: 'claude-3-5-sonnet-20241022',
-                max_tokens: 2500,
-                system: systemPrompt,
-                messages: messages
-            })
+            body: JSON.stringify(payload)
         });
-        if (!response.ok) throw new Error("Z.AI API failed");
+        if (!response.ok) throw new Error("xAI API failed");
         const data = await response.json();
-        reply = data.content?.[0]?.text || '';
+        reply = data.choices?.[0]?.message?.content || '';
     } else if (geminiKey) {
         // Gemini
         const geminiMessages = messages.map(m => ({
@@ -98,7 +100,7 @@ Gaya Bahasa:
         const data = await response.json();
         reply = data.candidates?.[0]?.content?.parts?.[0]?.text || '';
     } else {
-        reply = "Sistem gagal menemukan API Key (Z.AI atau Gemini). Mohon konfigurasi pada environment server.";
+        reply = "Sistem gagal menemukan API Key (xAI atau Gemini). Mohon konfigurasi pada environment server.";
     }
 
     return NextResponse.json({ success: true, reply });

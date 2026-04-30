@@ -1,14 +1,35 @@
 import { NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
 import { snap } from '@/lib/midtrans';
-
+import { paymentRateLimit } from '@/lib/rateLimit';
+import { sanitizeUserData } from '@/lib/sanitize';
+import { logger } from '@/utils/logger';
 
 export async function POST(req) {
   try {
+    // Apply rate limiting
+    const limitCheck = paymentRateLimit(req);
+    if (limitCheck) {
+      return NextResponse.json(
+        { message: limitCheck.error, retryAfter: limitCheck.retryAfter },
+        { status: 429, headers: { 'Retry-After': limitCheck.retryAfter.toString() } }
+      );
+    }
+
     const { packageId, userInfo } = await req.json();
 
-    if (!packageId || !userInfo?.name || !userInfo?.email) {
-      return NextResponse.json({ message: 'Data tidak lengkap.' }, { status: 400 });
+    // Validate and sanitize user input
+    const sanitizationResult = sanitizeUserData(userInfo);
+
+    if (!sanitizationResult.isValid) {
+      return NextResponse.json(
+        { message: 'Data input tidak valid.', errors: sanitizationResult.errors },
+        { status: 400 }
+      );
+    }
+
+    if (!packageId) {
+      return NextResponse.json({ message: 'Package ID diperlukan.' }, { status: 400 });
     }
 
     // 1. Dapatkan info paket
@@ -21,13 +42,14 @@ export async function POST(req) {
     }
 
     // 2. Buat Assessment Session dengan status "UNPAID_MIDTRANS"
+    const sanitizedUser = sanitizationResult.sanitized;
     const session = await prisma.assessmentSession.create({
       data: {
-        participantName: userInfo.name,
-        participantEmail: userInfo.email,
-        participantAge: userInfo.age ? parseInt(userInfo.age) : null,
+        participantName: sanitizedUser.name,
+        participantEmail: sanitizedUser.email,
+        participantAge: sanitizedUser.age,
         packageId: packageId,
-        status: 'ONGOING', // or 'PENDING_PAYMENT' if you prefer
+        status: 'ONGOING',
         paymentStatus: 'UNPAID_MIDTRANS',
       }
     });
@@ -35,13 +57,13 @@ export async function POST(req) {
     // 3. Request Token ke Midtrans Snap
     const parameter = {
       transaction_details: {
-        order_id: session.id, // we use session ID as order ID!
-        gross_amount: pkg.price // IDR integer
+        order_id: session.id,
+        gross_amount: pkg.price
       },
       customer_details: {
-        first_name: userInfo.name,
-        email: userInfo.email,
-        phone: userInfo.phone || ''
+        first_name: sanitizedUser.name,
+        email: sanitizedUser.email,
+        phone: sanitizedUser.phone || ''
       },
       item_details: [{
         id: pkg.id,
@@ -53,17 +75,15 @@ export async function POST(req) {
 
     const transaction = await snap.createTransaction(parameter);
 
-    return NextResponse.json({ 
-        success: true, 
-        token: transaction.token, 
+    return NextResponse.json({
+        success: true,
+        token: transaction.token,
         redirect_url: transaction.redirect_url,
         sessionId: session.id
     });
 
   } catch (error) {
-    console.error('Checkout error:', error);
+    logger.error('[Checkout] Error:', error);
     return NextResponse.json({ message: 'Gagal membuat transaksi', error: String(error) }, { status: 500 });
-  } finally {
-    /* await prisma.$disconnect(); */
   }
 }

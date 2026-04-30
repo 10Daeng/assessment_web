@@ -1,7 +1,8 @@
 'use client';
 import { useState, useEffect, useMemo } from 'react';
 import Link from 'next/link';
-import * as XLSX from 'xlsx';
+import ExcelJS from 'exceljs';
+import { saveAs } from 'file-saver';
 import { calculateValidityIndex } from '@/utils/validityCheck';
 import { logger } from '@/utils/logger';
 
@@ -135,7 +136,7 @@ export default function RekapPage() {
     return list;
   }, [data, search, searchField, sortBy, sortDir]);
 
-  const downloadExcel = () => {
+  const downloadExcel = async () => {
     if (sorted.length === 0) return;
 
     const exportData = sorted.map((sub, index) => {
@@ -161,18 +162,25 @@ export default function RekapPage() {
       };
     });
 
-    const worksheet = XLSX.utils.json_to_sheet(exportData);
-    const workbook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(workbook, worksheet, "Rekap Analisis");
+    // Create workbook using ExcelJS
+    const workbook = new ExcelJS.Workbook();
+    const worksheet = workbook.addWorksheet('Rekap Analisis');
 
-    // Adjust column widths
-    const wscols = Object.keys(exportData[0]).map(() => ({ wch: 35 }));
-    wscols[0] = { wch: 5 }; // No
-    wscols[1] = { wch: 25 }; // Nama
-    wscols[5] = { wch: 60 }; // Karakter
-    worksheet['!cols'] = wscols;
+    // Add headers
+    const headers = Object.keys(exportData[0]);
+    worksheet.columns = headers.map((header, index) => ({
+      header,
+      key: header,
+      width: index === 5 ? 60 : (index === 0 ? 5 : (index === 1 ? 25 : 35))
+    }));
 
-    XLSX.writeFile(workbook, `Rekap_Analisis_PsychAuto_${new Date().toISOString().slice(0,10)}.xlsx`);
+    // Add data
+    worksheet.addRows(exportData);
+
+    // Generate and download
+    const buffer = await workbook.xlsx.writeBuffer();
+    const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+    saveAs(blob, `Rekap_Analisis_PsychAuto_${new Date().toISOString().slice(0,10)}.xlsx`);
   };
 
   if (loading) {

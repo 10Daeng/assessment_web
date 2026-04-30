@@ -4,7 +4,7 @@ import { logger } from '../utils/logger';
 
 /**
  * Generate personality description.
- * PRIMARY: Z.AI (Claude Sonnet) → structured JSON insight
+ * PRIMARY: xAI (Grok) → structured JSON insight
  * SECONDARY: Gemini Flash
  * FALLBACK: Local AI Engine → same schema, 100% offline
  */
@@ -41,10 +41,10 @@ export async function generatePersonalityDescription(discPattern, hexacoMeanH, h
     discPattern, factorMeans, hexacoFacetMeans || {}, discScores || null
   );
 
-  const zaiKey = (process.env.ZAI_API_KEY || '').trim();
+  const xaiKey = (process.env.XAI_API_KEY || '').trim();
   const geminiKey = (process.env.GEMINI_API_KEY || '').trim();
 
-  if (!zaiKey && !geminiKey) {
+  if (!xaiKey && !geminiKey) {
     logger.log("[AI] No API Keys, using local engine.");
     return { ...localInsight, gayaKerja: localLegacy.gayaKerja, karakterInti: localLegacy.karakterInti,
       rekomendasi1: localLegacy.rekomendasi1, rekomendasi2: localLegacy.rekomendasi2, rekomendasi3: localLegacy.rekomendasi3 };
@@ -107,9 +107,9 @@ ${facetStr}
   "saran_pengembangan_spesifik": ["Langkah 1", "Langkah 2", "Langkah 3"]
 }`;
 
-  // ── AI Call: Gemini PRIMARY → Z.AI FALLBACK → Local FINAL ──
+  // ── AI Call: Gemini PRIMARY → xAI FALLBACK → Local FINAL ──
   // Gemini Flash is free, fast (5-15s), no strict rate limits
-  // Z.AI actually proxies to GLM models (not real Claude), has Lite plan limits (~80/5hr)
+  // xAI provides Grok models via OpenAI-compatible API
   try {
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), 45000);
@@ -137,56 +137,58 @@ ${facetStr}
       } catch (geminiErr) {
         logger.warn("[AI] Gemini failed:", geminiErr.message);
         
-        // === FALLBACK: Z.AI (GLM proxy) ===
-        if (zaiKey) {
-          logger.log("[AI] FALLBACK: Z.AI (GLM)...");
-          const res = await fetch('https://api.z.ai/api/anthropic/v1/messages', {
+        // === FALLBACK: xAI (Grok) ===
+        if (xaiKey) {
+          logger.log("[AI] FALLBACK: xAI (Grok)...");
+          const res = await fetch('https://api.x.ai/v1/chat/completions', {
             method: 'POST',
             headers: {
-              'Authorization': `Bearer ${zaiKey}`,
-              'Content-Type': 'application/json',
-              'anthropic-version': '2023-06-01'
+              'Authorization': `Bearer ${xaiKey}`,
+              'Content-Type': 'application/json'
             },
             signal: controller.signal,
             body: JSON.stringify({
-              model: 'claude-3-5-sonnet-20241022',
-              system: 'Output JSON murni dalam bahasa Indonesia. Langsung mulai dengan {',
-              messages: [{ role: 'user', content: prompt }],
+              model: 'grok-2-latest',
+              messages: [
+                { role: 'system', content: 'Output JSON murni dalam bahasa Indonesia. Langsung mulai dengan {' },
+                { role: 'user', content: prompt }
+              ],
               max_tokens: 3000,
               temperature: 0.7
             })
           });
-          if (!res.ok) throw new Error(`Z.AI HTTP ${res.status}`);
+          if (!res.ok) throw new Error(`xAI HTTP ${res.status}`);
           const data = await res.json();
-          cleanText = data.content?.[0]?.text || '';
-          source = 'z.ai';
+          cleanText = data.choices?.[0]?.message?.content || '';
+          source = 'xai';
         } else {
-          throw geminiErr; // No Z.AI fallback either → go to local
+          throw geminiErr; // No xAI fallback either → go to local
         }
       }
-    } else if (zaiKey) {
-      // No Gemini, use Z.AI directly
-      logger.log("[AI] Z.AI (GLM) direct...");
-      const res = await fetch('https://api.z.ai/api/anthropic/v1/messages', {
+    } else if (xaiKey) {
+      // No Gemini, use xAI directly
+      logger.log("[AI] xAI (Grok) direct...");
+      const res = await fetch('https://api.x.ai/v1/chat/completions', {
         method: 'POST',
         headers: {
-          'Authorization': `Bearer ${zaiKey}`,
-          'Content-Type': 'application/json',
-          'anthropic-version': '2023-06-01'
+          'Authorization': `Bearer ${xaiKey}`,
+          'Content-Type': 'application/json'
         },
         signal: controller.signal,
         body: JSON.stringify({
-          model: 'claude-3-5-sonnet-20241022',
-          system: 'Output JSON murni dalam bahasa Indonesia. Langsung mulai dengan {',
-          messages: [{ role: 'user', content: prompt }],
+          model: 'grok-2-latest',
+          messages: [
+            { role: 'system', content: 'Output JSON murni dalam bahasa Indonesia. Langsung mulai dengan {' },
+            { role: 'user', content: prompt }
+          ],
           max_tokens: 3000,
           temperature: 0.7
         })
       });
-      if (!res.ok) throw new Error(`Z.AI HTTP ${res.status}`);
+      if (!res.ok) throw new Error(`xAI HTTP ${res.status}`);
       const data = await res.json();
-      cleanText = data.content?.[0]?.text || '';
-      source = 'z.ai';
+      cleanText = data.choices?.[0]?.message?.content || '';
+      source = 'xai';
     }
 
     clearTimeout(timeout);

@@ -99,7 +99,7 @@ export default function AssessmentPDFBasic({ session, aiInsight, calculatedScore
           <Text style={styles.rahasia}>SANGAT RAHASIA - BASIC PACK</Text>
           <Text style={styles.lembaga}>Lembaga Konseling dan Psikoterapi Islam</Text>
           <Image src="/logo.png" style={styles.logo} />
-          <Text style={styles.address}>Jalan Potre Koneng II No. 31, Kolor, Sumenep 69417 | www.lenterabatin.co.id</Text>
+          <Text style={styles.address}>Jalan Potre Koneng II/31 Bumi Sumekar Asri Kolor Sumenep, Jawa Timur 69417 | www.lenterabatin.co.id</Text>
         </View>
         <View style={styles.hr} />
         <Text style={styles.mainTitle}>HASIL PEMETAAN GAYA KERJA DASAR (DISC)</Text>

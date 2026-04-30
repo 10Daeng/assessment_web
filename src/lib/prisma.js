@@ -16,17 +16,34 @@ function createPrismaClient() {
 
   logger.log('[Prisma] Creating client (connection configured via DATABASE_URL)');
 
-  const pool = new Pool({ connectionString });
+  // Create connection pool with optimized settings
+  const pool = new Pool({
+    connectionString,
+    max: 20, // Maximum number of connections in the pool
+    idleTimeoutMillis: 30000, // Close idle connections after 30 seconds
+    connectionTimeoutMillis: 10000, // Timeout for establishing connection
+  });
+
   const adapter = new PrismaNeon(pool);
-  return new PrismaClient({ adapter });
+
+  // Add connection pool monitoring
+  const client = new PrismaClient({
+    adapter,
+    log: process.env.NODE_ENV === 'development' ? ['query', 'error', 'warn'] : ['error'],
+  });
+
+  // Graceful shutdown handler
+  process.on('beforeExit', async () => {
+    logger.log('[Prisma] Closing connection pool...');
+    await pool.end();
+  });
+
+  return client;
 }
 
 const globalForPrisma = globalThis;
 
-if (!globalForPrisma.__prisma) {
-  globalForPrisma.__prisma = null;
-}
-
+// Initialize Prisma singleton for better connection management
 export function getPrisma() {
   if (!globalForPrisma.__prisma) {
     globalForPrisma.__prisma = createPrismaClient();

@@ -1,4 +1,5 @@
 import { SignJWT, jwtVerify } from 'jose';
+import bcrypt from 'bcryptjs';
 
 const SECRET = new TextEncoder().encode(process.env.JWT_SECRET);
 
@@ -23,9 +24,23 @@ export async function verifyToken(token) {
   }
 }
 
-export function validateCredentials(username, password) {
-  return (
-    username === process.env.ADMIN_USERNAME &&
-    password === process.env.ADMIN_PASSWORD
-  );
+export async function validateCredentials(username, password) {
+  // Check username first
+  if (username !== process.env.ADMIN_USERNAME) {
+    return false;
+  }
+
+  // Validate password using bcrypt
+  const storedHash = process.env.ADMIN_PASSWORD_HASH;
+  if (!storedHash) {
+    throw new Error('ADMIN_PASSWORD_HASH environment variable is required');
+  }
+
+  const isPasswordValid = await bcrypt.compare(password, storedHash);
+  return isPasswordValid;
+}
+
+// Helper function to generate password hash for setup
+export async function generatePasswordHash(password, rounds = 12) {
+  return await bcrypt.hash(password, rounds);
 }

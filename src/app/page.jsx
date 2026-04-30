@@ -92,9 +92,8 @@ export default function Home() {
   };
 
   return (
-    <main className="min-h-screen bg-slate-50/50 selection:bg-teal-100 font-sans">
-      <div className="absolute inset-0 -z-10 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-orange-50/50 via-white to-teal-50/30"></div>
-      
+    <main className="min-h-screen bg-white selection:bg-teal-100 font-sans">
+
       <header className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-slate-100 shadow-sm">
         <div className="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
           <Image src="/logo.png" alt="Lentera Batin" width={140} height={40} className="h-9 w-auto" priority />
@@ -106,7 +105,7 @@ export default function Home() {
         </div>
       </header>
 
-      <div className="pt-8 pb-16">
+      <div>
         {showPremium ? (
           <PremiumSection
             onBack={() => setShowPremium(false)}
@@ -119,9 +118,9 @@ export default function Home() {
         ) : (
           <>
             {step === 0 && <Landing onStart={handleStart} onPremium={() => setShowPremium(true)} />}
-            {step === 1 && <PersonalInfo onSubmit={handleInfoSubmit} />}
-            {step === 2 && <DiscTest onComplete={handleDiscComplete} />}
-            {step === 3 && <HexacoTest onComplete={handleHexacoComplete} />}
+            {step === 1 && <div className="pt-8 pb-16"><PersonalInfo onSubmit={handleInfoSubmit} /></div>}
+            {step === 2 && <div className="pt-8 pb-16"><DiscTest onComplete={handleDiscComplete} /></div>}
+            {step === 3 && <div className="pt-8 pb-16"><HexacoTest onComplete={handleHexacoComplete} /></div>}
           </>
         )}
         
@@ -184,7 +183,7 @@ export default function Home() {
                 </div>
                 <div className="flex-shrink-0">
                   <a 
-                    href="https://wa.me/6285117778798?text=Halo%20Lentera%20Batin,%20saya%20sudah%20mengisi%20Asesmen%20Karakter%20dan%20Gaya%20Kerja.%20Saya%20tertarik%20untuk%20mendapatkan%20laporan%20lengkap%20dan%20sesi%20konsultasi/konseling%20pribadi."
+                    href={`https://wa.me/${process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || '6285117778798'}?text=${encodeURIComponent('Halo Lentera Batin, saya sudah mengisi Asesmen Karakter dan Gaya Kerja. Saya tertarik untuk mendapatkan laporan lengkap dan sesi konsultasi/konseling pribadi.')}`}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="inline-flex items-center justify-center gap-2 bg-[#25D366] hover:bg-[#1ebd5b] text-white font-bold py-3.5 px-6 rounded-xl shadow-[0_8px_20px_rgba(37,211,102,0.3)] hover:-translate-y-1 hover:shadow-[0_12px_25px_rgba(37,211,102,0.4)] transition-all duration-300"
@@ -199,10 +198,10 @@ export default function Home() {
         )}
       </div>
 
-      {/* Footer with subtle admin link */}
+      {/* Footer */}
       <footer className="border-t border-slate-100 py-4 text-center">
         <p className="text-xs text-slate-300">
-          © 2026 Lentera Batin · <Link href="/admin" className="text-slate-400 hover:text-blue-500 transition-colors">Admin</Link>
+          © 2026 Lentera Batin
         </p>
       </footer>
     </main>

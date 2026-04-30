@@ -3,6 +3,20 @@
 import { useState } from 'react';
 import Script from 'next/script';
 
+// TypeScript declarations for Midtrans Snap.js
+declare global {
+  interface Window {
+    snap: {
+      pay: (token: string, options: {
+        onSuccess: (result: any) => void;
+        onPending: (result: any) => void;
+        onError: (result: any) => void;
+        onClose: () => void;
+      }) => void;
+    };
+  }
+}
+
 const PACKAGES = {
   psikometri: [
     {
@@ -63,16 +77,26 @@ const PACKAGES = {
       intent: 'GRAPHOLOGY',
       highlight: 'Komplit'
     }
-  ];
+  ]
+};
 
-export default function PremiumSection({ onBack, onFreeAssessment, selectedPkg, setSelectedPkg, isCheckoutLoading, setIsCheckoutLoading }) {
+interface PremiumSectionProps {
+  onBack: () => void;
+  onFreeAssessment: () => void;
+  selectedPkg: string;
+  setSelectedPkg: (pkg: string) => void;
+  isCheckoutLoading: boolean;
+  setIsCheckoutLoading: (loading: boolean) => void;
+}
+
+export default function PremiumSection({ onBack, onFreeAssessment, selectedPkg, setSelectedPkg, isCheckoutLoading, setIsCheckoutLoading }: PremiumSectionProps) {
   const [selectedCategory, setSelectedCategory] = useState('psikometri');
   const [userInfo, setUserInfo] = useState({ name: '', email: '' });
   const [voucherCode, setVoucherCode] = useState('');
   const [isChecking, setIsChecking] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
 
-  const handleCheckout = async (e) => {
+  const handleCheckout = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!userInfo.name || !userInfo.email) {
       setErrorMsg('Mohon lengkapi data diri untuk melanjutkan pembayaran.');
@@ -112,12 +136,12 @@ export default function PremiumSection({ onBack, onFreeAssessment, selectedPkg, 
       });
 
     } catch (err) {
-      setErrorMsg(err.message);
+      setErrorMsg(err instanceof Error ? err.message : 'Terjadi kesalahan yang tidak terduga.');
       setIsCheckoutLoading(false);
     }
   };
 
-  const handleApplyVoucher = async (e) => {
+  const handleApplyVoucher = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!voucherCode.trim() || !userInfo.name || !userInfo.email) {
       setErrorMsg('Mohon lengkapi data diri dan kode voucher.');
@@ -143,7 +167,7 @@ export default function PremiumSection({ onBack, onFreeAssessment, selectedPkg, 
       window.location.href = `/premium/assessment/${data.sessionId}`;
 
     } catch (err) {
-      setErrorMsg(err.message);
+      setErrorMsg(err instanceof Error ? err.message : 'Terjadi kesalahan yang tidak terduga.');
     } finally {
       setIsChecking(false);
     }
@@ -154,7 +178,7 @@ export default function PremiumSection({ onBack, onFreeAssessment, selectedPkg, 
     const pkg = allPackages.find((p) => p.id === selectedPkg);
     const pkgName = pkg?.name || 'Paket Premium';
     const text = `Halo Admin Lentera Batin, saya ingin membeli akses tes mandiri untuk paket: ${pkgName}. Mohon info pembayarannya.`;
-    return `https://wa.me/6285117778798?text=${encodeURIComponent(text)}`;
+    return `https://wa.me/${process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || '6285117778798'}?text=${encodeURIComponent(text)}`;
   };
 
   const currentPackages = selectedCategory === 'psikometri' ? PACKAGES.psikometri : PACKAGES.grafologi;
@@ -179,6 +203,7 @@ export default function PremiumSection({ onBack, onFreeAssessment, selectedPkg, 
           <p className="text-slate-500 text-lg max-w-2xl mx-auto leading-relaxed">
             Dapatkan laporan asesmen mendalam dengan AI-driven insights dan rekomendasi personal.
           </p>
+        </div>
 
         {/* Category Selection */}
         <div className="flex justify-center gap-4 mb-8">
@@ -299,7 +324,7 @@ export default function PremiumSection({ onBack, onFreeAssessment, selectedPkg, 
               <input
                 type="text"
                 value={userInfo.name}
-                onChange={(e) => setUserInfo({ ...userInfo, name: e.target.value })}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => setUserInfo({ ...userInfo, name: e.target.value })}
                 required
                 className="w-full px-4 py-3 border border-slate-200 rounded-xl outline-none focus:border-blue-500 transition-colors"
                 placeholder="John Doe"
@@ -313,7 +338,7 @@ export default function PremiumSection({ onBack, onFreeAssessment, selectedPkg, 
               <input
                 type="email"
                 value={userInfo.email}
-                onChange={(e) => setUserInfo({ ...userInfo, email: e.target.value })}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => setUserInfo({ ...userInfo, email: e.target.value })}
                 required
                 className="w-full px-4 py-3 border border-slate-200 rounded-xl outline-none focus:border-blue-500 transition-colors"
                 placeholder="john@example.com"
@@ -351,7 +376,7 @@ export default function PremiumSection({ onBack, onFreeAssessment, selectedPkg, 
                   <>
                     Bayar Sekarang &rarr;
                     <span className="text-sm font-normal opacity-90">
-                      (Rp {(currentPackages.find((p) => p.id === selectedPkg)?.price / 1000).toLocaleString('id-ID')})
+                      (Rp {((currentPackages.find((p) => p.id === selectedPkg)?.price || 0) / 1000).toLocaleString('id-ID')})
                     </span>
                   </>
                 )}
@@ -375,7 +400,7 @@ export default function PremiumSection({ onBack, onFreeAssessment, selectedPkg, 
               <input
                 type="text"
                 value={voucherCode}
-                onChange={(e) => setVoucherCode(e.target.value.toUpperCase())}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => setVoucherCode(e.target.value.toUpperCase())}
                 className="w-full px-4 py-3 border-2 border-slate-200 rounded-xl outline-none focus:border-slate-400 font-mono tracking-widest uppercase text-sm mb-3 placeholder:text-slate-300"
                 placeholder="XXXX-YYYY-ZZZZ"
               />

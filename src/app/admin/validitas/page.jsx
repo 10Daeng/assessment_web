@@ -1,7 +1,8 @@
 'use client';
 import { useState, useEffect, useMemo } from 'react';
 import Link from 'next/link';
-import * as XLSX from 'xlsx';
+import ExcelJS from 'exceljs';
+import { saveAs } from 'file-saver';
 import { calculateValidityIndex } from '@/utils/validityCheck';
 import { logger } from '@/utils/logger';
 
@@ -206,7 +207,7 @@ export default function ValiditasPage() {
   }, [enriched]);
 
   // Excel export
-  const downloadExcel = () => {
+  const downloadExcel = async () => {
     if (sorted.length === 0) return;
     const rows = sorted.map((sub, i) => {
       const v = sub._validity;
@@ -228,11 +229,25 @@ export default function ValiditasPage() {
         "DISC Over-Shift": `${ind.discOverShift.score >= 0 ? ind.discOverShift.score : '-'} (${ind.discOverShift.label})`,
       };
     });
-    const ws = XLSX.utils.json_to_sheet(rows);
-    const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, "Validitas");
-    ws['!cols'] = Object.keys(rows[0]).map(() => ({ wch: 22 }));
-    XLSX.writeFile(wb, `Validitas_Isian_${new Date().toISOString().slice(0,10)}.xlsx`);
+    // Create workbook using ExcelJS
+    const wb = new ExcelJS.Workbook();
+    const ws = wb.addWorksheet('Validitas');
+
+    // Add headers
+    const headers = Object.keys(rows[0]);
+    ws.columns = headers.map(header => ({
+      header,
+      key: header,
+      width: 22
+    }));
+
+    // Add data
+    ws.addRows(rows);
+
+    // Generate and download
+    const buffer = await wb.xlsx.writeBuffer();
+    const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+    saveAs(blob, `Validitas_Isian_${new Date().toISOString().slice(0,10)}.xlsx`);
   };
 
   const ScoreCell = ({ score, label, detail }) => (

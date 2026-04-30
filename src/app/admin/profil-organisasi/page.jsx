@@ -1,6 +1,7 @@
 'use client';
 import { useState, useEffect, useMemo } from 'react';
-import * as XLSX from 'xlsx';
+import ExcelJS from 'exceljs';
+import { saveAs } from 'file-saver';
 import { calculateValidityIndex } from '@/utils/validityCheck';
 import { getDiscPatternName } from '@/utils/scoring';
 import { logger } from '@/utils/logger';
@@ -208,7 +209,7 @@ export default function ProfilOrganisasiPage() {
   }, [filtered]);
 
   // Excel Export
-  const downloadExcel = () => {
+  const downloadExcel = async () => {
     if (filtered.length === 0) return;
     const rows = filtered.map((sub, i) => {
       const ud = sub.userData || {};
@@ -232,11 +233,25 @@ export default function ProfilOrganisasiPage() {
         })(),
       };
     });
-    const ws = XLSX.utils.json_to_sheet(rows);
-    const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, "Profil Organisasi");
-    ws['!cols'] = Object.keys(rows[0]).map(() => ({ wch: 20 }));
-    XLSX.writeFile(wb, `Profil_Organisasi_${selectedInstansi || 'Semua'}_${new Date().toISOString().slice(0,10)}.xlsx`);
+    // Create workbook using ExcelJS
+    const wb = new ExcelJS.Workbook();
+    const ws = wb.addWorksheet('Profil Organisasi');
+
+    // Add headers
+    const headers = Object.keys(rows[0]);
+    ws.columns = headers.map(header => ({
+      header,
+      key: header,
+      width: 20
+    }));
+
+    // Add data
+    ws.addRows(rows);
+
+    // Generate and download
+    const buffer = await wb.xlsx.writeBuffer();
+    const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+    saveAs(blob, `Profil_Organisasi_${selectedInstansi || 'Semua'}_${new Date().toISOString().slice(0,10)}.xlsx`);
   };
 
   if (loading) {
